@@ -7,7 +7,7 @@ name = "opentelemetry-api"
 description = "OpenTelemetry Python API"
 readme = "README.rst"
 license = "Apache-2.0"
-requires-python = ">=3.9"
+requires-python = ">=3.7"
 authors = [
     { name = "OpenTelemetry Authors", email = "cncf-opentelemetry-contributors@lists.cncf.io" },
 ]
@@ -17,6 +17,8 @@ classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",

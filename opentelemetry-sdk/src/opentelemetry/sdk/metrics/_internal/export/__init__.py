@@ -23,7 +23,14 @@ from os import environ, linesep
 from sys import stdout
 from threading import Event, Lock, RLock, Thread
 from time import perf_counter, time_ns
-from typing import IO, Callable, Iterable, Optional
+from typing import (
+    IO,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    Type,
+)
 
 from typing_extensions import final
 
@@ -82,10 +89,9 @@ class MetricExportResult(Enum):
 
 
 class MetricExporter(ABC):
-    """Interface for exporting metrics.
+    """MetricExporter is an interface for exporting metrics.
 
-    Interface to be implemented by services that want to export metrics received
-    in their own format.
+    This class is used by the SDK to export metrics to various backends.
 
     Args:
         preferred_temporality: Used by `opentelemetry.sdk.metrics.export.PeriodicExportingMetricReader` to
@@ -98,12 +104,12 @@ class MetricExporter(ABC):
 
     def __init__(
         self,
-        preferred_temporality: dict[type, AggregationTemporality]
-        | None = None,
-        preferred_aggregation: dict[
-            type, "opentelemetry.sdk.metrics.view.Aggregation"
-        ]
-        | None = None,
+        preferred_temporality: Optional[
+            Dict[Type, AggregationTemporality]
+        ] = None,
+        preferred_aggregation: Optional[
+            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
+        ] = None,
     ) -> None:
         self._preferred_temporality = preferred_temporality
         self._preferred_aggregation = preferred_aggregation
@@ -153,12 +159,12 @@ class ConsoleMetricExporter(MetricExporter):
         formatter: Callable[[MetricsData], str] = lambda metrics_data: (
             metrics_data.to_json() + linesep
         ),
-        preferred_temporality: dict[type, AggregationTemporality]
-        | None = None,
-        preferred_aggregation: dict[
-            type, "opentelemetry.sdk.metrics.view.Aggregation"
-        ]
-        | None = None,
+        preferred_temporality: Optional[
+            Dict[Type, AggregationTemporality]
+        ] = None,
+        preferred_aggregation: Optional[
+            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
+        ] = None,
     ):
         super().__init__(
             preferred_temporality=preferred_temporality,
@@ -220,14 +226,14 @@ class MetricReader(ABC):
 
     def __init__(
         self,
-        preferred_temporality: dict[type, AggregationTemporality]
-        | None = None,
-        preferred_aggregation: dict[
-            type, "opentelemetry.sdk.metrics.view.Aggregation"
-        ]
-        | None = None,
+        preferred_temporality: Optional[
+            Dict[Type, AggregationTemporality]
+        ] = None,
+        preferred_aggregation: Optional[
+            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
+        ] = None,
         *,
-        otel_component_type: OtelComponentTypeValues | None = None,
+        otel_component_type: Optional[OtelComponentTypeValues] = None,
     ) -> None:
         self._collect: Callable[
             [
@@ -412,7 +418,7 @@ class MetricReader(ABC):
         """
 
 
-class InMemoryMetricReader(MetricReader):
+ class InMemoryMetricReader(MetricReader):
     """Implementation of `MetricReader` that returns its metrics from :func:`get_metrics_data`.
 
     This is useful for e.g. unit tests.
@@ -420,19 +426,17 @@ class InMemoryMetricReader(MetricReader):
 
     def __init__(
         self,
-        preferred_temporality: dict[type, AggregationTemporality]
-        | None = None,
-        preferred_aggregation: dict[
-            type, "opentelemetry.sdk.metrics.view.Aggregation"
-        ]
-        | None = None,
+        preferred_temporality: Optional[Dict[Type, AggregationTemporality]] = None,
+        preferred_aggregation: Optional[
+            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
+        ] = None,
     ) -> None:
         super().__init__(
             preferred_temporality=preferred_temporality,
             preferred_aggregation=preferred_aggregation,
         )
         self._lock = RLock()
-        self._metrics_data: MetricsData | None = None
+        self._metrics_data = None  # type: Optional[MetricsData]
 
     def get_metrics_data(
         self,

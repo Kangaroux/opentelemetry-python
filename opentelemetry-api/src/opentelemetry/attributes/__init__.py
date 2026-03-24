@@ -17,7 +17,15 @@ import logging
 import threading
 from collections import OrderedDict
 from collections.abc import MutableMapping
-from typing import Mapping, Optional, Sequence, Tuple, Union
+from typing import (
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
 from opentelemetry.util import types
 
@@ -129,7 +137,7 @@ def _clean_extended_attribute_value(  # pylint: disable=too-many-branches
         return value
 
     if isinstance(value, Mapping):
-        cleaned_dict: dict[str, types.AnyValue] = {}
+        cleaned_dict = {}  # type: Dict[str, types.AnyValue]
         for key, element in value.items():
             # skip invalid keys
             if not (key and isinstance(key, str)):
@@ -146,7 +154,7 @@ def _clean_extended_attribute_value(  # pylint: disable=too-many-branches
 
     if isinstance(value, Sequence):
         sequence_first_valid_type = None
-        cleaned_seq: list[types.AnyValue] = []
+        cleaned_seq = []  # type: List[types.AnyValue]
 
         for element in value:
             if element is None:

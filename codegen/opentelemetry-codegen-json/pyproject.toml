@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Protobuf plugin to generate JSON serializers and deserializers for OpenTelemetry protobuf messages"
 readme = "README.rst"
 license = "Apache-2.0"
-requires-python = ">=3.9"
+requires-python = ">=3.7"
 authors = [
     { name = "OpenTelemetry Authors", email = "cncf-opentelemetry-contributors@lists.cncf.io" },
 ]

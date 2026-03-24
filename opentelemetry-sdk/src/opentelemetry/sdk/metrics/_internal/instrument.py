@@ -17,7 +17,15 @@ from __future__ import annotations
 
 from logging import getLogger
 from time import time_ns
-from typing import Generator, Iterable, List, Sequence, Union
+from typing import (
+    Dict,
+    Generator,
+    Iterable,
+    List,
+    Optional,
+    Sequence,
+    Union,
+)
 
 # This kind of import is needed to avoid Sphinx errors.
 import opentelemetry.sdk.metrics
@@ -160,8 +168,8 @@ class Counter(_Synchronous, APICounter):
     def add(
         self,
         amount: Union[int, float],
-        attributes: dict[str, str] | None = None,
-        context: Context | None = None,
+        attributes: Optional[Dict[str, str]] = None,
+        context: Optional[Context] = None,
     ):
         if amount < 0:
             _logger.warning(
@@ -189,8 +197,8 @@ class UpDownCounter(_Synchronous, APIUpDownCounter):
     def add(
         self,
         amount: Union[int, float],
-        attributes: dict[str, str] | None = None,
-        context: Context | None = None,
+        attributes: Optional[Dict[str, str]] = None,
+        context: Optional[Context] = None,
     ):
         time_unix_nano = time_ns()
         self._measurement_consumer.consume_measurement(
@@ -251,8 +259,8 @@ class Histogram(_Synchronous, APIHistogram):
     def record(
         self,
         amount: Union[int, float],
-        attributes: dict[str, str] | None = None,
-        context: Context | None = None,
+        attributes: Optional[Dict[str, str]] = None,
+        context: Optional[Context] = None,
     ):
         if amount < 0:
             _logger.warning(
@@ -281,8 +289,8 @@ class Gauge(_Synchronous, APIGauge):
     def set(
         self,
         amount: Union[int, float],
-        attributes: dict[str, str] | None = None,
-        context: Context | None = None,
+        attributes: Optional[Dict[str, str]] = None,
+        context: Optional[Context] = None,
     ):
         time_unix_nano = time_ns()
         self._measurement_consumer.consume_measurement(
