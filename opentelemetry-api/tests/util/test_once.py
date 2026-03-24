@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 from opentelemetry.test.concurrency_test import ConcurrencyTestBase, MockFunc
 from opentelemetry.util._once import Once
 
@@ -37,7 +43,7 @@ class TestOnce(ConcurrencyTestBase):
         once_func = MockFunc()
         once = Once()
 
-        def run_concurrently() -> bool:
+        def run_concurrently():
             return once.do_once(once_func)  # type: ignore[reportArgumentType]
 
         results = self.run_with_many_threads(run_concurrently, num_threads=100)

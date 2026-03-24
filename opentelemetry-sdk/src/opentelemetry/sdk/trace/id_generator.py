@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 import abc
 import random
 
@@ -20,7 +26,7 @@ from opentelemetry import trace
 
 class IdGenerator(abc.ABC):
     @abc.abstractmethod
-    def generate_span_id(self) -> int:
+    def generate_span_id(self):
         """Get a new span ID.
 
         Returns:
@@ -28,7 +34,7 @@ class IdGenerator(abc.ABC):
         """
 
     @abc.abstractmethod
-    def generate_trace_id(self) -> int:
+    def generate_trace_id(self):
         """Get a new trace ID.
 
         Implementations should at least make the 64 least significant bits
@@ -47,13 +53,13 @@ class RandomIdGenerator(IdGenerator):
     bits when generating IDs.
     """
 
-    def generate_span_id(self) -> int:
+    def generate_span_id(self):
         span_id = random.getrandbits(64)
         while span_id == trace.INVALID_SPAN_ID:
             span_id = random.getrandbits(64)
         return span_id
 
-    def generate_trace_id(self) -> int:
+    def generate_trace_id(self):
         trace_id = random.getrandbits(128)
         while trace_id == trace.INVALID_TRACE_ID:
             trace_id = random.getrandbits(128)

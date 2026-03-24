@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,9 @@
 
 # pylint:disable=protected-access,no-self-use,no-member
 
+from builtins import range
+from future import standard_library
+standard_library.install_aliases()
 import logging
 import threading
 import time
@@ -38,7 +45,7 @@ class AnotherLogRecordProcessor(LogRecordProcessor):
         self._log_list = logs_list
         self._closed = False
 
-    def on_emit(self, log_record: ReadWriteLogRecord):
+    def on_emit(self, log_record):
         if self._closed:
             return
         self._log_list.append(

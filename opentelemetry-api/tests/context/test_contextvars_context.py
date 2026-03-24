@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from unittest.mock import patch
 
 from opentelemetry import context
@@ -23,7 +30,7 @@ from tests.context.base_context import ContextTestCases
 
 class TestContextVarsContext(ContextTestCases.BaseTest):
     # pylint: disable=invalid-name
-    def setUp(self) -> None:
+    def setUp(self):
         super().setUp()
         self.mock_runtime = patch.object(
             context,
@@ -33,6 +40,6 @@ class TestContextVarsContext(ContextTestCases.BaseTest):
         self.mock_runtime.start()
 
     # pylint: disable=invalid-name
-    def tearDown(self) -> None:
+    def tearDown(self):
         super().tearDown()
         self.mock_runtime.stop()

@@ -16,7 +16,13 @@
 
 API spec: https://github.com/openzipkin/zipkin-api/blob/master/zipkin.proto
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from typing import List, Optional, Sequence
 
 from opentelemetry.exporter.zipkin.encoder import Encoder
@@ -45,8 +51,8 @@ class ProtobufEncoder(Encoder):
         return "application/x-protobuf"
 
     def serialize(
-        self, spans: Sequence[Span], local_endpoint: NodeEndpoint
-    ) -> bytes:
+        self, spans, local_endpoint
+    ):
         encoded_local_endpoint = self._encode_local_endpoint(local_endpoint)
         # pylint: disable=no-member
         encoded_spans = zipkin_pb2.ListOfSpans()
@@ -57,8 +63,8 @@ class ProtobufEncoder(Encoder):
         return encoded_spans.SerializeToString()
 
     def _encode_span(
-        self, span: Span, encoded_local_endpoint: zipkin_pb2.Endpoint
-    ) -> zipkin_pb2.Span:
+        self, span, encoded_local_endpoint
+    ):
         context = span.get_span_context()
         # pylint: disable=no-member
         encoded_span = zipkin_pb2.Span(
@@ -90,8 +96,8 @@ class ProtobufEncoder(Encoder):
         return encoded_span
 
     def _encode_annotations(
-        self, span_events: Optional[List[Event]]
-    ) -> Optional[List]:
+        self, span_events
+    ):
         annotations = self._extract_annotations_from_events(span_events)
         if annotations is None:
             encoded_annotations = None
@@ -108,8 +114,8 @@ class ProtobufEncoder(Encoder):
 
     @staticmethod
     def _encode_local_endpoint(
-        local_endpoint: NodeEndpoint,
-    ) -> zipkin_pb2.Endpoint:
+        local_endpoint,
+    ):
         encoded_local_endpoint = zipkin_pb2.Endpoint(
             service_name=local_endpoint.service_name,
         )
@@ -122,9 +128,9 @@ class ProtobufEncoder(Encoder):
         return encoded_local_endpoint
 
     @staticmethod
-    def _encode_span_id(span_id: int) -> bytes:
+    def _encode_span_id(span_id):
         return span_id.to_bytes(length=8, byteorder="big", signed=False)
 
     @staticmethod
-    def _encode_trace_id(trace_id: int) -> bytes:
+    def _encode_trace_id(trace_id):
         return trace_id.to_bytes(length=16, byteorder="big", signed=False)

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +23,9 @@
 
 # pylint: disable=useless-parent-delegation,arguments-differ
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from typing import Optional
 
 from opentelemetry.metrics import (
@@ -40,10 +47,10 @@ from opentelemetry.metrics import (
 class MeterProviderImplTest(MeterProvider):
     def get_meter(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-    ) -> Meter:
+        name,
+        version = None,
+        schema_url = None,
+    ):
         return super().get_meter(name, version, schema_url)
 
 
@@ -79,8 +86,8 @@ def test_meter_subclass_instantiation():
 
 class SynchronousImplTest(Synchronous):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
 
@@ -91,8 +98,8 @@ def test_synchronous_subclass_instantiation():
 
 class AsynchronousImplTest(Asynchronous):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
 
@@ -103,11 +110,11 @@ def test_asynchronous_subclass_instantiation():
 
 class CounterImplTest(Counter):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
-    def add(self, amount: int, **kwargs):
+    def add(self, amount, **kwargs):
         pass
 
 
@@ -118,11 +125,11 @@ def test_counter_subclass_instantiation():
 
 class UpDownCounterImplTest(UpDownCounter):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
-    def add(self, amount: int, **kwargs):
+    def add(self, amount, **kwargs):
         pass
 
 
@@ -133,8 +140,8 @@ def test_up_down_counter_subclass_instantiation():
 
 class ObservableCounterImplTest(ObservableCounter):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
 
@@ -145,11 +152,11 @@ def test_observable_counter_subclass_instantiation():
 
 class HistogramImplTest(Histogram):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
-    def record(self, amount: int, **kwargs):
+    def record(self, amount, **kwargs):
         pass
 
 
@@ -160,11 +167,11 @@ def test_histogram_subclass_instantiation():
 
 class GaugeImplTest(_Gauge):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
-    def set(self, amount: int, **kwargs):
+    def set(self, amount, **kwargs):
         pass
 
 
@@ -175,8 +182,8 @@ def test_gauge_subclass_instantiation():
 
 class InstrumentImplTest(Instrument):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
 
@@ -187,8 +194,8 @@ def test_instrument_subclass_instantiation():
 
 class ObservableGaugeImplTest(ObservableGauge):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
 
@@ -199,8 +206,8 @@ def test_observable_gauge_subclass_instantiation():
 
 class ObservableUpDownCounterImplTest(ObservableUpDownCounter):
     def __init__(
-        self, name: str, unit: str = "", description: str = ""
-    ) -> None:
+        self, name, unit = "", description = ""
+    ):
         super().__init__(name, unit, description)
 
 

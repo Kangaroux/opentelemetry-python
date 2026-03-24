@@ -16,7 +16,14 @@
 
 Base module and abstract class for concrete transport encoders to extend.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import str
+from future import standard_library
+standard_library.install_aliases()
 import abc
 import json
 import logging
@@ -66,25 +73,25 @@ class Encoder(abc.ABC):
     """
 
     def __init__(
-        self, max_tag_value_length: int = DEFAULT_MAX_TAG_VALUE_LENGTH
+        self, max_tag_value_length = DEFAULT_MAX_TAG_VALUE_LENGTH
     ):
         self.max_tag_value_length = max_tag_value_length
 
     @staticmethod
     @abc.abstractmethod
-    def content_type() -> str:
+    def content_type():
         pass
 
     @abc.abstractmethod
     def serialize(
-        self, spans: Sequence[Span], local_endpoint: NodeEndpoint
-    ) -> str:
+        self, spans, local_endpoint
+    ):
         pass
 
     @abc.abstractmethod
     def _encode_span(
-        self, span: Span, encoded_local_endpoint: EncodedLocalEndpointT
-    ) -> Any:
+        self, span, encoded_local_endpoint
+    ):
         """
         Per spec Zipkin fields that can be absent SHOULD be omitted from the
         payload when they are empty in the OpenTelemetry Span.
@@ -95,26 +102,26 @@ class Encoder(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     def _encode_local_endpoint(
-        local_endpoint: NodeEndpoint,
-    ) -> EncodedLocalEndpointT:
+        local_endpoint,
+    ):
         pass
 
     @staticmethod
-    def _encode_debug(span_context) -> Any:
+    def _encode_debug(span_context):
         return span_context.trace_flags.sampled
 
     @staticmethod
     @abc.abstractmethod
-    def _encode_span_id(span_id: int) -> Any:
+    def _encode_span_id(span_id):
         pass
 
     @staticmethod
     @abc.abstractmethod
-    def _encode_trace_id(trace_id: int) -> Any:
+    def _encode_trace_id(trace_id):
         pass
 
     @staticmethod
-    def _get_parent_id(span_context) -> Optional[int]:
+    def _get_parent_id(span_context):
         if isinstance(span_context, Span):
             parent_id = span_context.parent.span_id
         elif isinstance(span_context, SpanContext):
@@ -124,8 +131,8 @@ class Encoder(abc.ABC):
         return parent_id
 
     def _extract_tags_from_dict(
-        self, tags_dict: Optional[Dict]
-    ) -> Dict[str, str]:
+        self, tags_dict
+    ):
         tags = {}
         if not tags_dict:
             return tags
@@ -153,7 +160,7 @@ class Encoder(abc.ABC):
             tags[attribute_key] = value
         return tags
 
-    def _extract_tag_value_string_from_sequence(self, sequence: Sequence):
+    def _extract_tag_value_string_from_sequence(self, sequence):
         if self.max_tag_value_length and self.max_tag_value_length == 1:
             return None
 
@@ -194,7 +201,7 @@ class Encoder(abc.ABC):
 
         return json.dumps(tag_value_elements, separators=(",", ":"))
 
-    def _extract_tags_from_span(self, span: Span) -> Dict[str, str]:
+    def _extract_tags_from_span(self, span):
         tags = self._extract_tags_from_dict(span.attributes)
         if span.resource:
             tags.update(self._extract_tags_from_dict(span.resource.attributes))
@@ -228,8 +235,8 @@ class Encoder(abc.ABC):
         return tags
 
     def _extract_annotations_from_events(
-        self, events: Optional[List[Event]]
-    ) -> Optional[List[Dict]]:
+        self, events
+    ):
         if not events:
             return None
 
@@ -254,7 +261,7 @@ class Encoder(abc.ABC):
         return annotations
 
     @staticmethod
-    def _nsec_to_usec_round(nsec: int) -> int:
+    def _nsec_to_usec_round(nsec):
         """Round nanoseconds to microseconds
 
         Timestamp in zipkin spans is int of microseconds.
@@ -269,8 +276,8 @@ class JsonEncoder(Encoder):
         return "application/json"
 
     def serialize(
-        self, spans: Sequence[Span], local_endpoint: NodeEndpoint
-    ) -> str:
+        self, spans, local_endpoint
+    ):
         encoded_local_endpoint = self._encode_local_endpoint(local_endpoint)
         encoded_spans = []
         for span in spans:
@@ -280,7 +287,7 @@ class JsonEncoder(Encoder):
         return json.dumps(encoded_spans)
 
     @staticmethod
-    def _encode_local_endpoint(local_endpoint: NodeEndpoint) -> Dict:
+    def _encode_local_endpoint(local_endpoint):
         encoded_local_endpoint = {"serviceName": local_endpoint.service_name}
         if local_endpoint.ipv4 is not None:
             encoded_local_endpoint["ipv4"] = str(local_endpoint.ipv4)
@@ -291,9 +298,9 @@ class JsonEncoder(Encoder):
         return encoded_local_endpoint
 
     @staticmethod
-    def _encode_span_id(span_id: int) -> str:
+    def _encode_span_id(span_id):
         return format_span_id(span_id)
 
     @staticmethod
-    def _encode_trace_id(trace_id: int) -> str:
+    def _encode_trace_id(trace_id):
         return format_trace_id(trace_id)

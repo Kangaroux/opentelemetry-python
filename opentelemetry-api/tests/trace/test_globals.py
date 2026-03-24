@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 import unittest
 from unittest.mock import Mock, patch
 
@@ -62,10 +68,10 @@ class TestGlobals(TraceGlobalsTest, unittest.TestCase):
 
 class TestGlobalsConcurrency(TraceGlobalsTest, ConcurrencyTestBase):
     @patch("opentelemetry.trace.logger")
-    def test_set_tracer_provider_many_threads(self, mock_logger) -> None:  # type: ignore
+    def test_set_tracer_provider_many_threads(self, mock_logger):  # type: ignore
         mock_logger.warning = MockFunc()
 
-        def do_concurrently() -> Mock:
+        def do_concurrently():
             # first get a proxy tracer
             proxy_tracer = trace.ProxyTracerProvider().get_tracer("foo")
 

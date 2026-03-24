@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import enum
 import logging
 import typing
@@ -32,7 +39,7 @@ class StatusCode(enum.Enum):
     """The operation contains an error."""
 
 
-class Status:
+class Status(object):
     """Represents the status of a finished Span.
 
     Args:
@@ -43,8 +50,8 @@ class Status:
 
     def __init__(
         self,
-        status_code: StatusCode = StatusCode.UNSET,
-        description: typing.Optional[str] = None,
+        status_code = StatusCode.UNSET,
+        description = None,
     ):
         self._status_code = status_code
         self._description = None
@@ -62,21 +69,21 @@ class Status:
         self._description = description
 
     @property
-    def status_code(self) -> StatusCode:
+    def status_code(self):
         """Represents the canonical status code of a finished Span."""
         return self._status_code
 
     @property
-    def description(self) -> typing.Optional[str]:
+    def description(self):
         """Status description"""
         return self._description
 
     @property
-    def is_ok(self) -> bool:
+    def is_ok(self):
         """Returns false if this represents an error, true otherwise."""
         return self.is_unset or self._status_code is StatusCode.OK
 
     @property
-    def is_unset(self) -> bool:
+    def is_unset(self):
         """Returns true if unset, false otherwise."""
         return self._status_code is StatusCode.UNSET

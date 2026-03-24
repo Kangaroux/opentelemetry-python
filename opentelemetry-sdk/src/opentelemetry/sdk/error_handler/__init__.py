@@ -58,7 +58,15 @@ object is not parent of any registered error handler, then the default error
 handler will handle the exception. This default error handler will only log the
 exception to standard logging, the exception won't be raised any further.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from abc import ABC, abstractmethod
 from logging import getLogger
 
@@ -69,7 +77,7 @@ logger = getLogger(__name__)
 
 class ErrorHandler(ABC):
     @abstractmethod
-    def _handle(self, error: Exception, *args, **kwargs):
+    def _handle(self, error, *args, **kwargs):
         """
         Handle an exception
         """
@@ -83,12 +91,12 @@ class _DefaultErrorHandler(ErrorHandler):
     """
 
     # pylint: disable=useless-return
-    def _handle(self, error: Exception, *args, **kwargs):
+    def _handle(self, error, *args, **kwargs):
         logger.exception("Error handled by default error handler: ")
         return None
 
 
-class GlobalErrorHandler:
+class GlobalErrorHandler(object):
     """
     Global error handler
 
@@ -99,7 +107,7 @@ class GlobalErrorHandler:
 
     _instance = None
 
-    def __new__(cls) -> "GlobalErrorHandler":
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
 

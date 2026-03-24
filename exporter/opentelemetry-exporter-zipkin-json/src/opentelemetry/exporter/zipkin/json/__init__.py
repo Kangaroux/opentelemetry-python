@@ -71,7 +71,14 @@ The exporter supports the following environment variable for configuration:
 API
 ---
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 import logging
 from os import environ
 from typing import Optional, Sequence
@@ -99,14 +106,14 @@ logger = logging.getLogger(__name__)
 class ZipkinExporter(SpanExporter):
     def __init__(
         self,
-        version: Protocol = Protocol.V2,
-        endpoint: Optional[str] = None,
-        local_node_ipv4: IpInput = None,
-        local_node_ipv6: IpInput = None,
-        local_node_port: Optional[int] = None,
-        max_tag_value_length: Optional[int] = None,
-        timeout: Optional[int] = None,
-        session: Optional[requests.Session] = None,
+        version = Protocol.V2,
+        endpoint = None,
+        local_node_ipv4 = None,
+        local_node_ipv6 = None,
+        local_node_port = None,
+        max_tag_value_length = None,
+        timeout = None,
+        session = None,
     ):
         """Zipkin exporter.
 
@@ -149,7 +156,7 @@ class ZipkinExporter(SpanExporter):
             environ.get(OTEL_EXPORTER_ZIPKIN_TIMEOUT, 10)
         )
 
-    def export(self, spans: Sequence[Span]) -> SpanExportResult:
+    def export(self, spans):
         # After the call to Shutdown subsequent calls to Export are
         # not allowed and should return a Failure result
         if self._closed:
@@ -180,12 +187,12 @@ class ZipkinExporter(SpanExporter):
             return SpanExportResult.FAILURE
         return SpanExportResult.SUCCESS
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         if self._closed:
             logger.warning("Exporter already shutdown, ignoring call")
             return
         self.session.close()
         self._closed = True
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         return True

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import range
+from future import standard_library
+standard_library.install_aliases()
 import abc
 import gc
 import multiprocessing
@@ -54,16 +61,16 @@ class MySpanProcessor(trace.SpanProcessor):
         self.span_list = span_list
 
     def on_start(
-        self, span: "trace.Span", parent_context: Optional[Context] = None
-    ) -> None:
+        self, span, parent_context = None
+    ):
         self.span_list.append(span_event_start_fmt(self.name, span.name))
 
-    def on_end(self, span: "trace.Span") -> None:
+    def on_end(self, span):
         self.span_list.append(span_event_end_fmt(self.name, span.name))
 
 
 class MyExtendedSpanProcessor(MySpanProcessor):
-    def _on_ending(self, span: "trace.Span") -> None:
+    def _on_ending(self, span):
         self.span_list.append(span_event_ending_fmt(self.name, span.name))
 
 
@@ -276,13 +283,11 @@ class MultiSpanProcessorTestBase(abc.ABC):
     @abc.abstractmethod
     def create_multi_span_processor(
         self,
-    ) -> typing.Union[
-        trace.SynchronousMultiSpanProcessor, trace.ConcurrentMultiSpanProcessor
-    ]:
+    ):
         pass
 
     @staticmethod
-    def create_default_span() -> trace_api.Span:
+    def create_default_span():
         span_context = trace_api.SpanContext(37, 73, is_remote=False)
         return trace_api.NonRecordingSpan(span_context)
 
@@ -405,7 +410,7 @@ class TestSynchronousMultiSpanProcessor(
 ):
     def create_multi_span_processor(
         self,
-    ) -> trace.SynchronousMultiSpanProcessor:
+    ):
         return trace.SynchronousMultiSpanProcessor()
 
     def test_force_flush_late_by_timeout(self):
@@ -446,7 +451,7 @@ class TestConcurrentMultiSpanProcessor(
 ):
     def create_multi_span_processor(
         self,
-    ) -> trace.ConcurrentMultiSpanProcessor:
+    ):
         return trace.ConcurrentMultiSpanProcessor(3)
 
     @mark.skipif(

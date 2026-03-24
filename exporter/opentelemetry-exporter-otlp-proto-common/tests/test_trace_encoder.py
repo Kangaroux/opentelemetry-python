@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,8 @@
 
 # pylint: disable=protected-access
 
+from future import standard_library
+standard_library.install_aliases()
 import unittest
 from typing import List, Tuple
 
@@ -63,7 +69,7 @@ class TestOTLPTraceEncoder(unittest.TestCase):
         self.assertEqual(encode_spans(otel_spans), expected_encoding)
 
     @staticmethod
-    def get_exhaustive_otel_span_list() -> List[SDKSpan]:
+    def get_exhaustive_otel_span_list():
         trace_id = 0x3E0C63257DE34C926F9EFCD03927272E
 
         base_time = 683647322 * 10**9  # in ns
@@ -194,7 +200,7 @@ class TestOTLPTraceEncoder(unittest.TestCase):
 
     def get_exhaustive_test_spans(
         self,
-    ) -> Tuple[List[SDKSpan], PB2ExportTraceServiceRequest]:
+    ):
         otel_spans = self.get_exhaustive_otel_span_list()
         trace_id = _encode_trace_id(otel_spans[0].context.trace_id)
         span_kind = _SPAN_KIND_MAP[SDKSpanKind.INTERNAL]

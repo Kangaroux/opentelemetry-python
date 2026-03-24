@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,8 @@
 
 # pylint: disable=no-member
 
+from future import standard_library
+standard_library.install_aliases()
 import pytest  # type: ignore
 from google.protobuf import descriptor_pb2 as descriptor
 
@@ -39,7 +45,7 @@ from opentelemetry.codegen.json.types import (
         (descriptor.FieldDescriptorProto.TYPE_BYTES, "builtins.bytes"),
     ],
 )
-def test_get_python_type(proto_type: int, expected: str) -> None:
+def test_get_python_type(proto_type, expected):
     assert get_python_type(proto_type) == expected
 
 
@@ -54,7 +60,7 @@ def test_get_python_type(proto_type: int, expected: str) -> None:
         (999, "None"),
     ],
 )
-def test_get_default_value(proto_type: int, expected: str) -> None:
+def test_get_default_value(proto_type, expected):
     assert get_default_value(proto_type) == expected
 
 
@@ -70,7 +76,7 @@ def test_get_default_value(proto_type: int, expected: str) -> None:
         (descriptor.FieldDescriptorProto.TYPE_STRING, False),
     ],
 )
-def test_is_int64_type(proto_type: int, expected: bool) -> None:
+def test_is_int64_type(proto_type, expected):
     assert is_int64_type(proto_type) == expected
 
 
@@ -81,7 +87,7 @@ def test_is_int64_type(proto_type: int, expected: bool) -> None:
         (descriptor.FieldDescriptorProto.TYPE_STRING, False),
     ],
 )
-def test_is_bytes_type(proto_type: int, expected: bool) -> None:
+def test_is_bytes_type(proto_type, expected):
     assert is_bytes_type(proto_type) == expected
 
 
@@ -95,7 +101,7 @@ def test_is_bytes_type(proto_type: int, expected: bool) -> None:
         ("time_unix_nano", False),
     ],
 )
-def test_is_hex_encoded_field(field_name: str, expected: bool) -> None:
+def test_is_hex_encoded_field(field_name, expected):
     assert is_hex_encoded_field(field_name) == expected
 
 
@@ -108,7 +114,7 @@ def test_is_hex_encoded_field(field_name: str, expected: bool) -> None:
         ("multiple___underscores", "multipleUnderscores"),
     ],
 )
-def test_to_json_field_name(snake_name: str, expected: str) -> None:
+def test_to_json_field_name(snake_name, expected):
     assert to_json_field_name(snake_name) == expected
 
 
@@ -122,7 +128,7 @@ def test_to_json_field_name(snake_name: str, expected: str) -> None:
         (descriptor.FieldDescriptorProto.TYPE_STRING, False),
     ],
 )
-def test_is_numeric_type(proto_type: int, expected: bool) -> None:
+def test_is_numeric_type(proto_type, expected):
     assert is_numeric_type(proto_type) == expected
 
 
@@ -150,6 +156,6 @@ def test_is_numeric_type(proto_type: int, expected: bool) -> None:
     ],
 )
 def test_get_json_allowed_types(
-    proto_type: int, field_name: str, expected: str
-) -> None:
+    proto_type, field_name, expected
+):
     assert get_json_allowed_types(proto_type, field_name) == expected

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import super
+from builtins import object
+from future import standard_library
+standard_library.install_aliases()
 from queue import Queue
 from threading import Thread
 
@@ -48,7 +56,7 @@ class Server(Thread):
             scope.span.set_tag(tags.SPAN_KIND, tags.SPAN_KIND_RPC_SERVER)
 
 
-class Client:
+class Client(object):
     def __init__(self, tracer, queue):
         self.tracer = tracer
         self.queue = queue

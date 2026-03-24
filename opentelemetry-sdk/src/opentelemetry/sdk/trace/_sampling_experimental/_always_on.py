@@ -13,7 +13,13 @@
 # limitations under the License.
 
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from typing import Sequence
 
 from opentelemetry.context import Context
@@ -29,23 +35,23 @@ _intent = SamplingIntent(threshold=MIN_THRESHOLD)
 class _ComposableAlwaysOnSampler(ComposableSampler):
     def sampling_intent(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None = None,
-    ) -> SamplingIntent:
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state = None,
+    ):
         return _intent
 
-    def get_description(self) -> str:
+    def get_description(self):
         return "ComposableAlwaysOn"
 
 
 _always_on = _ComposableAlwaysOnSampler()
 
 
-def composable_always_on() -> ComposableSampler:
+def composable_always_on():
     """Returns a composable sampler that samples all spans.
 
     - Always returns a SamplingIntent with threshold set to sample all spans (threshold = 0)

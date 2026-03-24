@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 from logging import getLogger
 
 from opentelemetry.sdk.error_handler import ErrorHandler
@@ -21,7 +27,7 @@ logger = getLogger(__name__)
 
 # pylint: disable=too-many-ancestors
 class ErrorHandler1(ErrorHandler, IndexError, KeyError):
-    def _handle(self, error: Exception, *args, **kwargs):
+    def _handle(self, error, *args, **kwargs):
         if isinstance(error, IndexError):
             logger.exception("ErrorHandler1 handling an IndexError")
 

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from math import ldexp
 from threading import Lock
 
@@ -53,7 +60,7 @@ class ExponentMapping(Mapping):
         # a logarithm mapping for larger scales.
         return 0
 
-    def _init(self, scale: int):
+    def _init(self, scale):
         # pylint: disable=attribute-defined-outside-init
 
         super()._init(scale)
@@ -86,7 +93,7 @@ class ExponentMapping(Mapping):
             MAX_NORMAL_EXPONENT >> -self._scale
         )
 
-    def map_to_index(self, value: float) -> int:
+    def map_to_index(self, value):
         if value < MIN_NORMAL_VALUE:
             return self._min_normal_lower_boundary_index
 
@@ -144,7 +151,7 @@ class ExponentMapping(Mapping):
 
         return (exponent + correction) >> -self._scale
 
-    def get_lower_boundary(self, index: int) -> float:
+    def get_lower_boundary(self, index):
         if index < self._min_normal_lower_boundary_index:
             raise MappingUnderflowError()
 
@@ -154,5 +161,5 @@ class ExponentMapping(Mapping):
         return ldexp(1, index << -self._scale)
 
     @property
-    def scale(self) -> int:
+    def scale(self):
         return self._scale

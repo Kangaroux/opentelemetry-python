@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,9 @@
 
 # pylint: disable=protected-access
 
+from builtins import range
+from future import standard_library
+standard_library.install_aliases()
 from math import inf, nextafter
 from sys import float_info
 from unittest.mock import patch
@@ -33,7 +40,7 @@ from opentelemetry.sdk.metrics._internal.exponential_histogram.mapping.ieee_754 
 from opentelemetry.test import TestCase
 
 
-def right_boundary(scale: int, index: int) -> float:
+def right_boundary(scale, index):
     result = 2**index
 
     for _ in range(scale, 0):

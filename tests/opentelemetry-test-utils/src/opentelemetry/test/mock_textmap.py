@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 import typing
 
 from opentelemetry import trace
@@ -35,18 +43,18 @@ class NOOPTextMapPropagator(TextMapPropagator):
 
     def extract(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        getter: Getter = default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = default_getter,
+    ):
         return Context()
 
     def inject(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: Setter = default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = default_setter,
+    ):
         return None
 
     @property
@@ -62,10 +70,10 @@ class MockTextMapPropagator(TextMapPropagator):
 
     def extract(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        getter: Getter = default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = default_getter,
+    ):
         if context is None:
             context = Context()
         trace_id_list = getter.get(carrier, self.TRACE_ID_KEY)
@@ -87,10 +95,10 @@ class MockTextMapPropagator(TextMapPropagator):
 
     def inject(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: Setter = default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = default_setter,
+    ):
         span = trace.get_current_span(context)
         setter.set(
             carrier, self.TRACE_ID_KEY, str(span.get_span_context().trace_id)

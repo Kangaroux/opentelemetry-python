@@ -14,7 +14,13 @@
 
 # pylint: disable=protected-access
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from time import time_ns
 from typing import Callable, Sequence, Type
 from unittest import TestCase
@@ -51,11 +57,11 @@ from opentelemetry.sdk.metrics.view import (
 
 
 def generalized_reservoir_factory(
-    size: int = 1, boundaries: Sequence[float] | None = None
-) -> Callable[[Type[_Aggregation]], ExemplarReservoirBuilder]:
+    size = 1, boundaries = None
+):
     def factory(
-        aggregation_type: Type[_Aggregation],
-    ) -> ExemplarReservoirBuilder:
+        aggregation_type,
+    ):
         if issubclass(aggregation_type, _ExplicitBucketHistogramAggregation):
             return lambda **kwargs: AlignedHistogramBucketExemplarReservoir(
                 boundaries=boundaries or [],

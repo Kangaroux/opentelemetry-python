@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +17,8 @@
 # limitations under the License.
 
 
+from future import standard_library
+standard_library.install_aliases()
 import os
 import threading
 import time
@@ -42,7 +48,7 @@ class MySpanExporter(export.SpanExporter):
         destination,
         max_export_batch_size=None,
         export_timeout_millis=0.0,
-        export_event: threading.Event = None,
+        export_event = None,
     ):
         self.destination = destination
         self.max_export_batch_size = max_export_batch_size
@@ -50,7 +56,7 @@ class MySpanExporter(export.SpanExporter):
         self.export_timeout = export_timeout_millis / 1e3
         self.export_event = export_event
 
-    def export(self, spans: trace.Span) -> export.SpanExportResult:
+    def export(self, spans):
         if (
             self.max_export_batch_size is not None
             and len(spans) > self.max_export_batch_size

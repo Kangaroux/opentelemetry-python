@@ -69,7 +69,13 @@ You can configure the exporter with the following environment variables:
 API
 ---
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from .version import __version__
 
 _USER_AGENT_HEADER_VALUE = "OTel-OTLP-Exporter-Python/" + __version__

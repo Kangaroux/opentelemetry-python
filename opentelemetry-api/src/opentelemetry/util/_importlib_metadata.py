@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 from functools import cache
 
 # FIXME: Use importlib.metadata (not importlib_metadata)
@@ -36,7 +42,7 @@ def _original_entry_points_cached():
     return original_entry_points()
 
 
-def entry_points(**params) -> EntryPoints:
+def entry_points(**params):
     """Replacement for importlib_metadata.entry_points that caches getting all the entry points.
 
     That part can be very slow, and OTel uses this function many times."""

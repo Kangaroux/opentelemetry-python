@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +15,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from __future__ import annotations
 
 import logging
@@ -51,7 +59,7 @@ class SpanExportResult(Enum):
     FAILURE = 1
 
 
-class SpanExporter:
+class SpanExporter(object):
     """Interface for exporting spans.
 
     Interface to be implemented by services that want to export spans recorded
@@ -62,8 +70,8 @@ class SpanExporter:
     """
 
     def export(
-        self, spans: typing.Sequence[ReadableSpan]
-    ) -> "SpanExportResult":  # pyright: ignore[reportReturnType]
+        self, spans
+    ):  # pyright: ignore[reportReturnType]
         """Exports a batch of telemetry data.
 
         Args:
@@ -73,13 +81,13 @@ class SpanExporter:
             The result of the export
         """
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         """Shuts down the exporter.
 
         Called when the SDK is shut down.
         """
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:  # pyright: ignore[reportReturnType]
+    def force_flush(self, timeout_millis = 30000):  # pyright: ignore[reportReturnType]
         """Hint to ensure that the export of any spans the exporter has received
         prior to the call to ForceFlush SHOULD be completed as soon as possible, preferably
         before returning from this method.
@@ -93,18 +101,18 @@ class SimpleSpanProcessor(SpanProcessor):
     passes ended spans directly to the configured `SpanExporter`.
     """
 
-    def __init__(self, span_exporter: SpanExporter):
+    def __init__(self, span_exporter):
         self.span_exporter = span_exporter
 
     def on_start(
-        self, span: Span, parent_context: typing.Optional[Context] = None
-    ) -> None:
+        self, span, parent_context = None
+    ):
         pass
 
-    def _on_ending(self, span: Span) -> None:
+    def _on_ending(self, span):
         pass
 
-    def on_end(self, span: ReadableSpan) -> None:
+    def on_end(self, span):
         if not (span.context and span.context.trace_flags.sampled):
             return
         token = attach(set_value(_SUPPRESS_INSTRUMENTATION_KEY, True))
@@ -115,10 +123,10 @@ class SimpleSpanProcessor(SpanProcessor):
             logger.exception("Exception while exporting Span.")
         detach(token)
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         self.span_exporter.shutdown()
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         # pylint: disable=unused-argument
         return True
 
@@ -142,11 +150,11 @@ class BatchSpanProcessor(SpanProcessor):
 
     def __init__(
         self,
-        span_exporter: SpanExporter,
-        max_queue_size: int | None = None,
-        schedule_delay_millis: float | None = None,
-        max_export_batch_size: int | None = None,
-        export_timeout_millis: float | None = None,
+        span_exporter,
+        max_queue_size = None,
+        schedule_delay_millis = None,
+        max_export_batch_size = None,
+        export_timeout_millis = None,
     ):
         if max_queue_size is None:
             max_queue_size = BatchSpanProcessor._default_max_queue_size()
@@ -186,14 +194,14 @@ class BatchSpanProcessor(SpanProcessor):
         return self._batch_processor._exporter  # pylint: disable=protected-access
 
     def on_start(
-        self, span: Span, parent_context: Context | None = None
-    ) -> None:
+        self, span, parent_context = None
+    ):
         pass
 
-    def _on_ending(self, span: Span) -> None:
+    def _on_ending(self, span):
         pass
 
-    def on_end(self, span: ReadableSpan) -> None:
+    def on_end(self, span):
         if not (span.context and span.context.trace_flags.sampled):
             return
         self._batch_processor.emit(span)
@@ -201,7 +209,7 @@ class BatchSpanProcessor(SpanProcessor):
     def shutdown(self):
         return self._batch_processor.shutdown()
 
-    def force_flush(self, timeout_millis: typing.Optional[int] = None) -> bool:
+    def force_flush(self, timeout_millis = None):
         return self._batch_processor.force_flush(timeout_millis)
 
     @staticmethod
@@ -298,9 +306,9 @@ class ConsoleSpanExporter(SpanExporter):
 
     def __init__(
         self,
-        service_name: str | None = None,
-        out: typing.IO = sys.stdout,
-        formatter: typing.Callable[[ReadableSpan], str] = lambda span: (
+        service_name = None,
+        out = sys.stdout,
+        formatter = lambda span: (
             span.to_json() + linesep
         ),
     ):
@@ -308,11 +316,11 @@ class ConsoleSpanExporter(SpanExporter):
         self.formatter = formatter
         self.service_name = service_name
 
-    def export(self, spans: typing.Sequence[ReadableSpan]) -> SpanExportResult:
+    def export(self, spans):
         for span in spans:
             self.out.write(self.formatter(span))
         self.out.flush()
         return SpanExportResult.SUCCESS
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         return True

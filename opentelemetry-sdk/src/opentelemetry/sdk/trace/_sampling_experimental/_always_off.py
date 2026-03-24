@@ -13,7 +13,13 @@
 # limitations under the License.
 
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from typing import Sequence
 
 from opentelemetry.context import Context
@@ -29,23 +35,23 @@ _intent = SamplingIntent(threshold=INVALID_THRESHOLD, threshold_reliable=False)
 class _ComposableAlwaysOffSampler(ComposableSampler):
     def sampling_intent(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None = None,
-    ) -> SamplingIntent:
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state = None,
+    ):
         return _intent
 
-    def get_description(self) -> str:
+    def get_description(self):
         return "ComposableAlwaysOff"
 
 
 _always_off = _ComposableAlwaysOffSampler()
 
 
-def composable_always_off() -> ComposableSampler:
+def composable_always_off():
     """Returns a composable sampler that does not sample any span.
 
     - Always returns a SamplingIntent with no threshold, indicating all spans should be dropped

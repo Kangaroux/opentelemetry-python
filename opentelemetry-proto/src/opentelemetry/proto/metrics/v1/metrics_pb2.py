@@ -3,6 +3,12 @@
 # source: opentelemetry/proto/metrics/v1/metrics.proto
 # Protobuf Python Version: 5.26.1
 """Generated protocol buffer code."""
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
+from future import standard_library
+standard_library.install_aliases()
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import symbol_database as _symbol_database

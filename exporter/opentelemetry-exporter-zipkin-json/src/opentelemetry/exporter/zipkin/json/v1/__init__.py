@@ -13,7 +13,13 @@
 # limitations under the License.
 
 """Zipkin Export Encoders for JSON formats"""
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from typing import Dict, List
 
 from opentelemetry.exporter.zipkin.encoder import Encoder, JsonEncoder
@@ -23,8 +29,8 @@ from opentelemetry.trace import Span
 # pylint: disable=W0223
 class V1Encoder(Encoder):
     def _extract_binary_annotations(
-        self, span: Span, encoded_local_endpoint: Dict
-    ) -> List[Dict]:
+        self, span, encoded_local_endpoint
+    ):
         binary_annotations = []
         for tag_key, tag_value in self._extract_tags_from_span(span).items():
             if isinstance(tag_value, str) and self.max_tag_value_length > 0:
@@ -45,7 +51,7 @@ class JsonV1Encoder(JsonEncoder, V1Encoder):
     API spec: https://github.com/openzipkin/zipkin-api/blob/master/zipkin-api.yaml
     """
 
-    def _encode_span(self, span: Span, encoded_local_endpoint: Dict) -> Dict:
+    def _encode_span(self, span, encoded_local_endpoint):
         context = span.get_span_context()
 
         encoded_span = {

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,9 @@
 
 # pylint: disable=too-many-lines
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from enum import Enum
 
 from typing_extensions import deprecated
@@ -22,7 +29,7 @@ from typing_extensions import deprecated
 @deprecated(
     "Use attributes defined in the :py:const:`opentelemetry.semconv.attributes` and :py:const:`opentelemetry.semconv._incubating.attributes` modules instead. Deprecated since version 1.25.0.",
 )
-class ResourceAttributes:
+class ResourceAttributes(object):
     SCHEMA_URL = "https://opentelemetry.io/schemas/1.21.0"
     """
     The URL of the OpenTelemetry schema for these keys and values.

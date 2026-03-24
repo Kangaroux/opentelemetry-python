@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -30,8 +37,8 @@ from opentelemetry.semconv._incubating.metrics.otel_metrics import (
 from opentelemetry.trace.span import SpanContext
 
 
-class TracerMetrics:
-    def __init__(self, meter_provider: metrics_api.MeterProvider) -> None:
+class TracerMetrics(object):
+    def __init__(self, meter_provider):
         meter = meter_provider.get_meter("opentelemetry-sdk")
 
         self._started_spans = create_otel_sdk_span_started(meter)
@@ -39,9 +46,9 @@ class TracerMetrics:
 
     def start_span(
         self,
-        parent_span_context: SpanContext | None,
-        sampling_decision: Decision,
-    ) -> Callable[[], None]:
+        parent_span_context,
+        sampling_decision,
+    ):
         sampling_result_value = sampling_result(sampling_decision)
         self._started_spans.add(
             1,
@@ -59,17 +66,17 @@ class TracerMetrics:
         }
         self._live_spans.add(1, live_span_attrs)
 
-        def end_span() -> None:
+        def end_span():
             self._live_spans.add(-1, live_span_attrs)
 
         return end_span
 
 
-def noop() -> None:
+def noop():
     pass
 
 
-def parent_origin(span_ctx: SpanContext | None) -> str:
+def parent_origin(span_ctx):
     if span_ctx is None:
         return "none"
     if span_ctx.is_remote:
@@ -77,7 +84,7 @@ def parent_origin(span_ctx: SpanContext | None) -> str:
     return "local"
 
 
-def sampling_result(decision: Decision) -> str:
+def sampling_result(decision):
     if decision == Decision.RECORD_AND_SAMPLE:
         return OtelSpanSamplingResultValues.RECORD_AND_SAMPLE.value
     if decision == Decision.RECORD_ONLY:

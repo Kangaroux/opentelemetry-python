@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import next
+from builtins import super
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 import typing
 from re import compile as re_compile
 
@@ -48,10 +57,10 @@ class B3MultiFormat(TextMapPropagator):
 
     def extract(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        getter: Getter = default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = default_getter,
+    ):
         if context is None:
             context = Context()
         trace_id = trace.INVALID_TRACE_ID
@@ -129,10 +138,10 @@ class B3MultiFormat(TextMapPropagator):
 
     def inject(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: Setter = default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = default_setter,
+    ):
         span = trace.get_current_span(context=context)
 
         span_context = span.get_span_context()
@@ -151,7 +160,7 @@ class B3MultiFormat(TextMapPropagator):
         setter.set(carrier, self.SAMPLED_KEY, "1" if sampled else "0")
 
     @property
-    def fields(self) -> typing.Set[str]:
+    def fields(self):
         return {
             self.TRACE_ID_KEY,
             self.SPAN_ID_KEY,
@@ -168,10 +177,10 @@ class B3SingleFormat(B3MultiFormat):
 
     def inject(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: Setter = default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = default_setter,
+    ):
         span = trace.get_current_span(context=context)
 
         span_context = span.get_span_context()
@@ -189,7 +198,7 @@ class B3SingleFormat(B3MultiFormat):
         setter.set(carrier, self.SINGLE_HEADER_KEY, "-".join(fields))
 
     @property
-    def fields(self) -> typing.Set[str]:
+    def fields(self):
         return {self.SINGLE_HEADER_KEY}
 
 
@@ -202,8 +211,8 @@ class B3Format(B3MultiFormat):
 
 
 def _extract_first_element(
-    items: typing.Iterable[CarrierT],
-) -> typing.Optional[CarrierT]:
+    items,
+):
     if items is None:
         return None
     return next(iter(items), None)

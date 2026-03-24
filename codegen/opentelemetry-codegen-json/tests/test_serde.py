@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +19,8 @@
 # pylint: skip-file
 # ruff: noqa: PLC0415
 
+from future import standard_library
+standard_library.install_aliases()
 import json
 import math
 from typing import Any, Type
@@ -23,7 +29,7 @@ import pytest  # type: ignore
 
 
 @pytest.fixture
-def test_v1_types() -> tuple[Type[Any], Type[Any]]:
+def test_v1_types():
     from otel_test_json.test.v1.test import (  # type: ignore
         SubMessage,
         TestMessage,
@@ -33,7 +39,7 @@ def test_v1_types() -> tuple[Type[Any], Type[Any]]:
 
 
 @pytest.fixture
-def common_v1_types() -> Type[Any]:
+def common_v1_types():
     from otel_test_json.common.v1.common import (  # type: ignore
         InstrumentationScope,  # type: ignore
     )
@@ -42,16 +48,14 @@ def common_v1_types() -> Type[Any]:
 
 
 @pytest.fixture
-def trace_v1_types() -> Type[Any]:
+def trace_v1_types():
     from otel_test_json.trace.v1.trace import Span  # type: ignore
 
     return Span
 
 
 @pytest.fixture
-def complex_v1_types() -> tuple[
-    Type[Any], Type[Any], Type[Any], Type[Any], Type[Any]
-]:
+def complex_v1_types():
     from otel_test_json.test.v1.complex import (  # type: ignore
         DeeplyNested,
         NestedEnumSuite,
@@ -70,8 +74,8 @@ def complex_v1_types() -> tuple[
 
 
 def test_generated_message_roundtrip(
-    test_v1_types: tuple[Type[Any], Type[Any]],
-) -> None:
+    test_v1_types,
+):
     TestMessage, SubMessage = test_v1_types
 
     msg = TestMessage(
@@ -117,8 +121,8 @@ def test_generated_message_roundtrip(
 
 
 def test_cross_reference(
-    common_v1_types: type[Any], trace_v1_types: type[Any]
-) -> None:
+    common_v1_types, trace_v1_types
+):
     InstrumentationScope = common_v1_types
     Span = trace_v1_types
 
@@ -161,11 +165,11 @@ def test_cross_reference(
     ],
 )
 def test_numeric_types(
-    complex_v1_types: tuple[type[Any], ...],
-    field: str,
-    value: Any,
-    expected_json_val: Any,
-) -> None:
+    complex_v1_types,
+    field,
+    value,
+    expected_json_val,
+):
     NumericTest = complex_v1_types[0]
 
     msg = NumericTest(**{field: value})
@@ -197,11 +201,11 @@ def test_numeric_types(
     ],
 )
 def test_oneof_suite_variants(
-    common_v1_types: type[Any],
-    complex_v1_types: tuple[type[Any], ...],
-    kwargs: dict[str, Any],
-    expected_data: dict[str, Any],
-) -> None:
+    common_v1_types,
+    complex_v1_types,
+    kwargs,
+    expected_data,
+):
     InstrumentationScope = common_v1_types
     OneofSuite = complex_v1_types[1]
 
@@ -236,10 +240,10 @@ def test_oneof_suite_variants(
     ],
 )
 def test_optional_scalars(
-    complex_v1_types: tuple[type[Any], ...],
-    kwargs: dict[str, Any],
-    expected_dict: dict[str, Any],
-) -> None:
+    complex_v1_types,
+    kwargs,
+    expected_dict,
+):
     OptionalScalar = complex_v1_types[2]
 
     msg = OptionalScalar(**kwargs)
@@ -247,7 +251,7 @@ def test_optional_scalars(
     assert OptionalScalar.from_dict(expected_dict) == msg
 
 
-def test_nested_enum_suite(complex_v1_types: tuple[type[Any], ...]) -> None:
+def test_nested_enum_suite(complex_v1_types):
     NestedEnumSuite = complex_v1_types[3]
 
     msg = NestedEnumSuite(
@@ -267,7 +271,7 @@ def test_nested_enum_suite(complex_v1_types: tuple[type[Any], ...]) -> None:
     assert new_msg.repeated_nested == msg.repeated_nested
 
 
-def test_deeply_nested(complex_v1_types: tuple[type[Any], ...]) -> None:
+def test_deeply_nested(complex_v1_types):
     DeeplyNested = complex_v1_types[4]
 
     msg = DeeplyNested(
@@ -295,11 +299,11 @@ def test_deeply_nested(complex_v1_types: tuple[type[Any], ...]) -> None:
     ],
 )
 def test_defaults_and_none(
-    test_v1_types: tuple[type[Any], type[Any]],
-    data: dict[str, Any],
-    expected_name: str,
-    expected_int: int,
-) -> None:
+    test_v1_types,
+    data,
+    expected_name,
+    expected_int,
+):
     TestMessage, _ = test_v1_types
 
     msg = TestMessage.from_dict(data)
@@ -320,11 +324,11 @@ def test_defaults_and_none(
     ],
 )
 def test_validation_errors(
-    test_v1_types: tuple[type[Any], type[Any]],
-    data: dict[str, Any],
-    expected_error: type,
-    match: str,
-) -> None:
+    test_v1_types,
+    data,
+    expected_error,
+    match,
+):
     TestMessage, _ = test_v1_types
 
     with pytest.raises(
@@ -335,8 +339,8 @@ def test_validation_errors(
 
 
 def test_unknown_fields_ignored(
-    test_v1_types: tuple[type[Any], type[Any]],
-) -> None:
+    test_v1_types,
+):
     TestMessage, _ = test_v1_types
 
     # Unknown fields should be ignored for forward compatibility

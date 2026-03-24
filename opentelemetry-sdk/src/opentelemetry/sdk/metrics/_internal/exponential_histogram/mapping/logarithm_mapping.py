@@ -1,3 +1,7 @@
+from __future__ import division
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from math import exp, floor, ldexp, log
 from threading import Lock
 
@@ -53,7 +60,7 @@ class LogarithmMapping(Mapping):
         # https://github.com/open-telemetry/opentelemetry-go/blob/0e6f9c29c10d6078e8131418e1d1d166c7195d61/sdk/metric/aggregator/exponential/mapping/logarithm/logarithm.go#L32-L45
         return self._max_scale
 
-    def _init(self, scale: int):
+    def _init(self, scale):
         # pylint: disable=attribute-defined-outside-init
 
         super()._init(scale)
@@ -95,7 +102,7 @@ class LogarithmMapping(Mapping):
             (MAX_NORMAL_EXPONENT + 1) << self._scale
         ) - 1
 
-    def map_to_index(self, value: float) -> int:
+    def map_to_index(self, value):
         """
         Maps positive floating point values to indexes corresponding to scale.
         """
@@ -114,7 +121,7 @@ class LogarithmMapping(Mapping):
             self._max_normal_lower_boundary_index,
         )
 
-    def get_lower_boundary(self, index: int) -> float:
+    def get_lower_boundary(self, index):
         if index >= self._max_normal_lower_boundary_index:
             if index == self._max_normal_lower_boundary_index:
                 return 2 * exp(
@@ -134,5 +141,5 @@ class LogarithmMapping(Mapping):
         return exp(index / self._scale_factor)
 
     @property
-    def scale(self) -> int:
+    def scale(self):
         return self._scale

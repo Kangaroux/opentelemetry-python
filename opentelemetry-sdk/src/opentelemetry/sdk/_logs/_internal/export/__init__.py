@@ -12,7 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 import abc
 import enum
 import logging
@@ -91,8 +98,8 @@ class LogRecordExporter(abc.ABC):
 
     @abc.abstractmethod
     def export(
-        self, batch: Sequence[ReadableLogRecord]
-    ) -> LogRecordExportResult:
+        self, batch
+    ):
         """Exports a batch of logs.
 
         Args:
@@ -133,15 +140,15 @@ class ConsoleLogRecordExporter(LogRecordExporter):
 
     def __init__(
         self,
-        out: IO = sys.stdout,
-        formatter: Callable[[ReadableLogRecord], str] = lambda record: (
+        out = sys.stdout,
+        formatter = lambda record: (
             record.to_json() + linesep
         ),
     ):
         self.out = out
         self.formatter = formatter
 
-    def export(self, batch: Sequence[ReadableLogRecord]):
+    def export(self, batch):
         for log_record in batch:
             self.out.write(self.formatter(log_record))
         self.out.flush()
@@ -170,11 +177,11 @@ class SimpleLogRecordProcessor(LogRecordProcessor):
     propagating to the application.
     """
 
-    def __init__(self, exporter: LogRecordExporter):
+    def __init__(self, exporter):
         self._exporter = exporter
         self._shutdown = False
 
-    def on_emit(self, log_record: ReadWriteLogRecord):
+    def on_emit(self, log_record):
         # Prevent entering a recursive loop.
         cnt = get_value(_ON_EMIT_RECURSION_COUNT_KEY) or 0
         # Recursive depth of 3 is sort of arbitrary. It's possible that an Exporter.export call
@@ -220,7 +227,7 @@ class SimpleLogRecordProcessor(LogRecordProcessor):
         self._shutdown = True
         self._exporter.shutdown()
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:  # pylint: disable=no-self-use
+    def force_flush(self, timeout_millis = 30000):  # pylint: disable=no-self-use
         return True
 
 
@@ -241,11 +248,11 @@ class BatchLogRecordProcessor(LogRecordProcessor):
 
     def __init__(
         self,
-        exporter: LogRecordExporter,
-        schedule_delay_millis: float | None = None,
-        max_export_batch_size: int | None = None,
-        export_timeout_millis: float | None = None,
-        max_queue_size: int | None = None,
+        exporter,
+        schedule_delay_millis = None,
+        max_export_batch_size = None,
+        export_timeout_millis = None,
+        max_queue_size = None,
     ):
         if max_queue_size is None:
             max_queue_size = BatchLogRecordProcessor._default_max_queue_size()
@@ -278,7 +285,7 @@ class BatchLogRecordProcessor(LogRecordProcessor):
             "Log",
         )
 
-    def on_emit(self, log_record: ReadWriteLogRecord) -> None:
+    def on_emit(self, log_record):
         # Convert ReadWriteLogRecord to ReadableLogRecord before passing to BatchProcessor
         # Note: resource should not be None at this point as it's set during Logger.emit()
         resource = (
@@ -297,7 +304,7 @@ class BatchLogRecordProcessor(LogRecordProcessor):
     def shutdown(self):
         return self._batch_processor.shutdown()
 
-    def force_flush(self, timeout_millis: Optional[int] = None) -> bool:
+    def force_flush(self, timeout_millis = None):
         return self._batch_processor.force_flush(timeout_millis)
 
     @staticmethod

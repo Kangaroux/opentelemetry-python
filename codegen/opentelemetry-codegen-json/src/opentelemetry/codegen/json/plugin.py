@@ -1,3 +1,7 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,8 @@
 
 # pylint: disable=no-member
 
+from future import standard_library
+standard_library.install_aliases()
 import logging
 import sys
 from collections.abc import Iterator
@@ -28,9 +34,7 @@ _logger = logging.getLogger(__name__)
 
 
 @contextmanager
-def code_generation() -> Iterator[
-    tuple[plugin.CodeGeneratorRequest, plugin.CodeGeneratorResponse],
-]:
+def code_generation():
     """
     Context manager for handling the code generation process.
     """
@@ -51,7 +55,7 @@ def code_generation() -> Iterator[
     sys.stdout.buffer.write(output)
 
 
-def main() -> None:
+def main():
     """
     Main entry point for the protoc plugin.
     """

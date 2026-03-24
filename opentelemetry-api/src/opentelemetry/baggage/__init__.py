@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import str
+from future import standard_library
+standard_library.install_aliases()
 from logging import getLogger
 from re import compile
 from types import MappingProxyType
@@ -34,8 +41,8 @@ _PROPERT_PATTERN = compile(_BAGGAGE_PROPERTY_FORMAT)
 
 
 def get_all(
-    context: Optional[Context] = None,
-) -> Mapping[str, object]:
+    context = None,
+):
     """Returns the name/value pairs in the Baggage
 
     Args:
@@ -48,8 +55,8 @@ def get_all(
 
 
 def get_baggage(
-    name: str, context: Optional[Context] = None
-) -> Optional[object]:
+    name, context = None
+):
     """Provides access to the value for a name/value pair in the
     Baggage
 
@@ -65,8 +72,8 @@ def get_baggage(
 
 
 def set_baggage(
-    name: str, value: object, context: Optional[Context] = None
-) -> Context:
+    name, value, context = None
+):
     """Sets a value in the Baggage
 
     Args:
@@ -82,7 +89,7 @@ def set_baggage(
     return set_value(_BAGGAGE_KEY, baggage, context=context)
 
 
-def remove_baggage(name: str, context: Optional[Context] = None) -> Context:
+def remove_baggage(name, context = None):
     """Removes a value from the Baggage
 
     Args:
@@ -98,7 +105,7 @@ def remove_baggage(name: str, context: Optional[Context] = None) -> Context:
     return set_value(_BAGGAGE_KEY, baggage, context=context)
 
 
-def clear(context: Optional[Context] = None) -> Context:
+def clear(context = None):
     """Removes all values from the Baggage
 
     Args:
@@ -110,18 +117,18 @@ def clear(context: Optional[Context] = None) -> Context:
     return set_value(_BAGGAGE_KEY, {}, context=context)
 
 
-def _get_baggage_value(context: Optional[Context] = None) -> Dict[str, object]:
+def _get_baggage_value(context = None):
     baggage = get_value(_BAGGAGE_KEY, context=context)
     if isinstance(baggage, dict):
         return baggage
     return {}
 
 
-def _is_valid_key(name: str) -> bool:
+def _is_valid_key(name):
     return _KEY_PATTERN.fullmatch(str(name)) is not None
 
 
-def _is_valid_value(value: object) -> bool:
+def _is_valid_value(value):
     parts = str(value).split(";")
     is_valid_value = _VALUE_PATTERN.fullmatch(parts[0]) is not None
     if len(parts) > 1:  # one or more properties metadata
@@ -132,5 +139,5 @@ def _is_valid_value(value: object) -> bool:
     return is_valid_value
 
 
-def _is_valid_pair(key: str, value: str) -> bool:
+def _is_valid_pair(key, value):
     return _is_valid_key(key) and _is_valid_value(value)

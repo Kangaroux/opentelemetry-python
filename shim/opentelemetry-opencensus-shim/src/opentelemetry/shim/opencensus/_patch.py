@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 from functools import lru_cache
 from logging import getLogger
 from typing import Optional
@@ -28,8 +34,8 @@ _logger = getLogger(__name__)
 
 
 def install_shim(
-    tracer_provider: Optional[trace.TracerProvider] = None,
-) -> None:
+    tracer_provider = None,
+):
     otel_tracer = trace.get_tracer(
         "opentelemetry-opencensus-shim",
         __version__,
@@ -37,19 +43,19 @@ def install_shim(
     )
 
     @lru_cache()
-    def cached_shim_tracer(span_context: SpanContext) -> ShimTracer:
+    def cached_shim_tracer(span_context):
         return ShimTracer(
             NoopTracer(),
             oc_span_context=span_context,
             otel_tracer=otel_tracer,
         )
 
-    def fget_tracer(self: Tracer) -> ShimTracer:
+    def fget_tracer(self):
         # self.span_context is how instrumentations pass propagated context into OpenCensus e.g.
         # https://github.com/census-instrumentation/opencensus-python/blob/fd064f438c5e490d25b004ee2545be55d2e28679/contrib/opencensus-ext-flask/opencensus/ext/flask/flask_middleware.py#L147-L153
         return cached_shim_tracer(self.span_context)
 
-    def fset_tracer(self, value) -> None:
+    def fset_tracer(self, value):
         # ignore attempts to set the value
         pass
 
@@ -62,6 +68,6 @@ def install_shim(
     _logger.info("Installed OpenCensus shim")
 
 
-def uninstall_shim() -> None:
+def uninstall_shim():
     if hasattr(Tracer, "tracer"):
         del Tracer.tracer

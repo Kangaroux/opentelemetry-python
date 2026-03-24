@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 import contextlib
 import sys
 import typing
@@ -66,8 +72,8 @@ class TestSamplingResult(unittest.TestCase):
 
 class TestSampler(unittest.TestCase):
     def _create_parent(
-        self, trace_flags: trace.TraceFlags, is_remote=False, trace_state=None
-    ) -> typing.Optional[context_api.Context]:
+        self, trace_flags, is_remote=False, trace_state=None
+    ):
         if trace_flags is None:
             return None
         return trace.set_span_in_context(
@@ -76,8 +82,8 @@ class TestSampler(unittest.TestCase):
 
     @staticmethod
     def _create_parent_span(
-        trace_flags: trace.TraceFlags, is_remote=False, trace_state=None
-    ) -> trace.NonRecordingSpan:
+        trace_flags, is_remote=False, trace_state=None
+    ):
         return trace.NonRecordingSpan(
             trace.SpanContext(
                 0xDEADBEEF,
@@ -523,14 +529,14 @@ class TestSampler(unittest.TestCase):
 
     def test_parent_based_explicit_parent_context(self):
         @contextlib.contextmanager
-        def explicit_parent_context(span: trace.Span):
+        def explicit_parent_context(span):
             yield trace.set_span_in_context(span)
 
         self.exec_parent_based(explicit_parent_context)
 
     def test_parent_based_implicit_parent_context(self):
         @contextlib.contextmanager
-        def implicit_parent_context(span: trace.Span):
+        def implicit_parent_context(span):
             token = context_api.attach(trace.set_span_in_context(span))
             yield None
             context_api.detach(token)

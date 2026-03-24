@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from math import ceil, log2
 
 
-class Buckets:
+class Buckets(object):
     # No method of this class is protected by locks because instances of this
     # class are only used in methods that are protected by locks themselves.
 
@@ -45,27 +52,27 @@ class Buckets:
         self.__index_end = 0
 
     @property
-    def index_start(self) -> int:
+    def index_start(self):
         return self.__index_start
 
     @index_start.setter
-    def index_start(self, value: int) -> None:
+    def index_start(self, value):
         self.__index_start = value
 
     @property
-    def index_end(self) -> int:
+    def index_end(self):
         return self.__index_end
 
     @index_end.setter
-    def index_end(self, value: int) -> None:
+    def index_end(self, value):
         self.__index_end = value
 
     @property
-    def index_base(self) -> int:
+    def index_base(self):
         return self.__index_base
 
     @index_base.setter
-    def index_base(self, value: int) -> None:
+    def index_base(self, value):
         self.__index_base = value
 
     @property
@@ -76,7 +83,7 @@ class Buckets:
         bias = self.__index_base - self.__index_start
         return self._counts[-bias:] + self._counts[:-bias]
 
-    def grow(self, needed: int, max_size: int) -> None:
+    def grow(self, needed, max_size):
         size = len(self._counts)
         bias = self.__index_base - self.__index_start
         old_positive_limit = size - bias
@@ -101,10 +108,10 @@ class Buckets:
         self._counts = tmp
 
     @property
-    def offset(self) -> int:
+    def offset(self):
         return self.__index_start
 
-    def __len__(self) -> int:
+    def __len__(self):
         if len(self._counts) == 0:
             return 0
 
@@ -113,7 +120,7 @@ class Buckets:
 
         return self.__index_end - self.__index_start + 1
 
-    def __getitem__(self, key: int) -> int:
+    def __getitem__(self, key):
         bias = self.__index_base - self.__index_start
 
         if key < bias:
@@ -123,7 +130,7 @@ class Buckets:
 
         return self._counts[key]
 
-    def downscale(self, amount: int) -> None:
+    def downscale(self, amount):
         """
         Rotates, then collapses 2 ** amount to 1 buckets.
         """
@@ -172,10 +179,10 @@ class Buckets:
         self.__index_end >>= amount
         self.__index_base = self.__index_start
 
-    def increment_bucket(self, bucket_index: int, increment: int = 1) -> None:
+    def increment_bucket(self, bucket_index, increment = 1):
         self._counts[bucket_index] += increment
 
-    def copy_empty(self) -> "Buckets":
+    def copy_empty(self):
         copy = Buckets()
 
         # pylint: disable=no-member

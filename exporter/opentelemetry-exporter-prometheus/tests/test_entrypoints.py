@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,8 @@
 
 # pylint: disable=no-self-use
 
+from future import standard_library
+standard_library.install_aliases()
 import os
 from unittest import TestCase
 from unittest.mock import ANY, Mock, patch
@@ -27,7 +33,7 @@ from opentelemetry.sdk.environment_variables import (
 
 
 class TestEntrypoints(TestCase):
-    def test_import_exporters(self) -> None:
+    def test_import_exporters(self):
         """
         Tests that the entrypoint can be loaded and doesn't have a typo in the name
         """
@@ -49,8 +55,8 @@ class TestEntrypoints(TestCase):
     @patch("opentelemetry.exporter.prometheus.start_http_server")
     @patch.dict(os.environ)
     def test_starts_http_server_defaults(
-        self, mock_start_http_server: Mock
-    ) -> None:
+        self, mock_start_http_server
+    ):
         _AutoPrometheusMetricReader()
         mock_start_http_server.assert_called_once_with(
             port=9464, addr="localhost"
@@ -59,8 +65,8 @@ class TestEntrypoints(TestCase):
     @patch("opentelemetry.exporter.prometheus.start_http_server")
     @patch.dict(os.environ, {OTEL_EXPORTER_PROMETHEUS_HOST: "1.2.3.4"})
     def test_starts_http_server_host_envvar(
-        self, mock_start_http_server: Mock
-    ) -> None:
+        self, mock_start_http_server
+    ):
         _AutoPrometheusMetricReader()
         mock_start_http_server.assert_called_once_with(
             port=ANY, addr="1.2.3.4"
@@ -69,7 +75,7 @@ class TestEntrypoints(TestCase):
     @patch("opentelemetry.exporter.prometheus.start_http_server")
     @patch.dict(os.environ, {OTEL_EXPORTER_PROMETHEUS_PORT: "9999"})
     def test_starts_http_server_port_envvar(
-        self, mock_start_http_server: Mock
-    ) -> None:
+        self, mock_start_http_server
+    ):
         _AutoPrometheusMetricReader()
         mock_start_http_server.assert_called_once_with(port=9999, addr=ANY)

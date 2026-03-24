@@ -13,7 +13,13 @@
 # limitations under the License.
 
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from typing import Sequence
 
 from opentelemetry.context import Context
@@ -27,19 +33,19 @@ from ._util import INVALID_THRESHOLD, is_valid_random_value, is_valid_threshold
 
 
 class _CompositeSampler(Sampler):
-    def __init__(self, delegate: ComposableSampler):
+    def __init__(self, delegate):
         self._delegate = delegate
 
     def should_sample(
         self,
-        parent_context: Context | None,
-        trace_id: int,
-        name: str,
-        kind: SpanKind | None = None,
-        attributes: Attributes | None = None,
-        links: Sequence[Link] | None = None,
-        trace_state: TraceState | None = None,
-    ) -> SamplingResult:
+        parent_context,
+        trace_id,
+        name,
+        kind = None,
+        attributes = None,
+        links = None,
+        trace_state = None,
+    ):
         ot_trace_state = OtelTraceState.parse(trace_state)
 
         intent = self._delegate.sampling_intent(
@@ -71,15 +77,15 @@ class _CompositeSampler(Sampler):
             _update_trace_state(trace_state, ot_trace_state, intent),
         )
 
-    def get_description(self) -> str:
+    def get_description(self):
         return self._delegate.get_description()
 
 
 def _update_trace_state(
-    trace_state: TraceState | None,
-    ot_trace_state: OtelTraceState,
-    intent: SamplingIntent,
-) -> TraceState | None:
+    trace_state,
+    ot_trace_state,
+    intent,
+):
     otts = ot_trace_state.serialize()
     if not trace_state:
         if otts:
@@ -91,7 +97,7 @@ def _update_trace_state(
     return new_trace_state
 
 
-def composite_sampler(delegate: ComposableSampler) -> Sampler:
+def composite_sampler(delegate):
     """A sampler that uses a a composable sampler to make its decision while
     handling tracestate.
 

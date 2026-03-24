@@ -1,3 +1,10 @@
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from builtins import str
+from future import standard_library
+standard_library.install_aliases()
 import argparse
 import sys
 
@@ -5,7 +12,7 @@ import griffe
 from eachdist import find_projectroot, find_targets
 
 
-def get_modules() -> list[str]:
+def get_modules():
     rootpath = find_projectroot()
     targets = find_targets("DEFAULT", rootpath)
 

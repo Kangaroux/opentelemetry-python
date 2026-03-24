@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from future import standard_library
+standard_library.install_aliases()
 from typing import Any, Optional
 
 import pytest  # type: ignore
@@ -18,7 +24,7 @@ import pytest  # type: ignore
 from opentelemetry.codegen.json.writer import CodeWriter
 
 
-def test_initialization() -> None:
+def test_initialization():
     writer = CodeWriter(indent_size=2)
     # pylint: disable-next=protected-access
     assert writer._indent_size == 2
@@ -26,7 +32,7 @@ def test_initialization() -> None:
     assert writer.to_string() == ""
 
 
-def test_writeln_indentation() -> None:
+def test_writeln_indentation():
     writer = CodeWriter(indent_size=4)
     writer.writeln("line1")
     with writer.indent():
@@ -39,7 +45,7 @@ def test_writeln_indentation() -> None:
     assert writer.to_lines() == expected
 
 
-def test_writemany() -> None:
+def test_writemany():
     writer = CodeWriter()
     writer.writemany("a", "b", "c")
     assert writer.to_lines() == ["a", "b", "c"]
@@ -52,7 +58,7 @@ def test_writemany() -> None:
         (["line1", "line2"], ["# line1", "# line2"]),
     ],
 )
-def test_comment(content: str, expected: list[str]) -> None:
+def test_comment(content, expected):
     writer = CodeWriter()
     writer.comment(content)
     assert writer.to_lines() == expected
@@ -65,7 +71,7 @@ def test_comment(content: str, expected: list[str]) -> None:
         (["line1", "line2"], ['"""', "line1", "line2", '"""']),
     ],
 )
-def test_docstring(content: str, expected: list[str]) -> None:
+def test_docstring(content, expected):
     writer = CodeWriter()
     writer.docstring(content)
     assert writer.to_lines() == expected
@@ -78,13 +84,13 @@ def test_docstring(content: str, expected: list[str]) -> None:
         ("typing", ["Any", "Optional"], ["from typing import Any, Optional"]),
     ],
 )
-def test_import(module: str, items: list[str], expected: list[str]) -> None:
+def test_import(module, items, expected):
     writer = CodeWriter()
     writer.import_(module, *items)
     assert writer.to_lines() == expected
 
 
-def test_suite() -> None:
+def test_suite():
     writer = CodeWriter()
     with writer.block("def foo():"):
         writer.writeln("pass")
@@ -105,11 +111,11 @@ def test_suite() -> None:
     ],
 )
 def test_class(
-    name: str,
-    bases: Optional[str],
-    decorators: Optional[list[str]],
-    expected: list[str],
-) -> None:
+    name,
+    bases,
+    decorators,
+    expected,
+):
     writer = CodeWriter()
     with writer.class_(name, bases=bases, decorators=decorators):
         pass
@@ -138,14 +144,14 @@ def test_class(
         ),
     ],
 )
-def test_dataclass(kwargs: dict[str, Any], expected: list[str]) -> None:
+def test_dataclass(kwargs, expected):
     writer = CodeWriter()
     with writer.dataclass(**kwargs):
         pass
     assert writer.to_lines() == expected
 
 
-def test_enum() -> None:
+def test_enum():
     writer = CodeWriter()
     with writer.enum("MyEnum", bases=["IntEnum"]):
         writer.enum_member("A", 1)
@@ -173,12 +179,12 @@ def test_enum() -> None:
     ],
 )
 def test_field(
-    name: str,
-    type_hint: str,
-    default: Optional[Any],
-    default_factory: Optional[Any],
-    expected: list[str],
-) -> None:
+    name,
+    type_hint,
+    default,
+    default_factory,
+    expected,
+):
     writer = CodeWriter()
     writer.field(
         name, type_hint, default=default, default_factory=default_factory
@@ -186,7 +192,7 @@ def test_field(
     assert writer.to_lines() == expected
 
 
-def test_function() -> None:
+def test_function():
     writer = CodeWriter()
     with writer.function("foo", ["a: int", "b: str"], return_type="bool"):
         writer.return_("True")
@@ -194,7 +200,7 @@ def test_function() -> None:
     assert writer.to_lines() == expected
 
 
-def test_control_flow() -> None:
+def test_control_flow():
     writer = CodeWriter()
     with writer.if_("a > b"):
         writer.pass_()
@@ -214,7 +220,7 @@ def test_control_flow() -> None:
     assert writer.to_lines() == expected
 
 
-def test_loops() -> None:
+def test_loops():
     writer = CodeWriter()
     with writer.for_("i", "range(10)"):
         writer.writeln("print(i)")
@@ -230,7 +236,7 @@ def test_loops() -> None:
     assert writer.to_lines() == expected
 
 
-def test_assignment_and_assertions() -> None:
+def test_assignment_and_assertions():
     writer = CodeWriter()
     writer.assignment("x", "1", type_hint="int")
 

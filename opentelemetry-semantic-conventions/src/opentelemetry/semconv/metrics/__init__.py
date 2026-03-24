@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from typing_extensions import deprecated
 
 
 @deprecated(
     "Use metrics defined in the :py:const:`opentelemetry.semconv.metrics` and :py:const:`opentelemetry.semconv._incubating.metrics` modules instead. Deprecated since version 1.25.0.",
 )
-class MetricInstruments:
+class MetricInstruments(object):
     SCHEMA_URL = "https://opentelemetry.io/schemas/1.21.0"
     """
     The URL of the OpenTelemetry schema for these keys and values.

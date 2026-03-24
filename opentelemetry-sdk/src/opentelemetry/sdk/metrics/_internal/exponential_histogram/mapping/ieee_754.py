@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 from ctypes import c_double, c_uint64
 from sys import float_info
 
@@ -60,7 +66,7 @@ MIN_NORMAL_VALUE = float_info.min
 MAX_NORMAL_VALUE = float_info.max
 
 
-def get_ieee_754_exponent(value: float) -> int:
+def get_ieee_754_exponent(value):
     """
     Gets the exponent of the IEEE 754 representation of a float.
     """
@@ -107,7 +113,7 @@ def get_ieee_754_exponent(value: float) -> int:
     # As mentioned in a comment above, the largest value for the exponent is
 
 
-def get_ieee_754_mantissa(value: float) -> int:
+def get_ieee_754_mantissa(value):
     return (
         c_uint64.from_buffer(c_double(value)).value
         # This step isolates the mantissa bits. There is no need to do any

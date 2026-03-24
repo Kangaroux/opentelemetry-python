@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,11 @@
 
 # type: ignore
 
+from builtins import range
+from builtins import str
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import copy
 import unittest
 from typing import MutableSequence
@@ -306,7 +315,7 @@ class TestBoundedAttributes(unittest.TestCase):
     def test_wsgi_request_conversion_to_string(self):
         """Test that WSGI request objects are converted to strings when _clean_extended_attribute is called."""
 
-        class DummyWSGIRequest:
+        class DummyWSGIRequest(object):
             def __str__(self):
                 return "<DummyWSGIRequest method=GET path=/example/>"
 

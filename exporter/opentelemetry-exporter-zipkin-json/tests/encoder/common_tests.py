@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +15,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from builtins import range
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import abc
 import unittest
 from typing import Dict, List
@@ -30,15 +38,15 @@ TEST_SERVICE_NAME = "test_service"
 
 
 # pylint: disable=protected-access
-class CommonEncoderTestCases:
+class CommonEncoderTestCases(object):
     class CommonEncoderTest(unittest.TestCase):
         @staticmethod
         @abc.abstractmethod
-        def get_encoder(*args, **kwargs) -> Encoder:
+        def get_encoder(*args, **kwargs):
             pass
 
         @classmethod
-        def get_encoder_default(cls) -> Encoder:
+        def get_encoder_default(cls):
             return cls.get_encoder()
 
         @abc.abstractmethod
@@ -58,7 +66,7 @@ class CommonEncoderTestCases:
             pass
 
         @abc.abstractmethod
-        def _test_encode_max_tag_length(self, max_tag_value_length: int):
+        def _test_encode_max_tag_length(self, max_tag_value_length):
             pass
 
         def test_encode_max_tag_length_2(self):
@@ -164,8 +172,8 @@ class CommonEncoderTestCases:
 
         @staticmethod
         def get_data_for_max_tag_length_test(
-            max_tag_length: int,
-        ) -> (trace._Span, Dict):
+            max_tag_length,
+        ):
             start_time = 683647322 * 10**9  # in ns
             duration = 50 * 10**6
             end_time = start_time + duration
@@ -327,7 +335,7 @@ class CommonEncoderTestCases:
             return span, expected_outputs[max_tag_length]
 
         @staticmethod
-        def get_exhaustive_otel_span_list() -> List[trace._Span]:
+        def get_exhaustive_otel_span_list():
             trace_id = 0x6E0C63257DE34C926F9EFCD03927272E
 
             base_time = 683647322 * 10**9  # in ns

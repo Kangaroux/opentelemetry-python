@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 import math
 from typing import Optional, Union
 
@@ -40,7 +46,7 @@ from opentelemetry.codegen.json.runtime.json_codec import (
         (None, ""),
     ],
 )
-def test_encode_hex(value: Optional[bytes], expected: str) -> None:
+def test_encode_hex(value, expected):
     assert encode_hex(value) == expected
 
 
@@ -52,11 +58,11 @@ def test_encode_hex(value: Optional[bytes], expected: str) -> None:
         (None, b""),
     ],
 )
-def test_decode_hex(value: Optional[str], expected: bytes) -> None:
+def test_decode_hex(value, expected):
     assert decode_hex(value, "field") == expected
 
 
-def test_decode_hex_errors() -> None:
+def test_decode_hex_errors():
     with pytest.raises(TypeError):
         decode_hex(123, "field")  # type: ignore
     with pytest.raises(ValueError, match="Invalid hex string"):
@@ -71,7 +77,7 @@ def test_decode_hex_errors() -> None:
         (None, ""),
     ],
 )
-def test_encode_base64(value: Optional[bytes], expected: str) -> None:
+def test_encode_base64(value, expected):
     assert encode_base64(value) == expected
 
 
@@ -83,11 +89,11 @@ def test_encode_base64(value: Optional[bytes], expected: str) -> None:
         (None, b""),
     ],
 )
-def test_decode_base64(value: Optional[str], expected: bytes) -> None:
+def test_decode_base64(value, expected):
     assert decode_base64(value, "field") == expected
 
 
-def test_decode_base64_errors() -> None:
+def test_decode_base64_errors():
     with pytest.raises(TypeError):
         decode_base64(123, "field")  # type: ignore
 
@@ -100,7 +106,7 @@ def test_decode_base64_errors() -> None:
         (-1, "-1"),
     ],
 )
-def test_encode_int64(value: int, expected: str) -> None:
+def test_encode_int64(value, expected):
     assert encode_int64(value) == expected
 
 
@@ -112,11 +118,11 @@ def test_encode_int64(value: int, expected: str) -> None:
         (None, 0),
     ],
 )
-def test_decode_int64(value: Optional[Union[int, str]], expected: int) -> None:
+def test_decode_int64(value, expected):
     assert decode_int64(value, "field") == expected
 
 
-def test_decode_int64_errors() -> None:
+def test_decode_int64_errors():
     with pytest.raises(TypeError):
         decode_int64([], "field")  # type: ignore
     with pytest.raises(ValueError, match="Invalid int64 value"):
@@ -132,7 +138,7 @@ def test_decode_int64_errors() -> None:
         (float("-inf"), "-Infinity"),
     ],
 )
-def test_encode_float(value: float, expected: Union[float, str]) -> None:
+def test_encode_float(value, expected):
     result = encode_float(value)
     if isinstance(expected, float) and math.isnan(expected):
         assert math.isnan(result)  # type: ignore
@@ -153,8 +159,8 @@ def test_encode_float(value: float, expected: Union[float, str]) -> None:
     ],
 )
 def test_decode_float(
-    value: Optional[Union[float, int, str]], expected: float
-) -> None:
+    value, expected
+):
     result = decode_float(value, "field")
     if math.isnan(expected):
         assert math.isnan(result)
@@ -162,14 +168,14 @@ def test_decode_float(
         assert result == expected
 
 
-def test_decode_float_errors() -> None:
+def test_decode_float_errors():
     with pytest.raises(TypeError):
         decode_float([], "field")  # type: ignore
     with pytest.raises(ValueError, match="Invalid float value"):
         decode_float("abc", "field")
 
 
-def test_repeated_fields() -> None:
+def test_repeated_fields():
     values = [1, 2, 3]
     assert encode_repeated(values, str) == ["1", "2", "3"]
     assert not encode_repeated([], str)
@@ -180,12 +186,12 @@ def test_repeated_fields() -> None:
     assert not decode_repeated(None, int, "field")
 
 
-def test_decode_repeated_errors() -> None:
+def test_decode_repeated_errors():
     with pytest.raises(TypeError):
         decode_repeated("not a list", lambda x: x, "field")  # type: ignore
 
 
-def test_validate_type() -> None:
+def test_validate_type():
     validate_type("s", str, "field")
     validate_type(1, int, "field")
     validate_type(1, (int, str), "field")

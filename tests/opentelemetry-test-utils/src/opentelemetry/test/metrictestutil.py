@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +17,8 @@
 # limitations under the License.
 
 
+from future import standard_library
+standard_library.install_aliases()
 from typing import Optional
 
 from opentelemetry.attributes import BoundedAttributes
@@ -30,7 +36,7 @@ from opentelemetry.util.types import Attributes
 
 def _generate_metric(
     name, data, attributes=None, description=None, unit=None
-) -> Metric:
+):
     if description is None:
         description = "foo"
     if unit is None:
@@ -50,7 +56,7 @@ def _generate_sum(
     description=None,
     unit=None,
     is_monotonic=True,
-) -> Metric:
+):
     if attributes is None:
         attributes = BoundedAttributes(attributes={"a": 1, "b": True})
     return _generate_metric(
@@ -74,7 +80,7 @@ def _generate_sum(
 
 def _generate_gauge(
     name, value, attributes=None, description=None, unit=None
-) -> Metric:
+):
     if attributes is None:
         attributes = BoundedAttributes(attributes={"a": 1, "b": True})
     return _generate_metric(
@@ -96,7 +102,7 @@ def _generate_gauge(
 
 def _generate_unsupported_metric(
     name, attributes=None, description=None, unit=None
-) -> Metric:
+):
     return _generate_metric(
         name,
         None,
@@ -106,11 +112,11 @@ def _generate_unsupported_metric(
 
 
 def _generate_histogram(
-    name: str,
-    attributes: Attributes = None,
-    description: Optional[str] = None,
-    unit: Optional[str] = None,
-) -> Metric:
+    name,
+    attributes = None,
+    description = None,
+    unit = None,
+):
     if attributes is None:
         attributes = BoundedAttributes(attributes={"a": 1, "b": True})
     return _generate_metric(

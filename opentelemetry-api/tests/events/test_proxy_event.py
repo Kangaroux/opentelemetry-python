@@ -1,4 +1,10 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # pylint: disable=W0212,W0222,W0221
+from future import standard_library
+standard_library.install_aliases()
 import typing
 import unittest
 
@@ -10,16 +16,16 @@ from opentelemetry.util.types import _ExtendedAttributes
 class TestProvider(events.NoOpEventLoggerProvider):
     def get_event_logger(
         self,
-        name: str,
-        version: typing.Optional[str] = None,
-        schema_url: typing.Optional[str] = None,
-        attributes: typing.Optional[_ExtendedAttributes] = None,
-    ) -> events.EventLogger:
+        name,
+        version = None,
+        schema_url = None,
+        attributes = None,
+    ):
         return LoggerTest(name)
 
 
 class LoggerTest(events.NoOpEventLogger):
-    def emit(self, event: events.Event) -> None:
+    def emit(self, event):
         pass
 
 

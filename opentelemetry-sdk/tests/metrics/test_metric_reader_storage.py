@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,9 @@
 
 # pylint: disable=protected-access,invalid-name
 
+from builtins import range
+from future import standard_library
+standard_library.install_aliases()
 from logging import WARNING
 from time import time_ns
 from unittest.mock import MagicMock, Mock, patch
@@ -48,13 +55,13 @@ from opentelemetry.sdk.metrics.view import (
 from opentelemetry.test.concurrency_test import ConcurrencyTestBase, MockFunc
 
 
-def mock_view_matching(name, *instruments) -> Mock:
+def mock_view_matching(name, *instruments):
     mock = Mock(name=name)
     mock._match.side_effect = lambda instrument: instrument in instruments
     return mock
 
 
-def mock_instrument() -> Mock:
+def mock_instrument():
     instr = Mock()
     instr.attributes = {}
     return instr
@@ -66,7 +73,7 @@ class TestMetricReaderStorage(ConcurrencyTestBase):
         ".metric_reader_storage._ViewInstrumentMatch"
     )
     def test_creates_view_instrument_matches(
-        self, MockViewInstrumentMatch: Mock
+        self, MockViewInstrumentMatch
     ):
         """It should create a MockViewInstrumentMatch when an instrument
         matches a view"""
@@ -120,7 +127,7 @@ class TestMetricReaderStorage(ConcurrencyTestBase):
         "metric_reader_storage._ViewInstrumentMatch"
     )
     def test_forwards_calls_to_view_instrument_match(
-        self, MockViewInstrumentMatch: Mock
+        self, MockViewInstrumentMatch
     ):
         view_instrument_match1 = Mock(
             _aggregation=_LastValueAggregation({}, Mock())
@@ -246,7 +253,7 @@ class TestMetricReaderStorage(ConcurrencyTestBase):
         "opentelemetry.sdk.metrics._internal."
         "metric_reader_storage._ViewInstrumentMatch"
     )
-    def test_race_concurrent_measurements(self, MockViewInstrumentMatch: Mock):
+    def test_race_concurrent_measurements(self, MockViewInstrumentMatch):
         mock_view_instrument_match_ctor = MockFunc()
         MockViewInstrumentMatch.side_effect = mock_view_instrument_match_ctor
 
@@ -320,7 +327,7 @@ class TestMetricReaderStorage(ConcurrencyTestBase):
         "opentelemetry.sdk.metrics._internal."
         "metric_reader_storage._ViewInstrumentMatch"
     )
-    def test_default_view_enabled(self, MockViewInstrumentMatch: Mock):
+    def test_default_view_enabled(self, MockViewInstrumentMatch):
         """Instruments should be matched with default views when enabled"""
         instrument1 = Mock(name="instrument1")
         instrument2 = Mock(name="instrument2")

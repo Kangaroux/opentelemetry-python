@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +17,10 @@
 # limitations under the License.
 
 # pylint: disable=protected-access
+from builtins import range
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import gc
 import logging
 import multiprocessing
@@ -57,15 +65,15 @@ if system() != "Windows":
     multiprocessing.set_start_method("fork")
 
 
-class MockExporterForTesting:
-    def __init__(self, export_sleep: int):
+class MockExporterForTesting(object):
+    def __init__(self, export_sleep):
         self.num_export_calls = 0
         self.export_sleep = export_sleep
         self._shutdown = False
         self.sleep_interrupted = False
         self.export_sleep_event = threading.Event()
 
-    def export(self, _: list[Any]):
+    def export(self, _):
         self.num_export_calls += 1
         if self._shutdown:
             raise ValueError("Cannot export, already shutdown")
@@ -88,7 +96,7 @@ class MockExporterForTesting:
     "batch_processor_class,telemetry",
     [(BatchLogRecordProcessor, EMPTY_LOG), (BatchSpanProcessor, BASIC_SPAN)],
 )
-class TestBatchProcessor:
+class TestBatchProcessor(object):
     # pylint: disable=no-self-use
     def test_telemetry_exported_once_batch_size_reached(
         self, batch_processor_class, telemetry

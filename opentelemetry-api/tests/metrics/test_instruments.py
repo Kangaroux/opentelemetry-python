@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +17,9 @@
 # limitations under the License.
 # type: ignore
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 from inspect import Signature, isabstract, signature
 from unittest import TestCase
 
@@ -37,7 +44,11 @@ from opentelemetry.metrics import (
 
 class ChildInstrument(Instrument):
     # pylint: disable=useless-parent-delegation
-    def __init__(self, name, *args, unit="", description="", **kwargs):
+    def __init__(self, name, *args, **kwargs):
+        if 'description' in kwargs: description = kwargs['description']; del kwargs['description']
+        else: description = ""
+        if 'unit' in kwargs: unit = kwargs['unit']; del kwargs['unit']
+        else: unit = ""
         super().__init__(
             name, *args, unit=unit, description=description, **kwargs
         )

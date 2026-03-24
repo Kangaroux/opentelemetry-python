@@ -22,7 +22,13 @@ OpenTelemetry constructs behind the scenes. Its purpose is to allow applications
 already instrumented using OpenCensus to start using OpenTelemetry with minimal effort, without
 having to rewrite large portions of the codebase.
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from opentelemetry.shim.opencensus._patch import install_shim, uninstall_shim
 
 __all__ = [

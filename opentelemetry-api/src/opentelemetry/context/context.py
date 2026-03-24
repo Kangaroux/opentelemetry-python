@@ -13,14 +13,20 @@
 # limitations under the License.
 
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 import typing
 from abc import ABC, abstractmethod
 from contextvars import Token
 
 
 class Context(typing.Dict[str, object]):
-    def __setitem__(self, key: str, value: object) -> None:
+    def __setitem__(self, key, value):
         raise ValueError
 
 
@@ -32,7 +38,7 @@ class _RuntimeContext(ABC):
     """
 
     @abstractmethod
-    def attach(self, context: Context) -> Token[Context]:
+    def attach(self, context):
         """Sets the current `Context` object. Returns a
         token that can be used to reset to the previous `Context`.
 
@@ -41,11 +47,11 @@ class _RuntimeContext(ABC):
         """
 
     @abstractmethod
-    def get_current(self) -> Context:
+    def get_current(self):
         """Returns the current `Context` object."""
 
     @abstractmethod
-    def detach(self, token: Token[Context]) -> None:
+    def detach(self, token):
         """Resets Context to a previous value
 
         Args:

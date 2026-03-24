@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +17,8 @@
 # limitations under the License.
 
 # pylint: disable=W0212,W0222,W0221
+from future import standard_library
+standard_library.install_aliases()
 import typing
 import unittest
 
@@ -30,11 +36,11 @@ from opentelemetry.util.types import Attributes
 class TestProvider(trace.NoOpTracerProvider):
     def get_tracer(
         self,
-        instrumenting_module_name: str,
-        instrumenting_library_version: typing.Optional[str] = None,
-        schema_url: typing.Optional[str] = None,
-        attributes: typing.Optional[Attributes] = None,
-    ) -> trace.Tracer:
+        instrumenting_module_name,
+        instrumenting_library_version = None,
+        schema_url = None,
+        attributes = None,
+    ):
         return TestTracer()
 
 
@@ -92,7 +98,7 @@ class TestProxy(TraceGlobalsTest, unittest.TestCase):
         tracer = trace.get_tracer("test")
 
         @tracer.start_as_current_span("span")
-        def my_function() -> Span:
+        def my_function():
             return trace.get_current_span()
 
         # call function before configuring tracing provider, should

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,8 @@
 
 # pylint: disable=protected-access
 
+from future import standard_library
+standard_library.install_aliases()
 from unittest import TestCase
 from unittest.mock import Mock
 

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 import unittest
 from typing import List, Tuple
 
@@ -87,7 +94,7 @@ class TestOTLPLogEncoder(unittest.TestCase):
         )
 
     @staticmethod
-    def _get_sdk_log_data() -> List[ReadWriteLogRecord]:
+    def _get_sdk_log_data():
         # pylint:disable=too-many-locals
         ctx_log1 = set_span_in_context(
             NonRecordingSpan(
@@ -330,7 +337,7 @@ class TestOTLPLogEncoder(unittest.TestCase):
 
     def get_test_logs(
         self,
-    ) -> Tuple[List[ReadWriteLogRecord], ExportLogsServiceRequest]:
+    ):
         sdk_logs = self._get_sdk_log_data()
 
         pb2_service_request = ExportLogsServiceRequest(
@@ -646,7 +653,7 @@ class TestOTLPLogEncoder(unittest.TestCase):
         return sdk_logs, pb2_service_request
 
     @staticmethod
-    def _get_test_logs_dropped_attributes() -> List[ReadWriteLogRecord]:
+    def _get_test_logs_dropped_attributes():
         ctx_log1 = set_span_in_context(
             NonRecordingSpan(
                 SpanContext(

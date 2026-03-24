@@ -85,7 +85,14 @@ API
 # TODO: make pylint use 3p opentracing module for type inference
 # pylint:disable=no-member
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 import logging
 from types import TracebackType
 from typing import Type, TypeVar
@@ -131,7 +138,7 @@ logger = logging.getLogger(__name__)
 _SHIM_KEY = create_key("scope_shim")
 
 
-def create_tracer(otel_tracer_provider: TracerProvider) -> "TracerShim":
+def create_tracer(otel_tracer_provider):
     """Creates a :class:`TracerShim` object from the provided OpenTelemetry
     :class:`opentelemetry.trace.TracerProvider`.
 
@@ -159,12 +166,12 @@ class SpanContextShim(SpanContext):
             constructing the :class:`SpanContextShim`.
     """
 
-    def __init__(self, otel_context: OtelSpanContext):
+    def __init__(self, otel_context):
         self._otel_context = otel_context
         # Context is being used here since it must be immutable.
         self._baggage = Context()
 
-    def unwrap(self) -> OtelSpanContext:
+    def unwrap(self):
         """Returns the wrapped :class:`opentelemetry.trace.SpanContext`
         object.
 
@@ -176,7 +183,7 @@ class SpanContextShim(SpanContext):
         return self._otel_context
 
     @property
-    def baggage(self) -> Context:
+    def baggage(self):
         """Returns the ``baggage`` associated with this object"""
 
         return self._baggage
@@ -192,7 +199,7 @@ class SpanShim(Span):
         span: A :class:`opentelemetry.trace.Span` to wrap.
     """
 
-    def __init__(self, tracer, context: SpanContextShim, span):
+    def __init__(self, tracer, context, span):
         super().__init__(tracer, context)
         self._otel_span = span
 
@@ -206,7 +213,7 @@ class SpanShim(Span):
 
         return self._otel_span
 
-    def set_operation_name(self, operation_name: str) -> "SpanShim":
+    def set_operation_name(self, operation_name):
         """Updates the name of the wrapped OpenTelemetry span.
 
         Args:
@@ -220,7 +227,7 @@ class SpanShim(Span):
         self._otel_span.update_name(operation_name)
         return self
 
-    def finish(self, finish_time: float | None = None):
+    def finish(self, finish_time = None):
         """Ends the OpenTelemetry span wrapped by this :class:`SpanShim`.
 
         If *finish_time* is provided, the time value is converted to the
@@ -241,7 +248,7 @@ class SpanShim(Span):
             end_time = util.time_seconds_to_ns(finish_time)
         self._otel_span.end(end_time=end_time)
 
-    def set_tag(self, key: str, value: ValueT) -> "SpanShim":
+    def set_tag(self, key, value):
         """Sets an OpenTelemetry attribute on the wrapped OpenTelemetry span.
 
         Args:
@@ -256,8 +263,8 @@ class SpanShim(Span):
         return self
 
     def log_kv(
-        self, key_values: Attributes, timestamp: float | None = None
-    ) -> "SpanShim":
+        self, key_values, timestamp = None
+    ):
         """Logs an event for the wrapped OpenTelemetry span.
 
         Note:
@@ -294,7 +301,7 @@ class SpanShim(Span):
     def log_event(self, event, payload=None):
         super().log_event(event, payload=payload)
 
-    def set_baggage_item(self, key: str, value: str):
+    def set_baggage_item(self, key, value):
         """Stores a Baggage item in the span as a key/value
         pair.
 
@@ -307,7 +314,7 @@ class SpanShim(Span):
             key, value, context=self._context._baggage
         )
 
-    def get_baggage_item(self, key: str) -> object | None:
+    def get_baggage_item(self, key):
         """Retrieves value of the baggage item with the given key.
 
         Args:
@@ -356,7 +363,7 @@ class ScopeShim(Scope):
     """
 
     def __init__(
-        self, manager: "ScopeManagerShim", span: SpanShim, span_cm=None
+        self, manager, span, span_cm=None
     ):
         super().__init__(manager, span)
         self._span_cm = span_cm
@@ -365,7 +372,7 @@ class ScopeShim(Scope):
     # TODO: Change type of `manager` argument to `opentracing.ScopeManager`? We
     # need to get rid of `manager.tracer` for this.
     @classmethod
-    def from_context_manager(cls, manager: "ScopeManagerShim", span_cm):
+    def from_context_manager(cls, manager, span_cm):
         """Constructs a :class:`ScopeShim` from an OpenTelemetry
         `opentelemetry.trace.Span` context
         manager.
@@ -425,10 +432,10 @@ class ScopeShim(Scope):
 
     def _end_span_scope(
         self,
-        exc_type: Type[BaseException] | None,
-        exc_val: BaseException | None,
-        exc_tb: TracebackType | None,
-    ) -> None:
+        exc_type,
+        exc_val,
+        exc_tb,
+    ):
         detach(self._token)
         if self._span_cm is not None:
             self._span_cm.__exit__(exc_type, exc_val, exc_tb)
@@ -452,14 +459,14 @@ class ScopeManagerShim(ScopeManager):
             span state.
     """
 
-    def __init__(self, tracer: "TracerShim"):
+    def __init__(self, tracer):
         # The only thing the ``__init__()``` method on the base class does is
         # initialize `self._noop_span` and `self._noop_scope` with no-op
         # objects. Therefore, it doesn't seem useful to call it.
         # pylint: disable=super-init-not-called
         self._tracer = tracer
 
-    def activate(self, span: SpanShim, finish_on_close: bool) -> "ScopeShim":
+    def activate(self, span, finish_on_close):
         """Activates a :class:`SpanShim` and returns a :class:`ScopeShim` which
         represents the active span.
 
@@ -477,7 +484,7 @@ class ScopeManagerShim(ScopeManager):
         return ScopeShim.from_context_manager(self, span_cm=span_cm)
 
     @property
-    def active(self) -> "ScopeShim":
+    def active(self):
         """Returns a :class:`ScopeShim` object representing the
         currently-active span in the OpenTelemetry tracer.
 
@@ -505,7 +512,7 @@ class ScopeManagerShim(ScopeManager):
             return ScopeShim(self, span=wrapped_span)
 
     @property
-    def tracer(self) -> "TracerShim":
+    def tracer(self):
         """Returns the :class:`TracerShim` reference used by this
         :class:`ScopeManagerShim` for setting and getting the active span from
         the OpenTelemetry tracer.
@@ -540,7 +547,7 @@ class TracerShim(Tracer):
             tracer will be invoked by the shim to create actual spans.
     """
 
-    def __init__(self, tracer: OtelTracer):
+    def __init__(self, tracer):
         super().__init__(scope_manager=ScopeManagerShim(self))
         self._otel_tracer = tracer
         self._supported_formats = (
@@ -560,14 +567,14 @@ class TracerShim(Tracer):
 
     def start_active_span(
         self,
-        operation_name: str,
-        child_of: SpanShim | SpanContextShim | None = None,
-        references: list | None = None,
-        tags: Attributes = None,
-        start_time: float | None = None,
-        ignore_active_span: bool = False,
-        finish_on_close: bool = True,
-    ) -> "ScopeShim":
+        operation_name,
+        child_of = None,
+        references = None,
+        tags = None,
+        start_time = None,
+        ignore_active_span = False,
+        finish_on_close = True,
+    ):
         """Starts and activates a span. In terms of functionality, this method
         behaves exactly like the same method on a "regular" OpenTracing tracer.
         See :meth:`opentracing.Tracer.start_active_span` for more details.
@@ -614,13 +621,13 @@ class TracerShim(Tracer):
 
     def start_span(
         self,
-        operation_name: str | None = None,
-        child_of: SpanShim | SpanContextShim | None = None,
-        references: list | None = None,
-        tags: Attributes = None,
-        start_time: float | None = None,
-        ignore_active_span: bool = False,
-    ) -> SpanShim:
+        operation_name = None,
+        child_of = None,
+        references = None,
+        tags = None,
+        start_time = None,
+        ignore_active_span = False,
+    ):
         """Implements the ``start_span()`` method from the base class.
 
         Starts a span. In terms of functionality, this method behaves exactly
@@ -685,7 +692,7 @@ class TracerShim(Tracer):
         context = SpanContextShim(span.get_span_context())
         return SpanShim(self, context, span)
 
-    def inject(self, span_context, format: object, carrier: object):
+    def inject(self, span_context, format, carrier):
         """Injects ``span_context`` into ``carrier``.
 
         See base class for more details.
@@ -716,7 +723,7 @@ class TracerShim(Tracer):
         ctx = set_span_in_context(span)
         propagator.inject(carrier, context=ctx)
 
-    def extract(self, format: object, carrier: object):
+    def extract(self, format, carrier):
         """Returns an ``opentracing.SpanContext`` instance extracted from a
         ``carrier``.
 

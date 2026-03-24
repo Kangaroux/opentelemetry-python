@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
 import unittest
 
 from opentelemetry import trace as trace_api
@@ -22,7 +29,7 @@ from opentelemetry.util._once import Once
 
 
 # pylint: disable=protected-access
-def reset_trace_globals() -> None:
+def reset_trace_globals():
     """WARNING: only use this for tests."""
     trace_api._TRACER_PROVIDER_SET_ONCE = Once()
     trace_api._TRACER_PROVIDER = None
@@ -30,7 +37,7 @@ def reset_trace_globals() -> None:
 
 
 # pylint: disable=protected-access
-def reset_metrics_globals() -> None:
+def reset_metrics_globals():
     """WARNING: only use this for tests."""
     metrics_api._METER_PROVIDER_SET_ONCE = Once()  # type: ignore[attr-defined]
     metrics_api._METER_PROVIDER = None  # type: ignore[attr-defined]
@@ -38,7 +45,7 @@ def reset_metrics_globals() -> None:
 
 
 # pylint: disable=protected-access
-def reset_logging_globals() -> None:
+def reset_logging_globals():
     """WARNING: only use this for tests."""
     logging_api._LOGGER_PROVIDER_SET_ONCE = Once()  # type: ignore[attr-defined]
     logging_api._LOGGER_PROVIDER = None  # type: ignore[attr-defined]
@@ -46,7 +53,7 @@ def reset_logging_globals() -> None:
 
 
 # pylint: disable=protected-access
-def reset_event_globals() -> None:
+def reset_event_globals():
     """WARNING: only use this for tests."""
     from opentelemetry import (  # pylint: disable=import-outside-toplevel # noqa: PLC0415
         _events as events_api,
@@ -65,11 +72,11 @@ class TraceGlobalsTest(unittest.TestCase):
     Use as a base class or mixin for your test that modifies trace API globals.
     """
 
-    def setUp(self) -> None:
+    def setUp(self):
         super().setUp()
         reset_trace_globals()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         super().tearDown()
         reset_trace_globals()
 
@@ -80,11 +87,11 @@ class MetricsGlobalsTest(unittest.TestCase):
     Use as a base class or mixin for your test that modifies metrics API globals.
     """
 
-    def setUp(self) -> None:
+    def setUp(self):
         super().setUp()
         reset_metrics_globals()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         super().tearDown()
         reset_metrics_globals()
 
@@ -95,11 +102,11 @@ class LoggingGlobalsTest(unittest.TestCase):
     Use as a base class or mixin for your test that modifies logging API globals.
     """
 
-    def setUp(self) -> None:
+    def setUp(self):
         super().setUp()
         reset_logging_globals()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         super().tearDown()
         reset_logging_globals()
 
@@ -110,10 +117,10 @@ class EventsGlobalsTest(unittest.TestCase):
     Use as a base class or mixin for your test that modifies logging API globals.
     """
 
-    def setUp(self) -> None:
+    def setUp(self):
         super().setUp()
         reset_event_globals()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         super().tearDown()
         reset_event_globals()

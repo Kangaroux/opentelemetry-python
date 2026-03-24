@@ -13,7 +13,15 @@
 # limitations under the License.
 
 from __future__ import annotations
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from builtins import str
+from builtins import next
+from future import standard_library
+standard_library.install_aliases()
 import logging
 import typing
 from contextvars import Token
@@ -28,7 +36,7 @@ from opentelemetry.util._importlib_metadata import entry_points
 logger = logging.getLogger(__name__)
 
 
-def _load_runtime_context() -> _RuntimeContext:
+def _load_runtime_context():
     """Initialize the RuntimeContext
 
     Returns:
@@ -70,7 +78,7 @@ def _load_runtime_context() -> _RuntimeContext:
 _RUNTIME_CONTEXT = _load_runtime_context()
 
 
-def create_key(keyname: str) -> str:
+def create_key(keyname):
     """To allow cross-cutting concern to control access to their local state,
     the RuntimeContext API provides a function which takes a keyname as input,
     and returns a unique key.
@@ -82,7 +90,7 @@ def create_key(keyname: str) -> str:
     return keyname + "-" + str(uuid4())
 
 
-def get_value(key: str, context: typing.Optional[Context] = None) -> "object":
+def get_value(key, context = None):
     """To access the local state of a concern, the RuntimeContext API
     provides a function which takes a context and a key as input,
     and returns a value.
@@ -98,8 +106,8 @@ def get_value(key: str, context: typing.Optional[Context] = None) -> "object":
 
 
 def set_value(
-    key: str, value: "object", context: typing.Optional[Context] = None
-) -> Context:
+    key, value, context = None
+):
     """To record the local state of a cross-cutting concern, the
     RuntimeContext API provides a function which takes a context, a
     key, and a value as input, and returns an updated context
@@ -120,7 +128,7 @@ def set_value(
     return Context(new_values)
 
 
-def get_current() -> Context:
+def get_current():
     """To access the context associated with program execution,
     the Context API provides a function which takes no arguments
     and returns a Context.
@@ -131,7 +139,7 @@ def get_current() -> Context:
     return _RUNTIME_CONTEXT.get_current()
 
 
-def attach(context: Context) -> Token[Context]:
+def attach(context):
     """Associates a Context with the caller's current execution unit. Returns
     a token that can be used to restore the previous Context.
 
@@ -144,7 +152,7 @@ def attach(context: Context) -> Token[Context]:
     return _RUNTIME_CONTEXT.attach(context)
 
 
-def detach(token: Token[Context]) -> None:
+def detach(token):
     """Resets the Context associated with the caller's current execution unit
     to the value it had before attaching a specified Context.
 

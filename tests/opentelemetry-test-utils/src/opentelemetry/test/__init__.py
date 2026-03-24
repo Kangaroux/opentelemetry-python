@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +18,16 @@
 
 # type: ignore
 
+from builtins import super
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 from traceback import format_tb
 from unittest import TestCase
 
 
-class _AssertNotRaisesMixin:
-    class _AssertNotRaises:
+class _AssertNotRaisesMixin(object):
+    class _AssertNotRaises(object):
         def __init__(self, test_case):
             self._test_case = test_case
 

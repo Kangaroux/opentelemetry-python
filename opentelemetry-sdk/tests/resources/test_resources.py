@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from future import standard_library
+standard_library.install_aliases()
 import os
 import sys
 import unittest
@@ -65,10 +71,10 @@ except ImportError:
 
 
 class TestResources(unittest.TestCase):
-    def setUp(self) -> None:
+    def setUp(self):
         environ[OTEL_RESOURCE_ATTRIBUTES] = ""
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         environ.pop(OTEL_RESOURCE_ATTRIBUTES)
 
     def test_create(self):
@@ -476,10 +482,10 @@ class TestResources(unittest.TestCase):
 
 # pylint: disable=too-many-public-methods
 class TestOTELResourceDetector(unittest.TestCase):
-    def setUp(self) -> None:
+    def setUp(self):
         environ[OTEL_RESOURCE_ATTRIBUTES] = ""
 
-    def tearDown(self) -> None:
+    def tearDown(self):
         environ.pop(OTEL_RESOURCE_ATTRIBUTES)
 
     def test_empty(self):

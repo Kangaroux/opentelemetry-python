@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
 import ipaddress
 import os
 import unittest
@@ -37,7 +44,7 @@ from opentelemetry.sdk.trace.export import SpanExportResult
 TEST_SERVICE_NAME = "test_service"
 
 
-class MockResponse:
+class MockResponse(object):
     def __init__(self, status_code):
         self.status_code = status_code
         self.text = status_code

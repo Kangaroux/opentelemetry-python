@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from future import standard_library
+standard_library.install_aliases()
 import json
 
 from opentelemetry import trace as trace_api
@@ -37,7 +43,7 @@ from .common_tests import (  # pylint: disable=import-error
 # pylint: disable=protected-access
 class TestV1JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
     @staticmethod
-    def get_encoder(*args, **kwargs) -> JsonV1Encoder:
+    def get_encoder(*args, **kwargs):
         return JsonV1Encoder(*args, **kwargs)
 
     def test_encode(self):
@@ -229,7 +235,7 @@ class TestV1JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
             JsonV1Encoder().serialize([otel_span], NodeEndpoint()),
         )
 
-    def _test_encode_max_tag_length(self, max_tag_value_length: int):
+    def _test_encode_max_tag_length(self, max_tag_value_length):
         otel_span, expected_tag_output = self.get_data_for_max_tag_length_test(
             max_tag_value_length
         )

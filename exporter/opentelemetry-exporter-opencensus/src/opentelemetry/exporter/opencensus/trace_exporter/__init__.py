@@ -13,7 +13,13 @@
 # limitations under the License.
 
 """OpenCensus Span Exporter."""
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 import logging
 from typing import Sequence
 
@@ -69,7 +75,7 @@ class OpenCensusSpanExporter(SpanExporter):
         self.host_name = host_name
         self.node = utils.get_node(service_name, host_name)
 
-    def export(self, spans: Sequence[ReadableSpan]) -> SpanExportResult:
+    def export(self, spans):
         # Populate service_name from first span
         # We restrict any SpanProcessor to be only associated with a single
         # TracerProvider, so it is safe to assume that all Spans in a single
@@ -91,7 +97,7 @@ class OpenCensusSpanExporter(SpanExporter):
 
         return SpanExportResult.SUCCESS
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         pass
 
     def generate_span_requests(self, spans):
@@ -101,12 +107,12 @@ class OpenCensusSpanExporter(SpanExporter):
         )
         yield service_request
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         return True
 
 
 # pylint: disable=too-many-branches
-def translate_to_collector(spans: Sequence[ReadableSpan]):
+def translate_to_collector(spans):
     collector_spans = []
     for span in spans:
         status = None

@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +18,9 @@
 
 # pylint: disable=protected-access
 
+from builtins import zip
+from future import standard_library
+standard_library.install_aliases()
 from math import inf
 from time import sleep, time_ns
 from typing import Union
@@ -55,8 +62,8 @@ from opentelemetry.util.types import Attributes
 
 
 def measurement(
-    value: Union[int, float], attributes: Attributes = None
-) -> Measurement:
+    value, attributes = None
+):
     return Measurement(
         value,
         time_ns(),

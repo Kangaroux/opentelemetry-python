@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 from textwrap import dedent
 from unittest import TestCase
 from unittest.mock import Mock, patch
@@ -56,8 +62,8 @@ class TestPrometheusMetricReader(TestCase):
         )
 
     def verify_text_format(
-        self, metric: Metric, expect_prometheus_text: str, prefix: str = ""
-    ) -> None:
+        self, metric, expect_prometheus_text, prefix = ""
+    ):
         metrics_data = MetricsData(
             resource_metrics=[
                 ResourceMetrics(

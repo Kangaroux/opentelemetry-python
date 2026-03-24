@@ -1,5 +1,13 @@
 """Test script to check given paths for valid README.rst files."""
+from __future__ import division
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import unicode_literals
 
+from builtins import map
+from builtins import open
+from future import standard_library
+standard_library.install_aliases()
 import argparse
 import sys
 from pathlib import Path

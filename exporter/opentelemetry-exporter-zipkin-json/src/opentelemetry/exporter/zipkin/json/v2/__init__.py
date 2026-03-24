@@ -13,7 +13,13 @@
 # limitations under the License.
 
 """Zipkin Export Encoders for JSON formats"""
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+from future import standard_library
+standard_library.install_aliases()
 from typing import Dict
 
 from opentelemetry.exporter.zipkin.encoder import JsonEncoder
@@ -34,7 +40,7 @@ class JsonV2Encoder(JsonEncoder):
         SpanKind.CONSUMER: "CONSUMER",
     }
 
-    def _encode_span(self, span: Span, encoded_local_endpoint: Dict) -> Dict:
+    def _encode_span(self, span, encoded_local_endpoint):
         context = span.get_span_context()
         encoded_span = {
             "traceId": self._encode_trace_id(context.trace_id),

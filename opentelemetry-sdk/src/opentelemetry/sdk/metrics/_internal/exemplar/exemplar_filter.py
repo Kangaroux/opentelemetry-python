@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from future import standard_library
+standard_library.install_aliases()
 from abc import ABC, abstractmethod
 from typing import Union
 
@@ -35,11 +41,11 @@ class ExemplarFilter(ABC):
     @abstractmethod
     def should_sample(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> bool:
+        value,
+        time_unix_nano,
+        attributes,
+        context,
+    ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 
         Args:
@@ -62,11 +68,11 @@ class AlwaysOnExemplarFilter(ExemplarFilter):
 
     def should_sample(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> bool:
+        value,
+        time_unix_nano,
+        attributes,
+        context,
+    ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 
         Args:
@@ -89,11 +95,11 @@ class AlwaysOffExemplarFilter(ExemplarFilter):
 
     def should_sample(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> bool:
+        value,
+        time_unix_nano,
+        attributes,
+        context,
+    ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 
         Args:
@@ -115,11 +121,11 @@ class TraceBasedExemplarFilter(ExemplarFilter):
 
     def should_sample(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> bool:
+        value,
+        time_unix_nano,
+        attributes,
+        context,
+    ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 
         Args:

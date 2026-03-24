@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import round
+from future import standard_library
+standard_library.install_aliases()
 RANDOM_VALUE_BITS = 56
 MAX_THRESHOLD = 1 << RANDOM_VALUE_BITS  # 0% sampling
 MIN_THRESHOLD = 0  # 100% sampling
@@ -22,15 +29,15 @@ INVALID_RANDOM_VALUE = -1
 _probability_threshold_scale = float.fromhex("0x1p56")
 
 
-def calculate_threshold(sampling_probability: float) -> int:
+def calculate_threshold(sampling_probability):
     return MAX_THRESHOLD - round(
         sampling_probability * _probability_threshold_scale
     )
 
 
-def is_valid_threshold(threshold: int) -> bool:
+def is_valid_threshold(threshold):
     return MIN_THRESHOLD <= threshold <= MAX_THRESHOLD
 
 
-def is_valid_random_value(random_value: int) -> bool:
+def is_valid_random_value(random_value):
     return 0 <= random_value <= MAX_RANDOM_VALUE

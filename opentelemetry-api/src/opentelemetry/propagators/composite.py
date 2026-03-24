@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from future import standard_library
+standard_library.install_aliases()
 import logging
 import typing
 
@@ -31,16 +37,16 @@ class CompositePropagator(textmap.TextMapPropagator):
     """
 
     def __init__(
-        self, propagators: typing.Sequence[textmap.TextMapPropagator]
-    ) -> None:
+        self, propagators
+    ):
         self._propagators = propagators
 
     def extract(
         self,
-        carrier: textmap.CarrierT,
-        context: typing.Optional[Context] = None,
-        getter: textmap.Getter[textmap.CarrierT] = textmap.default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = textmap.default_getter,
+    ):
         """Run each of the configured propagators with the given context and carrier.
         Propagators are run in the order they are configured, if multiple
         propagators write the same context key, the propagator later in the list
@@ -54,10 +60,10 @@ class CompositePropagator(textmap.TextMapPropagator):
 
     def inject(
         self,
-        carrier: textmap.CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: textmap.Setter[textmap.CarrierT] = textmap.default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = textmap.default_setter,
+    ):
         """Run each of the configured propagators with the given context and carrier.
         Propagators are run in the order they are configured, if multiple
         propagators write the same carrier key, the propagator later in the list
@@ -69,7 +75,7 @@ class CompositePropagator(textmap.TextMapPropagator):
             propagator.inject(carrier, context, setter=setter)
 
     @property
-    def fields(self) -> typing.Set[str]:
+    def fields(self):
         """Returns a set with the fields set in `inject`.
 
         See

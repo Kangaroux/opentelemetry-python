@@ -1,3 +1,7 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,6 +15,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from builtins import int
+from future import standard_library
+standard_library.install_aliases()
 from collections import defaultdict
 from typing import List, Sequence
 
@@ -34,12 +41,12 @@ from opentelemetry.sdk._logs import ReadableLogRecord
 
 
 def encode_logs(
-    batch: Sequence[ReadableLogRecord],
-) -> ExportLogsServiceRequest:
+    batch,
+):
     return ExportLogsServiceRequest(resource_logs=_encode_resource_logs(batch))
 
 
-def _encode_log(readable_log_record: ReadableLogRecord) -> PB2LogRecord:
+def _encode_log(readable_log_record):
     span_id = (
         None
         if readable_log_record.log_record.span_id == 0
@@ -71,8 +78,8 @@ def _encode_log(readable_log_record: ReadableLogRecord) -> PB2LogRecord:
 
 
 def _encode_resource_logs(
-    batch: Sequence[ReadableLogRecord],
-) -> List[ResourceLogs]:
+    batch,
+):
     sdk_resource_logs = defaultdict(lambda: defaultdict(list))
 
     for readable_log in batch:
