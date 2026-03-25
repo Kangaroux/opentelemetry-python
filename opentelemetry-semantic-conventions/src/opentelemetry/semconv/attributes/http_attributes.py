@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from enum import Enum
-from typing import Final
+from typing_extensions import Final
 
 HTTP_REQUEST_HEADER_TEMPLATE: Final = "http.request.header"
 """

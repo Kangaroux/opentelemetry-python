@@ -6,14 +6,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from typing_extensions import TypeAlias
 
-AlwaysOffSampler: TypeAlias = Optional[dict[str, Any]]
+AlwaysOffSampler: TypeAlias = Optional[Dict[str, Any]]
 
 
-AlwaysOnSampler: TypeAlias = Optional[dict[str, Any]]
+AlwaysOnSampler: TypeAlias = Optional[Dict[str, Any]]
 
 
 @dataclass
@@ -22,13 +22,13 @@ class AttributeLimits:
     attribute_count_limit: Optional[int] = None
 
 
-Value: TypeAlias = list[str]
+Value: TypeAlias = List[str]
 
 
-Value1: TypeAlias = list[bool]
+Value1: TypeAlias = List[bool]
 
 
-Value2: TypeAlias = list[float]
+Value2: TypeAlias = List[float]
 
 
 class AttributeType(Enum):
@@ -42,13 +42,13 @@ class AttributeType(Enum):
     double_array = "double_array"
 
 
-B3MultiPropagator: TypeAlias = Optional[dict[str, Any]]
+B3MultiPropagator: TypeAlias = Optional[Dict[str, Any]]
 
 
-B3Propagator: TypeAlias = Optional[dict[str, Any]]
+B3Propagator: TypeAlias = Optional[Dict[str, Any]]
 
 
-BaggagePropagator: TypeAlias = Optional[dict[str, Any]]
+BaggagePropagator: TypeAlias = Optional[Dict[str, Any]]
 
 
 @dataclass
@@ -70,16 +70,16 @@ class CardinalityLimits:
     up_down_counter: Optional[int] = None
 
 
-ConsoleExporter: TypeAlias = Optional[dict[str, Any]]
+ConsoleExporter: TypeAlias = Optional[Dict[str, Any]]
 
 
-DefaultAggregation: TypeAlias = Optional[dict[str, Any]]
+DefaultAggregation: TypeAlias = Optional[Dict[str, Any]]
 
 
-Distribution: TypeAlias = dict[str, dict[str, Any]]
+Distribution: TypeAlias = Dict[str, Dict[str, Any]]
 
 
-DropAggregation: TypeAlias = Optional[dict[str, Any]]
+DropAggregation: TypeAlias = Optional[Dict[str, Any]]
 
 
 class ExemplarFilter(Enum):
@@ -88,10 +88,10 @@ class ExemplarFilter(Enum):
     trace_based = "trace_based"
 
 
-ExperimentalComposableAlwaysOffSampler: TypeAlias = Optional[dict[str, Any]]
+ExperimentalComposableAlwaysOffSampler: TypeAlias = Optional[Dict[str, Any]]
 
 
-ExperimentalComposableAlwaysOnSampler: TypeAlias = Optional[dict[str, Any]]
+ExperimentalComposableAlwaysOnSampler: TypeAlias = Optional[Dict[str, Any]]
 
 
 @dataclass
@@ -112,10 +112,10 @@ class ExperimentalComposableRuleBasedSamplerRuleAttributeValues:
     values: list[str]
 
 
-ExperimentalContainerResourceDetector: TypeAlias = Optional[dict[str, Any]]
+ExperimentalContainerResourceDetector: TypeAlias = Optional[Dict[str, Any]]
 
 
-ExperimentalHostResourceDetector: TypeAlias = Optional[dict[str, Any]]
+ExperimentalHostResourceDetector: TypeAlias = Optional[Dict[str, Any]]
 
 
 @dataclass
@@ -132,8 +132,8 @@ class ExperimentalHttpServerInstrumentation:
     known_methods: Optional[list[str]] = None
 
 
-ExperimentalLanguageSpecificInstrumentation: TypeAlias = dict[
-    str, dict[str, Any]
+ExperimentalLanguageSpecificInstrumentation: TypeAlias = Dict[
+    str, Dict[str, Any]
 ]
 
 
@@ -158,7 +158,7 @@ class ExperimentalProbabilitySampler:
     ratio: Optional[float] = None
 
 
-ExperimentalProcessResourceDetector: TypeAlias = Optional[dict[str, Any]]
+ExperimentalProcessResourceDetector: TypeAlias = Optional[Dict[str, Any]]
 
 
 class ExperimentalPrometheusTranslationStrategy(Enum):
@@ -179,7 +179,7 @@ class ExperimentalSemconvConfig:
     dual_emit: Optional[bool] = None
 
 
-ExperimentalServiceResourceDetector: TypeAlias = Optional[dict[str, Any]]
+ExperimentalServiceResourceDetector: TypeAlias = Optional[Dict[str, Any]]
 
 
 class ExperimentalSpanParent(Enum):
@@ -252,7 +252,7 @@ class InstrumentType(Enum):
     up_down_counter = "up_down_counter"
 
 
-LastValueAggregation: TypeAlias = Optional[dict[str, Any]]
+LastValueAggregation: TypeAlias = Optional[Dict[str, Any]]
 
 
 @dataclass
@@ -267,7 +267,7 @@ class NameStringValuePair:
     value: Optional[str]
 
 
-OpenCensusMetricProducer: TypeAlias = Optional[dict[str, Any]]
+OpenCensusMetricProducer: TypeAlias = Optional[Dict[str, Any]]
 
 
 @dataclass
@@ -378,10 +378,10 @@ class SpanLimits:
     link_attribute_count_limit: Optional[int] = None
 
 
-SumAggregation: TypeAlias = Optional[dict[str, Any]]
+SumAggregation: TypeAlias = Optional[Dict[str, Any]]
 
 
-TraceContextPropagator: TypeAlias = Optional[dict[str, Any]]
+TraceContextPropagator: TypeAlias = Optional[Dict[str, Any]]
 
 
 @dataclass

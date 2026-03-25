@@ -23,12 +23,12 @@ import threading
 import time
 import weakref
 from abc import abstractmethod
-from typing import (
-    Generic,
-    Optional,
-    Protocol,
-    TypeVar,
-)
+from typing import Generic, Optional, TypeVar
+
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
 
 from opentelemetry.context import (
     _SUPPRESS_INSTRUMENTATION_KEY,
@@ -73,7 +73,7 @@ Telemetry = TypeVar("Telemetry")
 
 class Exporter(Protocol[Telemetry]):
     @abstractmethod
-    def export(self, batch: list[Telemetry], /):
+    def export(self, batch):  # type: ignore
         raise NotImplementedError
 
     @abstractmethod

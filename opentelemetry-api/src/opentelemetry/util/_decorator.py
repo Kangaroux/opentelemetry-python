@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import contextlib
 import functools
 import inspect
@@ -32,7 +34,7 @@ if TYPE_CHECKING:
 
 
 class _AgnosticContextManager(
-    contextlib._GeneratorContextManager[R],
+    contextlib._GeneratorContextManager,  # type: ignore[misc]
     Generic[R],
 ):  # pylint: disable=protected-access
     """Context manager that can decorate both async and sync functions.

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from enum import Enum
-from typing import Final
+from typing_extensions import Final
 
 DISK_IO_DIRECTION: Final = "disk.io.direction"
 """

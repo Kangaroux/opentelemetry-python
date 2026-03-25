@@ -418,7 +418,7 @@ class MetricReader(ABC):
         """
 
 
- class InMemoryMetricReader(MetricReader):
+class InMemoryMetricReader(MetricReader):
     """Implementation of `MetricReader` that returns its metrics from :func:`get_metrics_data`.
 
     This is useful for e.g. unit tests.

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from typing import Final
+from typing_extensions import Final
 
 DB_CLIENT_OPERATION_DURATION: Final = "db.client.operation.duration"
 """

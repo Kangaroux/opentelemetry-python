@@ -136,19 +136,15 @@ class ProxyEventLogger(EventLogger):
         self._event_logger.emit(event)
 
 
-@deprecated(
-    "You should use `LoggerProvider` instead. "
-    "Deprecated since version 1.39.0 and will be removed in a future release."
-)
 class EventLoggerProvider(ABC):
     @abstractmethod
     def get_event_logger(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> EventLogger:
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         """Returns an EventLoggerProvider for use."""
 
 

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from typing import Final
+from typing_extensions import Final
 
 from opentelemetry.metrics import Histogram, Meter, UpDownCounter
 

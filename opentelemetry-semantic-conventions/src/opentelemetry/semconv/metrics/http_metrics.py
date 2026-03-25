@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from typing import Final
+from typing_extensions import Final
 
 HTTP_CLIENT_REQUEST_DURATION: Final = "http.client.request.duration"
 """

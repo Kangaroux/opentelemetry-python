@@ -2135,18 +2135,24 @@ class TestSpanLimits(unittest.TestCase):
         }
 
         for env_var, bad_value in test_cases.items():
-            with self.subTest(f"Testing {env_var}={bad_value}"):
-                with (
-                    self.assertRaises(ValueError) as error,
-                    patch.dict("os.environ", {env_var: bad_value}, clear=True),
+            with self.subTest("Testing {}={}".format(env_var, bad_value)):
+                with patch.dict(
+                    "os.environ", {env_var: bad_value}, clear=True
                 ):
-                    trace.SpanLimits()
+                    with self.assertRaises(ValueError) as error:
+                        trace.SpanLimits()
 
-                expected_msg = f"{env_var} must be a non-negative integer but got {bad_value}"
+                expected_msg = (
+                    "{} must be a non-negative integer but got {}".format(
+                        env_var, bad_value
+                    )
+                )
                 self.assertEqual(
                     expected_msg,
                     str(error.exception),
-                    f"Unexpected error message for {env_var}={bad_value}",
+                    "Unexpected error message for {}={}".format(
+                        env_var, bad_value
+                    ),
                 )
 
 

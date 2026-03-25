@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from enum import Enum
-from typing import Final
+from typing_extensions import Final
 
 MESSAGING_BATCH_MESSAGE_COUNT: Final = "messaging.batch.message_count"
 """

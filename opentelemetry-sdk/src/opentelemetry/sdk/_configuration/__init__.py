@@ -25,7 +25,21 @@ import os
 import warnings
 from abc import ABC, abstractmethod
 from os import environ
-from typing import Any, Callable, Mapping, Protocol, Sequence, Type, Union
+from typing import (
+    Any,
+    Callable,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    Type,
+    Union,
+)
+
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
 
 from typing_extensions import Literal
 
@@ -492,10 +506,10 @@ def _import_id_generator(id_generator_name: str) -> IdGenerator:
 
 
 def _initialize_components(
-    auto_instrumentation_version: str | None = None,
-    trace_exporter_names: list[str] | None = None,
-    metric_exporter_names: list[str] | None = None,
-    log_exporter_names: list[str] | None = None,
+    auto_instrumentation_version: Optional[str] = None,
+    trace_exporter_names: Optional[List[str]] = None,
+    metric_exporter_names: Optional[List[str]] = None,
+    log_exporter_names: Optional[List[str]] = None,
     sampler: Sampler | None = None,
     resource_attributes: Attributes | None = None,
     id_generator: IdGenerator | None = None,

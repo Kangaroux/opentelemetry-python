@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 # pylint: disable=too-many-lines
 import abc
 import atexit
@@ -1264,7 +1266,7 @@ class Tracer(trace_api.Tracer):
 _TracerConfiguratorT = Callable[[InstrumentationScope], _TracerConfig]
 _InstrumentationScopePredicateT = Callable[[InstrumentationScope], bool]
 _TracerConfiguratorRulesT = Sequence[
-    tuple[_InstrumentationScopePredicateT, _TracerConfig]
+    typing.Tuple[_InstrumentationScopePredicateT, _TracerConfig]
 ]
 
 
@@ -1297,7 +1299,7 @@ class _RuleBasedTracerConfigurator:
         return self._default_config
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 def _default_tracer_configurator(
     tracer_scope: InstrumentationScope,
 ) -> _TracerConfig:
@@ -1312,7 +1314,7 @@ def _default_tracer_configurator(
     )(tracer_scope=tracer_scope)
 
 
-@lru_cache
+@lru_cache(maxsize=None)
 def _disable_tracer_configurator(
     tracer_scope: InstrumentationScope,
 ) -> _TracerConfig:

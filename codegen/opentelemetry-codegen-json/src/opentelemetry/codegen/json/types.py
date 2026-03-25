@@ -14,7 +14,7 @@
 
 # pylint: disable=no-member
 
-from typing import Final
+from typing_extensions import Final
 
 from google.protobuf import descriptor_pb2 as descriptor
 

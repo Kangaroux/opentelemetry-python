@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Sequence
+from typing import List, Optional, Sequence
 
 from opentelemetry.trace import TraceState
 
@@ -62,7 +62,7 @@ class OtelTraceState:
         random_value = INVALID_RANDOM_VALUE
 
         members = ot.split(";")
-        rest: list[str] | None = None
+        rest: Optional[List[str]] = None
         for member in members:
             if member.startswith("th:"):
                 threshold = _parse_th(member[len("th:") :], INVALID_THRESHOLD)

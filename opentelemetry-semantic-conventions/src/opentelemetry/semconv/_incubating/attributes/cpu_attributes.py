@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from enum import Enum
-from typing import Final
+from typing_extensions import Final
 
 CPU_LOGICAL_NUMBER: Final = "cpu.logical_number"
 """

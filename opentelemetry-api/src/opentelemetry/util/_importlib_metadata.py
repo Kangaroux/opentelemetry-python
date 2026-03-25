@@ -17,8 +17,18 @@ from __future__ import unicode_literals
 # limitations under the License.
 
 from future import standard_library
+
 standard_library.install_aliases()
-from functools import cache
+
+try:
+    from functools import cache
+except ImportError:
+    # Python 3.7, 3.8 compatibility
+    from functools import lru_cache
+
+    def cache(func):
+        return lru_cache()(func)
+
 
 # FIXME: Use importlib.metadata (not importlib_metadata)
 # when support for 3.11 is dropped if the rest of

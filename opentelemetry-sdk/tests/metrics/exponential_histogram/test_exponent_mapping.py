@@ -20,8 +20,33 @@ from __future__ import unicode_literals
 
 from builtins import range
 from future import standard_library
+
 standard_library.install_aliases()
-from math import inf, nextafter
+from math import inf
+
+try:
+    from math import nextafter
+except ImportError:
+    # Python 3.7 doesn't have math.nextafter, implement it manually
+    def nextafter(x, y):
+        """Implement nextafter for Python 3.7+"""
+        import struct
+
+        # Get the float as bytes
+        x_bytes = struct.pack(">d", float(x))
+        y_bytes = struct.pack(">d", float(y))
+        # Convert to integers
+        x_int = struct.unpack(">Q", x_bytes)[0]
+        y_int = struct.unpack(">Q", y_bytes)[0]
+        # Increment or decrement based on direction
+        if y > x:
+            x_int += 1
+        else:
+            x_int -= 1
+        # Convert back to float
+        return struct.unpack(">d", struct.pack(">Q", x_int))[0]
+
+
 from sys import float_info
 from unittest.mock import patch
 

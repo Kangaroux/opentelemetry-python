@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final
+from typing_extensions import Final
 
 ONC_RPC_PROCEDURE_NAME: Final = "onc_rpc.procedure.name"
 """

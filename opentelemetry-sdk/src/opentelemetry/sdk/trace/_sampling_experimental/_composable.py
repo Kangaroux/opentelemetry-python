@@ -15,7 +15,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Protocol, Sequence
+from typing import Callable, Sequence
+
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
 
 from opentelemetry.context import Context
 from opentelemetry.trace import Link, SpanKind, TraceState

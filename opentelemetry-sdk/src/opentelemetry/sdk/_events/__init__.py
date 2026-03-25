@@ -13,10 +13,9 @@
 # limitations under the License.
 
 import logging
+from functools import wraps
 from time import time_ns
 from typing import Optional
-
-from typing_extensions import deprecated
 
 from opentelemetry import trace
 from opentelemetry._events import Event
@@ -34,18 +33,37 @@ from opentelemetry.util.types import _ExtendedAttributes
 _logger = logging.getLogger(__name__)
 
 
-@deprecated(
+def _deprecated(message):
+    """Simple deprecated decorator for Python 3.7 compatibility."""
+
+    def decorator(cls):
+        original_init = cls.__init__
+
+        @wraps(original_init)
+        def wrapped_init(self, *args, **kwargs):
+            import warnings
+
+            warnings.warn(message, DeprecationWarning, stacklevel=2)
+            return original_init(self, *args, **kwargs)
+
+        cls.__init__ = wrapped_init
+        return cls
+
+    return decorator
+
+
+@_deprecated(
     "You should use `Logger` instead. "
     "Deprecated since version 1.39.0 and will be removed in a future release."
 )
 class EventLogger(APIEventLogger):
     def __init__(
         self,
-        logger_provider: LoggerProvider,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
+        logger_provider,
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
     ):
         super().__init__(
             name=name,
@@ -53,11 +71,11 @@ class EventLogger(APIEventLogger):
             schema_url=schema_url,
             attributes=attributes,
         )
-        self._logger: Logger = logger_provider.get_logger(
+        self._logger = logger_provider.get_logger(
             name, version, schema_url, attributes
         )
 
-    def emit(self, event: Event) -> None:
+    def emit(self, event):
         if isinstance(self._logger, NoOpLogger):
             # Do nothing if SDK is disabled
             return
@@ -77,21 +95,21 @@ class EventLogger(APIEventLogger):
         self._logger.emit(log_record)
 
 
-@deprecated(
+@_deprecated(
     "You should use `LoggerProvider` instead. "
     "Deprecated since version 1.39.0 and will be removed in a future release."
 )
 class EventLoggerProvider(APIEventLoggerProvider):
-    def __init__(self, logger_provider: Optional[LoggerProvider] = None):
+    def __init__(self, logger_provider=None):
         self._logger_provider = logger_provider or get_logger_provider()
 
     def get_event_logger(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> EventLogger:
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         if not name:
             _logger.warning("EventLogger created with invalid name: %s", name)
         return EventLogger(

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Final
+from typing_extensions import Final
 
 POOL_NAME: Final = "pool.name"
 """

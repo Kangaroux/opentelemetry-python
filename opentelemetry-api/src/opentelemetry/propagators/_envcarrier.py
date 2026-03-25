@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
 import os
 import typing
 from collections.abc import MutableMapping
@@ -73,7 +75,7 @@ class EnvironmentGetter(Getter[typing.Mapping[str, str]]):
         return list(self.carrier.keys())
 
 
-class EnvironmentSetter(Setter[MutableMapping[str, str]]):
+class EnvironmentSetter(Setter):  # type: ignore[misc]
     """Setter implementation for building environment variable dictionaries.
 
     EnvironmentSetter builds a dictionary of environment variables that

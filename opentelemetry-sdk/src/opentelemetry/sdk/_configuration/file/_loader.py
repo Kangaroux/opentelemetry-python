@@ -14,11 +14,18 @@
 
 """Configuration file loading and parsing."""
 
-import importlib.resources
 import json
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, List
+
+try:
+    from importlib.resources import files as importlib_files
+except ImportError:
+    # Python 3.7, use backport
+    import importlib_resources
+
+    importlib_files = importlib_resources.files
 
 from opentelemetry.sdk._configuration.file._env_substitution import (
     substitute_env_vars,
@@ -41,14 +48,13 @@ except ImportError as exc:
         "Install with: pip install opentelemetry-sdk[file-configuration]"
     ) from exc
 
-_schema_cache: list[dict] = []
+_schema_cache: List[Dict[str, Any]] = []
 
 
 def _get_schema() -> dict:
     if not _schema_cache:
         schema_path = (
-            importlib.resources.files("opentelemetry.sdk._configuration")
-            / "schema.json"
+            importlib_files("opentelemetry.sdk._configuration") / "schema.json"
         )
         _schema_cache.append(
             json.loads(schema_path.read_text(encoding="utf-8"))
@@ -192,7 +198,7 @@ def _validate_schema(data: dict) -> None:
         ) from exc
 
 
-def _dict_to_model(data: dict[str, Any]) -> OpenTelemetryConfiguration:
+def _dict_to_model(data: Dict[str, Any]) -> OpenTelemetryConfiguration:
     """Convert dictionary to OpenTelemetryConfiguration model.
 
     Uses the generated dataclass from models.py. This provides basic

@@ -14,7 +14,12 @@
 
 from __future__ import annotations
 
-from typing import Protocol, Sequence
+from typing import Sequence, Tuple, Union
+
+try:
+    from typing import Protocol
+except ImportError:
+    from typing_extensions import Protocol
 
 from opentelemetry.context import Context
 from opentelemetry.trace import Link, SpanKind, TraceState
@@ -62,7 +67,7 @@ class AttributePredicate:
         return f"{self.key}={self.value}"
 
 
-RulesT = Sequence[tuple[PredicateT, ComposableSampler]]
+RulesT = Sequence[Tuple[PredicateT, ComposableSampler]]
 
 _non_sampling_intent = SamplingIntent(
     threshold=INVALID_THRESHOLD, threshold_reliable=False
