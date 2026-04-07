@@ -100,7 +100,7 @@ def remove_type_hints(content):
 
             # Remove parameter type hints: param: Type
             sig_text = re.sub(
-                r"\b(\w+)\s*:\s*(?:Union|Optional|List|Dict|Tuple|Callable|Any|\w+)(?:\s*\[[^\]]*\])?\s*(?=[,\)\n=])",
+                r"\b(\w+)\s*:\s*(?:Union|Optional|List|Dict|Tuple|Callable|Any|\w+)(?:\s*\[[^\]]*\])?",
                 r"\1",
                 sig_text,
             )
