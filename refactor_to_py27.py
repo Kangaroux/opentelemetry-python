@@ -66,24 +66,53 @@ def replace_fstrings(content):
 def remove_type_hints(content):
     """Remove type hints from function signatures and variable declarations."""
 
-    # Process the entire content as a single string to handle multi-line defs
-    # Remove return type hints: -> Type before :
-    content = re.sub(r"(\)\s*->\s*[^\n]+)\s*(?=\n*\s*:)", r")", content)
+    lines = content.split("\n")
+    result = []
+    i = 0
 
-    # Remove parameter type hints for multi-line function signatures
-    # Pattern: word: Type
-    # This handles both single-line and multi-line signatures
-    content = re.sub(
-        r"\b(\w+)\s*:\s*(\w+(?:\s*\[[^\]]*\])?)\s*(?=[,\)\n])",
-        r"\1",
-        content,
-    )
-    # Also handle type hints before = (for default values)
-    content = re.sub(
-        r"\b(\w+)\s*:\s*(\w+(?:\s*\[[^\]]*\])?)\s*=\s*",
-        r"\1 = ",
-        content,
-    )
+    while i < len(lines):
+        line = lines[i]
+
+        # Check if this starts a function definition
+        if re.search(r"\bdef\s+\w+\s*\(", line):
+            # Collect all lines of the function signature
+            sig_lines = []
+            paren_count = line.count("(") - line.count(")")
+            sig_lines.append(line)
+            i += 1
+
+            # Continue until we find the closing paren and colon
+            while paren_count > 0 and i < len(lines):
+                sig_lines.append(lines[i])
+                paren_count += lines[i].count("(") - lines[i].count(")")
+                i += 1
+
+            # Also add the line with the colon if not already included
+            if i < len(lines) and lines[i].strip().startswith(":"):
+                sig_lines.append(lines[i])
+                i += 1
+
+            # Join signature lines and process
+            sig_text = "\n".join(sig_lines)
+
+            # Remove return type hints
+            sig_text = re.sub(r"\s*->\s*[^\n]+(?=:)", "", sig_text)
+
+            # Remove parameter type hints: param: Type
+            sig_text = re.sub(
+                r"\b(\w+)\s*:\s*(?:Union|Optional|List|Dict|Tuple|Callable|Any|\w+)(?:\s*\[[^\]]*\])?\s*(?=[,\)\n=])",
+                r"\1",
+                sig_text,
+            )
+
+            # Add processed signature lines back
+            result.extend(sig_text.split("\n"))
+            continue
+
+        result.append(line)
+        i += 1
+
+    content = "\n".join(result)
 
     # Remove Generic[type] from class definitions
     content = re.sub(r",\s*Generic\s*\[[^\]]+\]", "", content)
