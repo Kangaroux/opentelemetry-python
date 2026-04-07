@@ -4,11 +4,10 @@ Python 2.7 compatibility refactoring script.
 
 This script refactors Python files to be Python 2.7 compatible by:
 1. Removing 'from __future__ import annotations' imports
-2. Replacing f-strings with .format() or % formatting
+2. Replacing f-strings with .format() calls
 3. Removing type hints from function signatures
-4. Replacing walrus operators (:=) with traditional assignments
-5. Replacing Python 3.10+ union syntax (X | Y) with Union[X, Y]
-6. Replacing dataclasses with traditional class implementations
+4. Removing @dataclass decorators
+5. Removing TypeAlias usage (Python 3.10+ feature)
 """
 
 import codecs
@@ -18,35 +17,30 @@ import sys
 
 def remove_future_annotations(content):
     """Remove 'from __future__ import annotations' imports."""
-    # Match standalone import
     pattern = r"^from __future__ import annotations\s*\n"
     content = re.sub(pattern, "", content, flags=re.MULTILINE)
     return content
 
 
 def replace_fstrings(content):
-    """Replace f-strings with .format() or % formatting."""
+    """Replace f-strings with .format() calls."""
 
     def replace_fstring(match):
         fstring = match.group(0)
         quote = '"' if fstring.startswith('f"') else "'"
-        inner = fstring[2:-1]  # Remove f" and "
+        inner = fstring[2:-1]
 
-        # Extract expressions from braces
         exprs = []
         result = inner
 
         def extract_expr(m):
             expr = m.group(1)
             expr = expr.strip()
-            # Handle format specs like {var:02x}
             if ":" in expr:
                 expr = expr.split(":")[0].strip()
-            # Handle !r, !s conversions
             if "!" in expr:
                 expr = expr.rsplit("!", 1)[0].strip()
             exprs.append(expr)
-            # Replace with {} for .format()
             return "{}"
 
         result = re.sub(r"\{([^}]*)\}", extract_expr, result)
@@ -56,7 +50,6 @@ def replace_fstrings(content):
 
         return quote + result + quote + ".format(" + ", ".join(exprs) + ")"
 
-    # Match f-strings - simple pattern
     content = re.sub(r'f"([^"\\]*(?:\\.[^"\\]*)*)"', replace_fstring, content)
     content = re.sub(r"f'([^'\\]*(?:\\.[^'\\]*)*)'", replace_fstring, content)
 
@@ -64,8 +57,11 @@ def replace_fstrings(content):
 
 
 def remove_type_hints(content):
-    """Remove type hints from function signatures and variable declarations."""
+    """Remove type hints from function signatures and class attributes.
 
+    Conservative approach: only remove hints from known patterns to avoid
+    breaking valid Python 2.7 syntax.
+    """
     lines = content.split("\n")
     result = []
     i = 0
@@ -95,12 +91,18 @@ def remove_type_hints(content):
             # Join signature lines and process
             sig_text = "\n".join(sig_lines)
 
-            # Remove return type hints
-            sig_text = re.sub(r"\s*->\s*[^\n]+(?=:)", "", sig_text)
+            # Remove return type hints (-> Type)
+            sig_text = re.sub(r"\s*->\s*[^,)\n]+", "", sig_text)
 
             # Remove parameter type hints: param: Type
+            # Only match patterns like "name: Type" where Type is a known type
             sig_text = re.sub(
-                r"\b(\w+)\s*:\s*(?:Union|Optional|List|Dict|Tuple|Callable|Any|\w+)(?:\s*\[[^\]]*\])?",
+                r"(\w+)\s*:\s*(Union|Optional|List|Dict|Tuple|Callable|Sequence|Iterable|Generator|TypeVar|Generic|Type|Any)[(,\s\n]",
+                r"\1",
+                sig_text,
+            )
+            sig_text = re.sub(
+                r"(\w+)\s*:\s*[^,\)\n]+(?=[,)\n])",
                 r"\1",
                 sig_text,
             )
@@ -120,11 +122,11 @@ def remove_type_hints(content):
     return content
 
 
-def replace_walrus_operators(content):
+def remove_walrus_operators(content):
     """Replace walrus operators (:=) with traditional assignments."""
+
     # Pattern: if (var := expr):
     # Convert to: var = expr\nif var:
-
     def replace_walrus(match):
         before = match.group(1)
         var = match.group(2)
@@ -134,19 +136,36 @@ def replace_walrus_operators(content):
     content = re.sub(
         r"(if\s+)\((\w+)\s*:=\s*([^)]+)\)", replace_walrus, content
     )
+    return content
 
+
+def remove_typealias(content):
+    """Remove TypeAlias usage (Python 3.10+ feature)."""
+    # Remove import line
+    content = re.sub(
+        r"^from typing_extensions import TypeAlias\s*\n",
+        "",
+        content,
+        flags=re.MULTILINE,
+    )
+    # Replace "name: TypeAlias = value" with "name = value"
+    content = re.sub(
+        r"^(\w+):\s*TypeAlias\s*=\s*(.+)$",
+        r"\1 = \2",
+        content,
+        flags=re.MULTILINE,
+    )
     return content
 
 
 def remove_forward_references(content):
-    """Remove forward reference strings like 'type' in function signatures."""
-    # Replace "Type" strings in function signatures with plain Type
+    """Remove forward reference strings in function signatures."""
     lines = content.split("\n")
     result = []
     for line in lines:
-        # Remove quoted type references in signatures
-        # e.g., def foo(bar: "Type") -> "ReturnType":
-        line = re.sub(r'"\w+"', "Type", line)
+        # Only remove quoted strings in type contexts
+        if re.search(r":\s*\"", line):
+            line = re.sub(r'"\w+"', "Type", line)
         result.append(line)
     content = "\n".join(result)
     return content
@@ -162,30 +181,22 @@ def remove_dataclass_decorators(content):
 
 def replace_union_syntax(content):
     """Replace Python 3.10+ union syntax (X | Y) with Union[X, Y]."""
-
     # Replace type | None with Optional[type]
     content = re.sub(r"(\w+)\s*\|\s*None", r"Optional[\1]", content)
-
     # Replace type1 | type2 with Union[type1, type2]
     content = re.sub(r"(\w+)\s*\|\s*(\w+)", r"Union[\1, \2]", content)
-
     return content
 
 
 def replace_dataclasses(content):
-    """Replace @dataclass decorated classes with traditional class implementations."""
-
-    # Remove @dataclass decorator
+    """Remove @dataclass decorators (simple approach)."""
     content = re.sub(r"@dataclass[^)]*\)\s*\n", "", content)
     content = re.sub(r"@dataclass\s*\n", "", content)
-
     return content
 
 
 def replace_raise_from(content):
     """Replace 'raise ... from ...' syntax with Python 2.7 compatible syntax."""
-    # Python 2.7 doesn't support 'raise ... from ...' syntax
-    # Remove the 'from ...' part
     content = re.sub(r"raise\s+([^\n]+)\s+from\s+[^\n]+", r"raise \1", content)
     return content
 
@@ -198,13 +209,15 @@ def refactor_file(filepath):
 
         original_content = content
 
-        # Apply transformations
+        # Apply transformations in order
         content = remove_future_annotations(content)
+        content = remove_typealias(content)
         content = replace_fstrings(content)
         content = remove_type_hints(content)
-        content = replace_walrus_operators(content)
+        content = remove_walrus_operators(content)
+        content = remove_forward_references(content)
         content = replace_union_syntax(content)
-        content = replace_dataclasses(content)
+        content = replace_dataclass_decorators(content)
         content = replace_raise_from(content)
 
         # Write back if changed
