@@ -41,11 +41,13 @@ _VALUE_PATTERN = re.compile(_VALUE_FORMAT)
 
 _TRACECONTEXT_MAXIMUM_TRACESTATE_KEYS = 32
 _delimiter_pattern = re.compile(r"[ \t]*,[ \t]*")
-_member_pattern = re.compile(f"({_KEY_FORMAT})(=)({_VALUE_FORMAT})[ \t]*")
+_member_pattern = re.compile(
+    "({})(=)({})[ \t]*".format(_KEY_FORMAT, _VALUE_FORMAT)
+)
 _logger = logging.getLogger(__name__)
 
 
-def _is_valid_pair(key: str, value: str) -> bool:
+def _is_valid_pair(key, value):
     return (
         isinstance(key, str)
         and _KEY_PATTERN.fullmatch(key) is not None
@@ -58,7 +60,7 @@ class Span(abc.ABC):
     """A span represents a single operation within a trace."""
 
     @abc.abstractmethod
-    def end(self, end_time: typing.Optional[int] = None) -> None:
+    def end(self, end_time=None):
         """Sets the current time as the span's end time.
 
         The span's end time is the wall time at which the operation finished.
@@ -68,7 +70,7 @@ class Span(abc.ABC):
         """
 
     @abc.abstractmethod
-    def get_span_context(self) -> "SpanContext":
+    def get_span_context(self):
         """Gets the span's SpanContext.
 
         Get an immutable, serializable identifier for this span that can be
@@ -79,9 +81,7 @@ class Span(abc.ABC):
         """
 
     @abc.abstractmethod
-    def set_attributes(
-        self, attributes: typing.Mapping[str, types.AttributeValue]
-    ) -> None:
+    def set_attributes(self, attributes):
         """Sets Attributes.
 
         Sets Attributes with the key and value passed as arguments dict.
@@ -93,7 +93,7 @@ class Span(abc.ABC):
         """
 
     @abc.abstractmethod
-    def set_attribute(self, key: str, value: types.AttributeValue) -> None:
+    def set_attribute(self, key, value):
         """Sets an Attribute.
 
         Sets a single Attribute with the key and value passed as arguments.
@@ -105,12 +105,7 @@ class Span(abc.ABC):
         """
 
     @abc.abstractmethod
-    def add_event(
-        self,
-        name: str,
-        attributes: types.Attributes = None,
-        timestamp: typing.Optional[int] = None,
-    ) -> None:
+    def add_event(self, name, attributes=None, timestamp=None):
         """Adds an `Event`.
 
         Adds a single `Event` with the name and, optionally, a timestamp and
@@ -118,11 +113,7 @@ class Span(abc.ABC):
         timestamp if the `timestamp` argument is omitted.
         """
 
-    def add_link(  # pylint: disable=no-self-use
-        self,
-        context: "SpanContext",
-        attributes: types.Attributes = None,
-    ) -> None:
+    def add_link(self, context, attributes=None):  # pylint: disable=no-self-use
         """Adds a `Link`.
 
         Adds a single `Link` with the `SpanContext` of the span to link to and,
@@ -140,7 +131,7 @@ class Span(abc.ABC):
         )
 
     @abc.abstractmethod
-    def update_name(self, name: str) -> None:
+    def update_name(self, name):
         """Updates the `Span` name.
 
         This will override the name provided via :func:`opentelemetry.trace.Tracer.start_span`.
@@ -150,7 +141,7 @@ class Span(abc.ABC):
         """
 
     @abc.abstractmethod
-    def is_recording(self) -> bool:
+    def is_recording(self):
         """Returns whether this span will be recorded.
 
         Returns true if this Span is active and recording information like
@@ -158,38 +149,25 @@ class Span(abc.ABC):
         """
 
     @abc.abstractmethod
-    def set_status(
-        self,
-        status: typing.Union[Status, StatusCode],
-        description: typing.Optional[str] = None,
-    ) -> None:
+    def set_status(self, status, description=None):
         """Sets the Status of the Span. If used, this will override the default
         Span status.
         """
 
     @abc.abstractmethod
     def record_exception(
-        self,
-        exception: BaseException,
-        attributes: types.Attributes = None,
-        timestamp: typing.Optional[int] = None,
-        escaped: bool = False,
-    ) -> None:
+        self, exception, attributes=None, timestamp=None, escaped=False
+    ):
         """Records an exception as a span event."""
 
-    def __enter__(self) -> "Span":
+    def __enter__(self):
         """Invoked when `Span` is used as a context manager.
 
         Returns the `Span` itself.
         """
         return self
 
-    def __exit__(
-        self,
-        exc_type: typing.Optional[typing.Type[BaseException]],
-        exc_val: typing.Optional[BaseException],
-        exc_tb: typing.Optional[python_types.TracebackType],
-    ) -> None:
+    def __exit__(self, exc_type, exc_val, exc_tb):
         """Ends context manager and calls `end` on the `Span`."""
 
         self.end()
@@ -211,11 +189,11 @@ class TraceFlags(int):
     SAMPLED = 0x01
 
     @classmethod
-    def get_default(cls) -> "TraceFlags":
+    def get_default(cls):
         return cls(cls.DEFAULT)
 
     @property
-    def sampled(self) -> bool:
+    def sampled(self):
         return bool(self & TraceFlags.SAMPLED)
 
 
@@ -233,12 +211,7 @@ class TraceState(typing.Mapping[str, str]):
         https://www.w3.org/TR/trace-context/#tracestate-field
     """
 
-    def __init__(
-        self,
-        entries: typing.Optional[
-            typing.Sequence[typing.Tuple[str, str]]
-        ] = None,
-    ) -> None:
+    def __init__(self, entries=None):
         self._dict = {}  # type: Dict[str, str]
         if entries is None:
             return
@@ -260,26 +233,26 @@ class TraceState(typing.Mapping[str, str]):
                     "Invalid key/value pair (%s, %s) found.", key, value
                 )
 
-    def __contains__(self, item: object) -> bool:
+    def __contains__(self, item):
         return item in self._dict
 
-    def __getitem__(self, key: str) -> str:
+    def __getitem__(self, key):
         return self._dict[key]
 
-    def __iter__(self) -> typing.Iterator[str]:
+    def __iter__(self):
         return iter(self._dict)
 
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self._dict)
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         pairs = [
-            f"{{key={key}, value={value}}}"
+            "{{key={}, value={}}}".format(key, value)
             for key, value in self._dict.items()
         ]
         return str(pairs)
 
-    def add(self, key: str, value: str) -> "TraceState":
+    def add(self, key, value):
         """Adds a key-value pair to tracestate. The provided pair should
         adhere to w3c tracestate identifiers format.
 
@@ -310,7 +283,7 @@ class TraceState(typing.Mapping[str, str]):
         new_state = [(key, value)] + list(self._dict.items())
         return TraceState(new_state)
 
-    def update(self, key: str, value: str) -> "TraceState":
+    def update(self, key, value):
         """Updates a key-value pair in tracestate. The provided pair should
         adhere to w3c tracestate identifiers format.
 
@@ -335,7 +308,7 @@ class TraceState(typing.Mapping[str, str]):
         new_state = [(key, value), *prev_state.items()]
         return TraceState(new_state)
 
-    def delete(self, key: str) -> "TraceState":
+    def delete(self, key):
         """Deletes a key-value from tracestate.
 
         Args:
@@ -356,7 +329,7 @@ class TraceState(typing.Mapping[str, str]):
         new_state = list(prev_state.items())
         return TraceState(new_state)
 
-    def to_header(self) -> str:
+    def to_header(self):
         """Creates a w3c tracestate header from a TraceState.
 
         Returns:
@@ -366,7 +339,7 @@ class TraceState(typing.Mapping[str, str]):
         return ",".join(key + "=" + value for key, value in self._dict.items())
 
     @classmethod
-    def from_header(cls, header_list: typing.List[str]) -> "TraceState":
+    def from_header(cls, header_list):
         """Parses one or more w3c tracestate header into a TraceState.
 
         Args:
@@ -405,16 +378,16 @@ class TraceState(typing.Mapping[str, str]):
         return cls(list(pairs.items()))
 
     @classmethod
-    def get_default(cls) -> "TraceState":
+    def get_default(cls):
         return cls()
 
-    def keys(self) -> typing.KeysView[str]:
+    def keys(self):
         return self._dict.keys()
 
-    def items(self) -> typing.ItemsView[str, str]:
+    def items(self):
         return self._dict.items()
 
-    def values(self) -> typing.ValuesView[str]:
+    def values(self):
         return self._dict.values()
 
 
@@ -423,9 +396,7 @@ _TRACE_ID_MAX_VALUE = 2**128 - 1
 _SPAN_ID_MAX_VALUE = 2**64 - 1
 
 
-class SpanContext(
-    typing.Tuple[int, int, bool, "TraceFlags", "TraceState", bool]
-):
+class SpanContext(tuple):
     """The state of a Span to propagate between processes.
 
     This class includes the immutable attributes of a :class:`.Span` that must
@@ -441,12 +412,12 @@ class SpanContext(
 
     def __new__(
         cls,
-        trace_id: int,
-        span_id: int,
-        is_remote: bool,
-        trace_flags: typing.Optional["TraceFlags"] = DEFAULT_TRACE_OPTIONS,
-        trace_state: typing.Optional["TraceState"] = DEFAULT_TRACE_STATE,
-    ) -> "SpanContext":
+        trace_id,
+        span_id,
+        is_remote,
+        trace_flags=DEFAULT_TRACE_OPTIONS,
+        trace_state=DEFAULT_TRACE_STATE,
+    ):
         if trace_flags is None:
             trace_flags = DEFAULT_TRACE_OPTIONS
         if trace_state is None:
@@ -462,9 +433,7 @@ class SpanContext(
             (trace_id, span_id, is_remote, trace_flags, trace_state, is_valid),
         )
 
-    def __getnewargs__(
-        self,
-    ) -> typing.Tuple[int, int, bool, "TraceFlags", "TraceState"]:
+    def __getnewargs__(self):
         return (
             self.trace_id,
             self.span_id,
@@ -474,35 +443,35 @@ class SpanContext(
         )
 
     @property
-    def trace_id(self) -> int:
+    def trace_id(self):
         return self[0]  # pylint: disable=unsubscriptable-object
 
     @property
-    def span_id(self) -> int:
+    def span_id(self):
         return self[1]  # pylint: disable=unsubscriptable-object
 
     @property
-    def is_remote(self) -> bool:
+    def is_remote(self):
         return self[2]  # pylint: disable=unsubscriptable-object
 
     @property
-    def trace_flags(self) -> "TraceFlags":
+    def trace_flags(self):
         return self[3]  # pylint: disable=unsubscriptable-object
 
     @property
-    def trace_state(self) -> "TraceState":
+    def trace_state(self):
         return self[4]  # pylint: disable=unsubscriptable-object
 
     @property
-    def is_valid(self) -> bool:
+    def is_valid(self):
         return self[5]  # pylint: disable=unsubscriptable-object
 
-    def __setattr__(self, *args: str) -> None:
+    def __setattr__(self, *args):
         _logger.debug(
             "Immutable type, ignoring call to set attribute", stack_info=True
         )
 
-    def __delattr__(self, *args: str) -> None:
+    def __delattr__(self, *args):
         _logger.debug(
             "Immutable type, ignoring call to set attribute", stack_info=True
         )

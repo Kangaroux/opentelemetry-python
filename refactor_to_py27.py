@@ -138,6 +138,28 @@ def replace_walrus_operators(content):
     return content
 
 
+def remove_forward_references(content):
+    """Remove forward reference strings like 'type' in function signatures."""
+    # Replace "Type" strings in function signatures with plain Type
+    lines = content.split("\n")
+    result = []
+    for line in lines:
+        # Remove quoted type references in signatures
+        # e.g., def foo(bar: "Type") -> "ReturnType":
+        line = re.sub(r'"\w+"', "Type", line)
+        result.append(line)
+    content = "\n".join(result)
+    return content
+
+
+def remove_dataclass_decorators(content):
+    """Remove @dataclass decorators."""
+    content = re.sub(
+        r"^@dataclass(\([^)]*\))?\s*\n", "", content, flags=re.MULTILINE
+    )
+    return content
+
+
 def replace_union_syntax(content):
     """Replace Python 3.10+ union syntax (X | Y) with Union[X, Y]."""
 

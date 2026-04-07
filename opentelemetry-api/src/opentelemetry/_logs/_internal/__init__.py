@@ -33,8 +33,6 @@ The following code shows how to obtain a logger using the global :class:`.Logger
 .. versionadded:: 1.15.0
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from logging import getLogger
 from os import environ
@@ -67,16 +65,16 @@ class LogRecord(ABC):
     @overload
     def __init__(
         self,
-        *,
-        timestamp: Optional[int] = None,
-        observed_timestamp: Optional[int] = None,
-        context: Optional[Context] = None,
-        severity_text: Optional[str] = None,
-        severity_number: Optional[SeverityNumber] = None,
-        body: AnyValue = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-        event_name: Optional[str] = None,
-    ) -> None: ...
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_text=None,
+        severity_number=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
+        pass
 
     @overload
     @deprecated(
@@ -84,33 +82,32 @@ class LogRecord(ABC):
     )
     def __init__(
         self,
-        *,
-        timestamp: Optional[int] = None,
-        observed_timestamp: Optional[int] = None,
-        trace_id: Optional[int] = None,
-        span_id: Optional[int] = None,
-        trace_flags: Optional["TraceFlags"] = None,
-        severity_text: Optional[str] = None,
-        severity_number: Optional[SeverityNumber] = None,
-        body: AnyValue = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> None: ...
+        timestamp=None,
+        observed_timestamp=None,
+        trace_id=None,
+        span_id=None,
+        trace_flags=None,
+        severity_text=None,
+        severity_number=None,
+        bodyValue=None,
+        attributes=None,
+    ):
+        pass
 
     def __init__(
         self,
-        *,
-        timestamp: Optional[int] = None,
-        observed_timestamp: Optional[int] = None,
-        context: Optional[Context] = None,
-        trace_id: Optional[int] = None,
-        span_id: Optional[int] = None,
-        trace_flags: Optional["TraceFlags"] = None,
-        severity_text: Optional[str] = None,
-        severity_number: Optional[SeverityNumber] = None,
-        body: AnyValue = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-        event_name: Optional[str] = None,
-    ) -> None:
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        trace_id=None,
+        span_id=None,
+        trace_flags=None,
+        severity_text=None,
+        severity_number=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
         if not context:
             context = get_current()
         span_context = get_current_span(context).get_span_context()
@@ -134,11 +131,11 @@ class Logger(ABC):
 
     def __init__(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> None:
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         super().__init__()
         self._name = name
         self._version = version
@@ -148,37 +145,37 @@ class Logger(ABC):
     @overload
     def emit(
         self,
-        *,
-        timestamp: int | None = None,
-        observed_timestamp: int | None = None,
-        context: Context | None = None,
-        severity_number: SeverityNumber | None = None,
-        severity_text: str | None = None,
-        body: AnyValue | None = None,
-        attributes: _ExtendedAttributes | None = None,
-        event_name: str | None = None,
-    ) -> None: ...
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_number=None,
+        severity_text=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
+        pass
 
     @overload
     def emit(
         self,
-        record: LogRecord,
-    ) -> None: ...
+        record,
+    ):
+        pass
 
     @abstractmethod
     def emit(
         self,
-        record: LogRecord | None = None,
-        *,
-        timestamp: int | None = None,
-        observed_timestamp: int | None = None,
-        context: Context | None = None,
-        severity_number: SeverityNumber | None = None,
-        severity_text: str | None = None,
-        body: AnyValue | None = None,
-        attributes: _ExtendedAttributes | None = None,
-        event_name: str | None = None,
-    ) -> None:
+        record=None,
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_number=None,
+        severity_text=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
         """Emits a :class:`LogRecord` representing a log to the processing pipeline."""
 
 
@@ -191,56 +188,56 @@ class NoOpLogger(Logger):
     @overload
     def emit(
         self,
-        *,
-        timestamp: int | None = None,
-        observed_timestamp: int | None = None,
-        context: Context | None = None,
-        severity_number: SeverityNumber | None = None,
-        severity_text: str | None = None,
-        body: AnyValue | None = None,
-        attributes: _ExtendedAttributes | None = None,
-        event_name: str | None = None,
-    ) -> None: ...
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_number=None,
+        severity_text=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
+        pass
 
     @overload
-    def emit(  # pylint:disable=arguments-differ
+    def emit(  # pylint: disable=arguments-differ
         self,
-        record: LogRecord,
-    ) -> None: ...
+        record,
+    ):
+        pass
 
     def emit(
         self,
-        record: LogRecord | None = None,
-        *,
-        timestamp: int | None = None,
-        observed_timestamp: int | None = None,
-        context: Context | None = None,
-        severity_number: SeverityNumber | None = None,
-        severity_text: str | None = None,
-        body: AnyValue | None = None,
-        attributes: _ExtendedAttributes | None = None,
-        event_name: str | None = None,
-    ) -> None:
+        record=None,
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_number=None,
+        severity_text=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
         pass
 
 
 class ProxyLogger(Logger):
     def __init__(  # pylint: disable=super-init-not-called
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
     ):
         self._name = name
         self._version = version
         self._schema_url = schema_url
         self._attributes = attributes
-        self._real_logger: Optional[Logger] = None
+        self._real_logger = None
         self._noop_logger = NoOpLogger(name)
 
     @property
-    def _logger(self) -> Logger:
+    def _logger(self):
         if self._real_logger:
             return self._real_logger
 
@@ -257,36 +254,36 @@ class ProxyLogger(Logger):
     @overload
     def emit(
         self,
-        *,
-        timestamp: int | None = None,
-        observed_timestamp: int | None = None,
-        context: Context | None = None,
-        severity_number: SeverityNumber | None = None,
-        severity_text: str | None = None,
-        body: AnyValue | None = None,
-        attributes: _ExtendedAttributes | None = None,
-        event_name: str | None = None,
-    ) -> None: ...
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_number=None,
+        severity_text=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
+        pass
 
     @overload
-    def emit(  # pylint:disable=arguments-differ
+    def emit(  # pylint: disable=arguments-differ
         self,
-        record: LogRecord,
-    ) -> None: ...
+        record,
+    ):
+        pass
 
     def emit(
         self,
-        record: LogRecord | None = None,
-        *,
-        timestamp: int | None = None,
-        observed_timestamp: int | None = None,
-        context: Context | None = None,
-        severity_number: SeverityNumber | None = None,
-        severity_text: str | None = None,
-        body: AnyValue | None = None,
-        attributes: _ExtendedAttributes | None = None,
-        event_name: str | None = None,
-    ) -> None:
+        record=None,
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_number=None,
+        severity_text=None,
+        bodyValue=None,
+        attributes=None,
+        event_name=None,
+    ):
         if record:
             self._logger.emit(record)
         else:
@@ -296,7 +293,7 @@ class ProxyLogger(Logger):
                 context=context,
                 severity_number=severity_number,
                 severity_text=severity_text,
-                body=body,
+                body=bodyValue,
                 attributes=attributes,
                 event_name=event_name,
             )
@@ -310,11 +307,11 @@ class LoggerProvider(ABC):
     @abstractmethod
     def get_logger(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> Logger:
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         """Returns a `Logger` for use by the given instrumentation library.
 
         For any two calls with identical parameters, it is undefined whether the same
@@ -349,11 +346,11 @@ class NoOpLoggerProvider(LoggerProvider):
 
     def get_logger(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> Logger:
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         """Returns a NoOpLogger."""
         return NoOpLogger(
             name, version=version, schema_url=schema_url, attributes=attributes
@@ -363,11 +360,11 @@ class NoOpLoggerProvider(LoggerProvider):
 class ProxyLoggerProvider(LoggerProvider):
     def get_logger(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> Logger:
+        name,
+        version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         if _LOGGER_PROVIDER:
             return _LOGGER_PROVIDER.get_logger(
                 name,
@@ -384,18 +381,18 @@ class ProxyLoggerProvider(LoggerProvider):
 
 
 _LOGGER_PROVIDER_SET_ONCE = Once()
-_LOGGER_PROVIDER: Optional[LoggerProvider] = None
+_LOGGER_PROVIDER = None
 _PROXY_LOGGER_PROVIDER = ProxyLoggerProvider()
 
 
-def get_logger_provider() -> LoggerProvider:
+def get_logger_provider():
     """Gets the current global :class:`~.LoggerProvider` object."""
     global _LOGGER_PROVIDER  # pylint: disable=global-variable-not-assigned
     if _LOGGER_PROVIDER is None:
         if _OTEL_PYTHON_LOGGER_PROVIDER not in environ:
             return _PROXY_LOGGER_PROVIDER
 
-        logger_provider: LoggerProvider = _load_provider(  # type: ignore
+        logger_provider = _load_provider(  # type: ignore
             _OTEL_PYTHON_LOGGER_PROVIDER, "logger_provider"
         )
         _set_logger_provider(logger_provider, log=False)
@@ -404,8 +401,8 @@ def get_logger_provider() -> LoggerProvider:
     return cast("LoggerProvider", _LOGGER_PROVIDER)
 
 
-def _set_logger_provider(logger_provider: LoggerProvider, log: bool) -> None:
-    def set_lp() -> None:
+def _set_logger_provider(logger_provider, log):
+    def set_lp():
         global _LOGGER_PROVIDER  # pylint: disable=global-statement
         _LOGGER_PROVIDER = logger_provider
 
@@ -415,7 +412,7 @@ def _set_logger_provider(logger_provider: LoggerProvider, log: bool) -> None:
         _logger.warning("Overriding of current LoggerProvider is not allowed")
 
 
-def set_logger_provider(logger_provider: LoggerProvider) -> None:
+def set_logger_provider(logger_provider):
     """Sets the current global :class:`~.LoggerProvider` object.
 
     This can only be done once, a warning will be logged if any further attempt
@@ -425,12 +422,12 @@ def set_logger_provider(logger_provider: LoggerProvider) -> None:
 
 
 def get_logger(
-    instrumenting_module_name: str,
-    instrumenting_library_version: str = "",
-    logger_provider: Optional[LoggerProvider] = None,
-    schema_url: Optional[str] = None,
-    attributes: Optional[_ExtendedAttributes] = None,
-) -> "Logger":
+    instrumenting_module_name,
+    instrumenting_library_version="",
+    logger_provider=None,
+    schema_url=None,
+    attributes=None,
+):
     """Returns a `Logger` for use within a python process.
 
     This function is a convenience wrapper for

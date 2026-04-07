@@ -45,13 +45,12 @@ _name_regex = re_compile(r"[a-zA-Z][-_./a-zA-Z0-9]{0,254}")
 _unit_regex = re_compile(r"[\x00-\x7F]{0,63}")
 
 
-@dataclass(frozen=True)
-class _MetricsHistogramAdvisory:
-    explicit_bucket_boundaries: Optional[Sequence[float]] = None
+class _MetricsHistogramAdvisory(object):
+    def __init__(self, explicit_bucket_boundaries = None):
+        self.explicit_bucket_boundaries = explicit_bucket_boundaries
 
 
-@dataclass(frozen=True)
-class CallbackOptions:
+class CallbackOptions(object):
     """Options for the callback
 
     Args:
@@ -59,7 +58,8 @@ class CallbackOptions:
             work (e.g. HTTP requests), it should respect this timeout.
     """
 
-    timeout_millis: float = 10_000
+    def __init__(self, timeout_millis = 10000):
+        self.timeout_millis = timeout_millis
 
 
 InstrumentT = TypeVar("InstrumentT", bound="Instrument")
@@ -76,16 +76,16 @@ class Instrument(ABC):
     @abstractmethod
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+    ):
         pass
 
     @staticmethod
     def _check_name_unit_description(
-        name: str, unit: str, description: str
-    ) -> Dict[str, Optional[str]]:
+        name, unit, description
+    ):
         """
         Checks the following instrument name, unit and description for
         compliance with the spec.
@@ -96,7 +96,7 @@ class Instrument(ABC):
         original values.
         """
 
-        result: Dict[str, Optional[str]] = {}
+        result = {}
 
         if _name_regex.fullmatch(name) is not None:
             result["name"] = name
@@ -118,19 +118,19 @@ class Instrument(ABC):
         return result
 
 
-class _ProxyInstrument(ABC, Generic[InstrumentT]):
+class _ProxyInstrument(ABC):
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+    ):
         self._name = name
         self._unit = unit
         self._description = description
-        self._real_instrument: Optional[InstrumentT] = None
+        self._real_instrument = None
 
-    def on_meter_set(self, meter: "metrics.Meter") -> None:
+    def on_meter_set(self, meter):
         """Called when a real meter is set on the creating _ProxyMeter"""
 
         # We don't need any locking on proxy instruments because it's OK if some
@@ -139,18 +139,18 @@ class _ProxyInstrument(ABC, Generic[InstrumentT]):
         self._real_instrument = self._create_real_instrument(meter)
 
     @abstractmethod
-    def _create_real_instrument(self, meter: "metrics.Meter") -> InstrumentT:
+    def _create_real_instrument(self, meter):
         """Create an instance of the real instrument. Implement this."""
 
 
 class _ProxyAsynchronousInstrument(_ProxyInstrument[InstrumentT]):
     def __init__(
         self,
-        name: str,
-        callbacks: Optional[Sequence[CallbackT]] = None,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        callbacks = None,
+        unit = "",
+        description = "",
+    ):
         super().__init__(name, unit, description)
         self._callbacks = callbacks
 
@@ -165,11 +165,11 @@ class Asynchronous(Instrument):
     @abstractmethod
     def __init__(
         self,
-        name: str,
-        callbacks: Optional[Sequence[CallbackT]] = None,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        callbacks = None,
+        unit = "",
+        description = "",
+    ):
         super().__init__(name, unit=unit, description=description)
 
 
@@ -179,10 +179,10 @@ class Counter(Synchronous):
     @abstractmethod
     def add(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         """Records an increment to the counter.
 
         Args:
@@ -198,32 +198,32 @@ class NoOpCounter(Counter):
 
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+    ):
         super().__init__(name, unit=unit, description=description)
 
     def add(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         return super().add(amount, attributes=attributes, context=context)
 
 
 class _ProxyCounter(_ProxyInstrument[Counter], Counter):
     def add(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         if self._real_instrument:
             self._real_instrument.add(amount, attributes, context)
 
-    def _create_real_instrument(self, meter: "metrics.Meter") -> Counter:
+    def _create_real_instrument(self, meter):
         return meter.create_counter(
             self._name,
             self._unit,
@@ -237,10 +237,10 @@ class UpDownCounter(Synchronous):
     @abstractmethod
     def add(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         """Records an increment or decrement to the counter.
 
         Unlike `Counter`, the ``amount`` may be negative, allowing the
@@ -260,32 +260,32 @@ class NoOpUpDownCounter(UpDownCounter):
 
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+    ):
         super().__init__(name, unit=unit, description=description)
 
     def add(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         return super().add(amount, attributes=attributes, context=context)
 
 
 class _ProxyUpDownCounter(_ProxyInstrument[UpDownCounter], UpDownCounter):
     def add(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         if self._real_instrument:
             self._real_instrument.add(amount, attributes, context)
 
-    def _create_real_instrument(self, meter: "metrics.Meter") -> UpDownCounter:
+    def _create_real_instrument(self, meter):
         return meter.create_up_down_counter(
             self._name,
             self._unit,
@@ -304,11 +304,11 @@ class NoOpObservableCounter(ObservableCounter):
 
     def __init__(
         self,
-        name: str,
-        callbacks: Optional[Sequence[CallbackT]] = None,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        callbacks = None,
+        unit = "",
+        description = "",
+    ):
         super().__init__(
             name,
             callbacks,
@@ -321,8 +321,8 @@ class _ProxyObservableCounter(
     _ProxyAsynchronousInstrument[ObservableCounter], ObservableCounter
 ):
     def _create_real_instrument(
-        self, meter: "metrics.Meter"
-    ) -> ObservableCounter:
+        self, meter
+    ):
         return meter.create_observable_counter(
             self._name,
             self._callbacks,
@@ -343,11 +343,11 @@ class NoOpObservableUpDownCounter(ObservableUpDownCounter):
 
     def __init__(
         self,
-        name: str,
-        callbacks: Optional[Sequence[CallbackT]] = None,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        callbacks = None,
+        unit = "",
+        description = "",
+    ):
         super().__init__(
             name,
             callbacks,
@@ -361,8 +361,8 @@ class _ProxyObservableUpDownCounter(
     ObservableUpDownCounter,
 ):
     def _create_real_instrument(
-        self, meter: "metrics.Meter"
-    ) -> ObservableUpDownCounter:
+        self, meter
+    ):
         return meter.create_observable_up_down_counter(
             self._name,
             self._callbacks,
@@ -380,20 +380,20 @@ class Histogram(Synchronous):
     @abstractmethod
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-        explicit_bucket_boundaries_advisory: Optional[Sequence[float]] = None,
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+        explicit_bucket_boundaries_advisory = None,
+    ):
         pass
 
     @abstractmethod
     def record(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         """Records a measurement.
 
         Used to report measurements that are likely to be statistically
@@ -415,11 +415,11 @@ class NoOpHistogram(Histogram):
 
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-        explicit_bucket_boundaries_advisory: Optional[Sequence[float]] = None,
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+        explicit_bucket_boundaries_advisory = None,
+    ):
         super().__init__(
             name,
             unit=unit,
@@ -429,21 +429,21 @@ class NoOpHistogram(Histogram):
 
     def record(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         return super().record(amount, attributes=attributes, context=context)
 
 
 class _ProxyHistogram(_ProxyInstrument[Histogram], Histogram):
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-        explicit_bucket_boundaries_advisory: Optional[Sequence[float]] = None,
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+        explicit_bucket_boundaries_advisory = None,
+    ):
         super().__init__(name, unit=unit, description=description)
         self._explicit_bucket_boundaries_advisory = (
             explicit_bucket_boundaries_advisory
@@ -451,14 +451,14 @@ class _ProxyHistogram(_ProxyInstrument[Histogram], Histogram):
 
     def record(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         if self._real_instrument:
             self._real_instrument.record(amount, attributes, context)
 
-    def _create_real_instrument(self, meter: "metrics.Meter") -> Histogram:
+    def _create_real_instrument(self, meter):
         return meter.create_histogram(
             self._name,
             self._unit,
@@ -479,11 +479,11 @@ class NoOpObservableGauge(ObservableGauge):
 
     def __init__(
         self,
-        name: str,
-        callbacks: Optional[Sequence[CallbackT]] = None,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        callbacks = None,
+        unit = "",
+        description = "",
+    ):
         super().__init__(
             name,
             callbacks,
@@ -497,8 +497,8 @@ class _ProxyObservableGauge(
     ObservableGauge,
 ):
     def _create_real_instrument(
-        self, meter: "metrics.Meter"
-    ) -> ObservableGauge:
+        self, meter
+    ):
         return meter.create_observable_gauge(
             self._name,
             self._callbacks,
@@ -513,10 +513,10 @@ class Gauge(Synchronous):
     @abstractmethod
     def set(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         """Records the current value of the gauge.
 
         The gauge reports the last recorded value when observed. It is
@@ -536,18 +536,18 @@ class NoOpGauge(Gauge):
 
     def __init__(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-    ) -> None:
+        name,
+        unit = "",
+        description = "",
+    ):
         super().__init__(name, unit=unit, description=description)
 
     def set(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         return super().set(amount, attributes=attributes, context=context)
 
 
@@ -557,14 +557,14 @@ class _ProxyGauge(
 ):
     def set(
         self,
-        amount: Union[int, float],
-        attributes: Optional[Attributes] = None,
-        context: Optional[Context] = None,
-    ) -> None:
+        amount,
+        attributes = None,
+        context = None,
+    ):
         if self._real_instrument:
             self._real_instrument.set(amount, attributes, context)
 
-    def _create_real_instrument(self, meter: "metrics.Meter") -> Gauge:
+    def _create_real_instrument(self, meter):
         return meter.create_gauge(
             self._name,
             self._unit,
