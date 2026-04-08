@@ -116,16 +116,16 @@ logger = getLogger(__name__)
 
 
 class _LinkBase(ABC):
-    def __init__(self, context: "SpanContext") -> None:
+    def __init__(self, context):
         self._context = context
 
     @property
-    def context(self) -> "SpanContext":
+    def context(self):
         return self._context
 
     @property
     @abstractmethod
-    def attributes(self) -> types.Attributes:
+    def attributes(self):
         pass
 
 
@@ -139,18 +139,18 @@ class Link(_LinkBase):
 
     def __init__(
         self,
-        context: "SpanContext",
-        attributes: types.Attributes = None,
-    ) -> None:
+        context,
+        attributes=None,
+    ):
         super().__init__(context)
         self._attributes = attributes
 
     @property
-    def attributes(self) -> types.Attributes:
+    def attributes(self):
         return self._attributes
 
     @property
-    def dropped_attributes(self) -> int:
+    def dropped_attributes(self):
         if isinstance(self._attributes, BoundedAttributes):
             return self._attributes.dropped
         return 0
@@ -192,11 +192,11 @@ class TracerProvider(ABC):
     @abstractmethod
     def get_tracer(
         self,
-        instrumenting_module_name: str,
-        instrumenting_library_version: typing.Optional[str] = None,
-        schema_url: typing.Optional[str] = None,
-        attributes: typing.Optional[types.Attributes] = None,
-    ) -> "Tracer":
+        instrumenting_module_name,
+        instrumenting_library_version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         """Returns a `Tracer` for use by the given instrumentation library.
 
         For any two calls it is undefined whether the same or different
@@ -235,11 +235,11 @@ class NoOpTracerProvider(TracerProvider):
 
     def get_tracer(
         self,
-        instrumenting_module_name: str,
-        instrumenting_library_version: typing.Optional[str] = None,
-        schema_url: typing.Optional[str] = None,
-        attributes: typing.Optional[types.Attributes] = None,
-    ) -> "Tracer":
+        instrumenting_module_name,
+        instrumenting_library_version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         # pylint:disable=no-self-use,unused-argument
         return NoOpTracer()
 
@@ -257,11 +257,11 @@ class _DefaultTracerProvider(NoOpTracerProvider):
 class ProxyTracerProvider(TracerProvider):
     def get_tracer(
         self,
-        instrumenting_module_name: str,
-        instrumenting_library_version: typing.Optional[str] = None,
-        schema_url: typing.Optional[str] = None,
-        attributes: typing.Optional[types.Attributes] = None,
-    ) -> "Tracer":
+        instrumenting_module_name,
+        instrumenting_library_version=None,
+        schema_url=None,
+        attributes=None,
+    ):
         if _TRACER_PROVIDER:
             return _TRACER_PROVIDER.get_tracer(
                 instrumenting_module_name,
@@ -287,15 +287,15 @@ class Tracer(ABC):
     @abstractmethod
     def start_span(
         self,
-        name: str,
-        context: Optional[Context] = None,
-        kind: SpanKind = SpanKind.INTERNAL,
-        attributes: types.Attributes = None,
-        links: _Links = None,
-        start_time: Optional[int] = None,
-        record_exception: bool = True,
-        set_status_on_exception: bool = True,
-    ) -> "Span":
+        name,
+        context=None,
+        kind=SpanKind.INTERNAL,
+        attributes=None,
+        links=None,
+        start_time=None,
+        record_exception=True,
+        set_status_on_exception=True,
+    ):
         """Starts a span.
 
         Create a new span. Start the span without setting it as the current
@@ -342,16 +342,16 @@ class Tracer(ABC):
     @abstractmethod
     def start_as_current_span(
         self,
-        name: str,
-        context: Optional[Context] = None,
-        kind: SpanKind = SpanKind.INTERNAL,
-        attributes: types.Attributes = None,
-        links: _Links = None,
-        start_time: Optional[int] = None,
-        record_exception: bool = True,
-        set_status_on_exception: bool = True,
-        end_on_exit: bool = True,
-    ) -> Iterator["Span"]:
+        name,
+        context=None,
+        kind=SpanKind.INTERNAL,
+        attributes=None,
+        links=None,
+        start_time=None,
+        record_exception=True,
+        set_status_on_exception=True,
+        end_on_exit=True,
+    ):
         """Context manager for creating a new span and set it
         as the current span in this tracer's context.
 
@@ -418,20 +418,20 @@ class ProxyTracer(Tracer):
     # pylint: disable=W0222,signature-differs
     def __init__(
         self,
-        instrumenting_module_name: str,
-        instrumenting_library_version: typing.Optional[str] = None,
-        schema_url: typing.Optional[str] = None,
-        attributes: typing.Optional[types.Attributes] = None,
+        instrumenting_module_name,
+        instrumenting_library_version=None,
+        schema_url=None,
+        attributes=None,
     ):
         self._instrumenting_module_name = instrumenting_module_name
         self._instrumenting_library_version = instrumenting_library_version
         self._schema_url = schema_url
         self._attributes = attributes
-        self._real_tracer: Optional[Tracer] = None
+        self._real_tracer = None
         self._noop_tracer = NoOpTracer()
 
     @property
-    def _tracer(self) -> Tracer:
+    def _tracer(self):
         if self._real_tracer:
             return self._real_tracer
 
@@ -445,12 +445,12 @@ class ProxyTracer(Tracer):
             return self._real_tracer
         return self._noop_tracer
 
-    def start_span(self, *args, **kwargs) -> Span:  # type: ignore
-        return self._tracer.start_span(*args, **kwargs)  # type: ignore
+    def start_span(self, *args, **kwargs):
+        return self._tracer.start_span(*args, **kwargs)
 
-    @_agnosticcontextmanager  # type: ignore
-    def start_as_current_span(self, *args, **kwargs) -> Iterator[Span]:
-        with self._tracer.start_as_current_span(*args, **kwargs) as span:  # type: ignore
+    @_agnosticcontextmanager
+    def start_as_current_span(self, *args, **kwargs):
+        with self._tracer.start_as_current_span(*args, **kwargs) as span:
             yield span
 
 
@@ -462,15 +462,15 @@ class NoOpTracer(Tracer):
 
     def start_span(
         self,
-        name: str,
-        context: Optional[Context] = None,
-        kind: SpanKind = SpanKind.INTERNAL,
-        attributes: types.Attributes = None,
-        links: _Links = None,
-        start_time: Optional[int] = None,
-        record_exception: bool = True,
-        set_status_on_exception: bool = True,
-    ) -> "Span":
+        name,
+        context=None,
+        kind=SpanKind.INTERNAL,
+        attributes=None,
+        links=None,
+        start_time=None,
+        record_exception=True,
+        set_status_on_exception=True,
+    ):
         current_span = get_current_span(context)
         if isinstance(current_span, NonRecordingSpan):
             return current_span
@@ -490,16 +490,16 @@ class NoOpTracer(Tracer):
     @_agnosticcontextmanager
     def start_as_current_span(
         self,
-        name: str,
-        context: Optional[Context] = None,
-        kind: SpanKind = SpanKind.INTERNAL,
-        attributes: types.Attributes = None,
-        links: _Links = None,
-        start_time: Optional[int] = None,
-        record_exception: bool = True,
-        set_status_on_exception: bool = True,
-        end_on_exit: bool = True,
-    ) -> Iterator["Span"]:
+        name,
+        context=None,
+        kind=SpanKind.INTERNAL,
+        attributes=None,
+        links=None,
+        start_time=None,
+        record_exception=True,
+        set_status_on_exception=True,
+        end_on_exit=True,
+    ):
         span = self.start_span(
             name=name,
             context=context,
@@ -528,17 +528,17 @@ class _DefaultTracer(NoOpTracer):
 
 
 _TRACER_PROVIDER_SET_ONCE = Once()
-_TRACER_PROVIDER: Optional[TracerProvider] = None
+_TRACER_PROVIDER = None
 _PROXY_TRACER_PROVIDER = ProxyTracerProvider()
 
 
 def get_tracer(
-    instrumenting_module_name: str,
-    instrumenting_library_version: typing.Optional[str] = None,
-    tracer_provider: Optional[TracerProvider] = None,
-    schema_url: typing.Optional[str] = None,
-    attributes: typing.Optional[types.Attributes] = None,
-) -> "Tracer":
+    instrumenting_module_name,
+    instrumenting_library_version=None,
+    tracer_provider=None,
+    schema_url=None,
+    attributes=None,
+):
     """Returns a `Tracer` for use by the given instrumentation library.
 
     This function is a convenience wrapper for
@@ -556,8 +556,8 @@ def get_tracer(
     )
 
 
-def _set_tracer_provider(tracer_provider: TracerProvider, log: bool) -> None:
-    def set_tp() -> None:
+def _set_tracer_provider(tracer_provider, log):
+    def set_tp():
         global _TRACER_PROVIDER  # pylint: disable=global-statement
         _TRACER_PROVIDER = tracer_provider
 
@@ -567,7 +567,7 @@ def _set_tracer_provider(tracer_provider: TracerProvider, log: bool) -> None:
         logger.warning("Overriding of current TracerProvider is not allowed")
 
 
-def set_tracer_provider(tracer_provider: TracerProvider) -> None:
+def set_tracer_provider(tracer_provider):
     """Sets the current global :class:`~.TracerProvider` object.
 
     This can only be done once, a warning will be logged if any further attempt
@@ -576,7 +576,7 @@ def set_tracer_provider(tracer_provider: TracerProvider) -> None:
     _set_tracer_provider(tracer_provider, log=True)
 
 
-def get_tracer_provider() -> TracerProvider:
+def get_tracer_provider():
     """Gets the current global :class:`~.TracerProvider` object."""
     if _TRACER_PROVIDER is None:
         # if a global tracer provider has not been set either via code or env
@@ -584,7 +584,7 @@ def get_tracer_provider() -> TracerProvider:
         if OTEL_PYTHON_TRACER_PROVIDER not in os.environ:
             return _PROXY_TRACER_PROVIDER
 
-        tracer_provider: TracerProvider = _load_provider(
+        tracer_provider = _load_provider(
             OTEL_PYTHON_TRACER_PROVIDER, "tracer_provider"
         )
         _set_tracer_provider(tracer_provider, log=False)
@@ -594,11 +594,11 @@ def get_tracer_provider() -> TracerProvider:
 
 @_agnosticcontextmanager
 def use_span(
-    span: Span,
-    end_on_exit: bool = False,
-    record_exception: bool = True,
-    set_status_on_exception: bool = True,
-) -> Iterator[Span]:
+    span,
+    end_on_exit=False,
+    record_exception=True,
+    set_status_on_exception=True,
+):
     """Takes a non-active span and activates it in the current context.
 
     Args:
@@ -634,7 +634,7 @@ def use_span(
                 span.set_status(
                     Status(
                         status_code=StatusCode.ERROR,
-                        description=f"{type(exc).__name__}: {exc}",
+                        description="{type(exc).__name__}: {exc}",
                     )
                 )
 
