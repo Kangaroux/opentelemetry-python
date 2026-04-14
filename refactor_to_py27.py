@@ -96,16 +96,20 @@ def remove_type_hints(content):
 
             # Remove parameter type hints: param: Type
             # Only match patterns like "name: Type" where Type is a known type
+            # Be careful not to remove the colon at the end of function definitions
             sig_text = re.sub(
                 r"(\w+)\s*:\s*(Union|Optional|List|Dict|Tuple|Callable|Sequence|Iterable|Generator|TypeVar|Generic|Type|Any)[(,\s\n]",
                 r"\1",
                 sig_text,
             )
-            sig_text = re.sub(
-                r"(\w+)\s*:\s*[^,\)\n]+(?=[,)\n])",
-                r"\1",
-                sig_text,
-            )
+            # Only remove type hints in the middle of parameter lists, not at the end
+            # COMMENTED OUT: This regex is too aggressive and removes colons from function definitions
+            # sig_text = re.sub(
+            #     r"(\w+)\s*:\s*[^,\)\n]+(?=[,)\n])",
+            #     r"\1",
+            #     sig_text,
+            # )
+            # Don't remove the colon after the closing paren - it's part of the function definition
 
             # Add processed signature lines back
             result.extend(sig_text.split("\n"))
@@ -217,7 +221,7 @@ def refactor_file(filepath):
         content = remove_walrus_operators(content)
         content = remove_forward_references(content)
         content = replace_union_syntax(content)
-        content = replace_dataclass_decorators(content)
+        content = remove_dataclass_decorators(content)
         content = replace_raise_from(content)
 
         # Write back if changed

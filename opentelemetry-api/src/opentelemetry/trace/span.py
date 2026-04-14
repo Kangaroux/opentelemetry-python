@@ -305,7 +305,7 @@ class TraceState(typing.Mapping[str, str]):
             return self
         prev_state = self._dict.copy()
         prev_state.pop(key, None)
-        new_state = [(key, value), *prev_state.items()]
+        new_state = [(key, value)] + list(prev_state.items())
         return TraceState(new_state)
 
     def delete(self, key):
@@ -357,7 +357,7 @@ class TraceState(typing.Mapping[str, str]):
         """
         pairs = {}  # type: Dict[str, str]
         for header in header_list:
-            members: typing.List[str] = re.split(_delimiter_pattern, header)
+            members = re.split(_delimiter_pattern, header)
             for member in members:
                 # empty members are valid, but no need to process further.
                 if not member:
@@ -369,7 +369,7 @@ class TraceState(typing.Mapping[str, str]):
                         member,
                     )
                     return cls()
-                groups: typing.Tuple[str, ...] = match.groups()
+                groups = match.groups()
                 key, _eq, value = groups
                 # duplicate keys are not legal in header
                 if key in pairs:
@@ -476,8 +476,15 @@ class SpanContext(tuple):
             "Immutable type, ignoring call to set attribute", stack_info=True
         )
 
-    def __repr__(self) -> str:
-        return f"{type(self).__name__}(trace_id=0x{format_trace_id(self.trace_id)}, span_id=0x{format_span_id(self.span_id)}, trace_flags=0x{self.trace_flags:02x}, trace_state={self.trace_state!r}, is_remote={self.is_remote})"
+    def __repr__(self):
+        return "{}(trace_id=0x{}, span_id=0x{}, trace_flags=0x{}, trace_state={}, is_remote={})".format(
+            type(self).__name__,
+            format_trace_id(self.trace_id),
+            format_span_id(self.span_id),
+            self.trace_flags,
+            self.trace_state,
+            self.is_remote,
+        )
 
 
 class NonRecordingSpan(Span):
@@ -486,62 +493,60 @@ class NonRecordingSpan(Span):
     All operations are no-op except context propagation.
     """
 
-    def __init__(self, context: "SpanContext") -> None:
+    def __init__(self, context):
         self._context = context
 
-    def get_span_context(self) -> "SpanContext":
+    def get_span_context(self):
         return self._context
 
-    def is_recording(self) -> bool:
+    def is_recording(self):
         return False
 
-    def end(self, end_time: typing.Optional[int] = None) -> None:
+    def end(self, end_time=None):
         pass
 
-    def set_attributes(
-        self, attributes: typing.Mapping[str, types.AttributeValue]
-    ) -> None:
+    def set_attributes(self, attributes):
         pass
 
-    def set_attribute(self, key: str, value: types.AttributeValue) -> None:
+    def set_attribute(self, key, value):
         pass
 
     def add_event(
         self,
-        name: str,
-        attributes: types.Attributes = None,
-        timestamp: typing.Optional[int] = None,
-    ) -> None:
+        name,
+        attributes=None,
+        timestamp=None,
+    ):
         pass
 
     def add_link(
         self,
-        context: "SpanContext",
-        attributes: types.Attributes = None,
-    ) -> None:
+        context,
+        attributes=None,
+    ):
         pass
 
-    def update_name(self, name: str) -> None:
+    def update_name(self, name):
         pass
 
     def set_status(
         self,
-        status: typing.Union[Status, StatusCode],
-        description: typing.Optional[str] = None,
-    ) -> None:
+        status,
+        description=None,
+    ):
         pass
 
     def record_exception(
         self,
-        exception: BaseException,
-        attributes: types.Attributes = None,
-        timestamp: typing.Optional[int] = None,
-        escaped: bool = False,
-    ) -> None:
+        exception,
+        attributes=None,
+        timestamp=None,
+        escaped=False,
+    ):
         pass
 
-    def __repr__(self) -> str:
-        return f"NonRecordingSpan({self._context!r})"
+    def __repr__(self):
+        return "NonRecordingSpan({})".format(self._context)
 
 
 INVALID_SPAN_ID = 0x0000000000000000
@@ -556,7 +561,7 @@ INVALID_SPAN_CONTEXT = SpanContext(
 INVALID_SPAN = NonRecordingSpan(INVALID_SPAN_CONTEXT)
 
 
-def format_trace_id(trace_id: int) -> str:
+def format_trace_id(trace_id):
     """Convenience trace ID formatting method
     Args:
         trace_id: Trace ID int
@@ -567,7 +572,7 @@ def format_trace_id(trace_id: int) -> str:
     return format(trace_id, "032x")
 
 
-def format_span_id(span_id: int) -> str:
+def format_span_id(span_id):
     """Convenience span ID formatting method
     Args:
         span_id: Span ID int
