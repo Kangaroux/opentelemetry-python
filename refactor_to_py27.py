@@ -88,31 +88,45 @@ def remove_type_hints(content):
                 sig_lines.append(lines[i])
                 i += 1
 
-            # Join signature lines and process
-            sig_text = "\n".join(sig_lines)
+            # Process each line of the signature separately
+            processed_lines = []
+            for idx, sig_line in enumerate(sig_lines):
+                # First pass: replace Type[...] with just "Type" to simplify parsing
+                # Run multiple times to handle nested brackets like Optional[Union[A, B[C]]]
+                for _ in range(5):
+                    sig_line = re.sub(r"(\w+)\[[^\]]*\]", r"\1", sig_line)
 
-            # Remove return type hints (-> Type)
-            sig_text = re.sub(r"\s*->\s*[^,)\n]+", "", sig_text)
+                # Remove parameter type hints: param: Type followed by comma
+                # Type can be simple name or dotted name like types.AttributeValue
+                sig_line = re.sub(
+                    r"(\w+)\s*:\s*\w+(?:\.\w+)*,",
+                    r"\1,",
+                    sig_line,
+                )
 
-            # Remove parameter type hints: param: Type
-            # Only match patterns like "name: Type" where Type is a known type
-            # Be careful not to remove the colon at the end of function definitions
-            sig_text = re.sub(
-                r"(\w+)\s*:\s*(Union|Optional|List|Dict|Tuple|Callable|Sequence|Iterable|Generator|TypeVar|Generic|Type|Any)[(,\s\n]",
-                r"\1",
-                sig_text,
-            )
-            # Only remove type hints in the middle of parameter lists, not at the end
-            # COMMENTED OUT: This regex is too aggressive and removes colons from function definitions
-            # sig_text = re.sub(
-            #     r"(\w+)\s*:\s*[^,\)\n]+(?=[,)\n])",
-            #     r"\1",
-            #     sig_text,
-            # )
-            # Don't remove the colon after the closing paren - it's part of the function definition
+                # Check if this is the last line (has closing paren and colon)
+                if idx == len(sig_lines) - 1 or ")" in sig_line:
+                    # Remove trailing parameter hints before closing paren
+                    sig_line = re.sub(
+                        r"(\w+)\s*:\s*\w+(?:\.\w+)*\s*(\))",
+                        r"\1\2",
+                        sig_line,
+                    )
+                    # Remove return type hints: ) -> Type:
+                    # Simply remove everything from -> to the final :
+                    sig_line = re.sub(r"\)\s*->.*:", "):", sig_line)
+                else:
+                    # Remove trailing parameter hints at end of line (no comma, no paren)
+                    sig_line = re.sub(
+                        r"(\w+)\s*:\s*\w+(?:\.\w+)*$",
+                        r"\1",
+                        sig_line,
+                    )
+
+                processed_lines.append(sig_line)
 
             # Add processed signature lines back
-            result.extend(sig_text.split("\n"))
+            result.extend(processed_lines)
             continue
 
         result.append(line)
