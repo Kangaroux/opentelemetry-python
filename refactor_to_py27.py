@@ -25,8 +25,8 @@ def remove_future_annotations(content):
 def replace_fstrings(content):
     """Replace f-strings with .format() calls."""
 
-    def replace_fstring(match):
-        fstring = match.group(0)
+    def convert_fstring_to_format(fstring):
+        """Convert a single f-string to .format() call."""
         quote = '"' if fstring.startswith('f"') else "'"
         inner = fstring[2:-1]
 
@@ -50,10 +50,54 @@ def replace_fstrings(content):
 
         return quote + result + quote + ".format(" + ", ".join(exprs) + ")"
 
-    content = re.sub(r'f"([^"\\]*(?:\\.[^"\\]*)*)"', replace_fstring, content)
-    content = re.sub(r"f'([^'\\]*(?:\\.[^'\\]*)*)'", replace_fstring, content)
+    lines = content.split("\n")
+    result = []
 
-    return content
+    for line in lines:
+        new_line = line
+
+        while True:
+            match = re.search(r'f"([^"\\]*(?:\\.[^"\\]*)*)"', new_line)
+            if not match:
+                match = re.search(r"f'([^'\\]*(?:\\.[^'\\]*)*)'", new_line)
+
+            if not match:
+                break
+
+            fstring = match.group(0)
+            converted = convert_fstring_to_format(fstring)
+            new_line = (
+                new_line[: match.start()] + converted + new_line[match.end() :]
+            )
+
+        result.append(new_line)
+
+    content = "\n".join(result)
+
+    lines = content.split("\n")
+    result = []
+
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        stripped = line.rstrip()
+
+        if stripped.endswith(")"):
+            if i + 1 < len(lines):
+                next_line = lines[i + 1]
+                next_stripped = next_line.lstrip()
+                if next_stripped.startswith('"') or next_stripped.startswith(
+                    "'"
+                ):
+                    indent = line[: len(line) - len(stripped)]
+                    result.append(stripped + " +")
+                    i += 1
+                    continue
+
+        result.append(line)
+        i += 1
+
+    return "\n".join(result)
 
 
 def remove_type_hints(content):
@@ -92,15 +136,45 @@ def remove_type_hints(content):
             processed_lines = []
             for idx, sig_line in enumerate(sig_lines):
                 # First pass: replace Type[...] with just "Type" to simplify parsing
-                # Run multiple times to handle nested brackets like Optional[Union[A, B[C]]]
-                for _ in range(5):
-                    sig_line = re.sub(r"(\w+)\[[^\]]*\]", r"\1", sig_line)
+                # Use bracket-matching to properly handle nested brackets
+                changed = True
+                while changed:
+                    changed = False
+                    # Find the rightmost [ that we can match
+                    for match in re.finditer(r"\w+\[", sig_line):
+                        start = match.end() - 1
+                        # Find matching ]
+                        depth = 1
+                        pos = start + 1
+                        while pos < len(sig_line) and depth > 0:
+                            if sig_line[pos] == "[":
+                                depth += 1
+                            elif sig_line[pos] == "]":
+                                depth -= 1
+                            pos += 1
+                        if depth == 0:
+                            # Found matching brackets, replace the whole thing
+                            name = sig_line[match.start() : match.end() - 1]
+                            sig_line = (
+                                sig_line[: match.start()]
+                                + name
+                                + sig_line[pos:]
+                            )
+                            changed = True
+                            break
 
                 # Remove parameter type hints: param: Type followed by comma
                 # Type can be simple name or dotted name like types.AttributeValue
                 sig_line = re.sub(
                     r"(\w+)\s*:\s*\w+(?:\.\w+)*,",
                     r"\1,",
+                    sig_line,
+                )
+
+                # Remove parameter type hints followed by default value (e.g., param: Optional = None)
+                sig_line = re.sub(
+                    r"(\w+)\s*:\s*\w+(?:\.\w+)*\s*=",
+                    r"\1 =",
                     sig_line,
                 )
 
@@ -113,8 +187,8 @@ def remove_type_hints(content):
                         sig_line,
                     )
                     # Remove return type hints: ) -> Type:
-                    # Simply remove everything from -> to the final :
-                    sig_line = re.sub(r"\)\s*->.*:", "):", sig_line)
+                    # Simply remove everything from -> to the final : (but not inside comments)
+                    sig_line = re.sub(r"\)\s*->[^:#]*:", "):", sig_line)
                 else:
                     # Remove trailing parameter hints at end of line (no comma, no paren)
                     sig_line = re.sub(
@@ -137,6 +211,169 @@ def remove_type_hints(content):
     # Remove Generic[type] from class definitions
     content = re.sub(r",\s*Generic\s*\[[^\]]+\]", "", content)
 
+    # Remove class attribute type annotations (e.g., self._dict: Union[...] = {})
+    # Handle multi-line type annotations
+    lines = content.split("\n")
+    result = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        # Skip if line contains dictionary access like self[key] or dict[key]
+        # But not type annotations like Getter[Type]
+        if re.search(r"\b(self|dict|list|dict_|carrier)\s*\[", line):
+            result.append(line)
+            i += 1
+            continue
+
+        # Check if this starts a type annotation with brackets (e.g., name: Type[...] = value)
+        if re.search(r":\s*\w+\[", line):
+            # Check if there's an assignment (=) on this line or subsequent lines
+            has_assignment = "=" in line
+            if not has_assignment:
+                # Look ahead for assignment
+                j = i + 1
+                while j < len(lines) and "=" not in lines[j]:
+                    j += 1
+                has_assignment = j < len(lines)
+
+            if has_assignment:
+                # Collect all lines of the type annotation
+                type_lines = [line]
+                bracket_count = line.count("[") - line.count("]")
+                j = i + 1
+                while bracket_count > 0 and j < len(lines):
+                    type_lines.append(lines[j])
+                    bracket_count += lines[j].count("[") - lines[j].count("]")
+                    j += 1
+
+                # Reconstruct without type annotation
+                if j > i + 1:
+                    # Multi-line annotation
+                    # First line: remove ": Type[..." up to and including the opening bracket
+                    first_line = re.sub(r":\s*\w+\[.*$", "", type_lines[0])
+                    # Last line: remove "] =" and keep " ="
+                    last_line = type_lines[-1]
+                    last_line = re.sub(r"\]\s*=", "=", last_line)
+                    # Remove trailing whitespace from first line
+                    first_line = first_line.rstrip()
+                    # Join first line with last line
+                    combined = first_line + last_line
+                    result.append(combined)
+                    i = j
+                else:
+                    # Single-line annotation - just remove the type annotation
+                    # Remove ": Type[...]" part
+                    line = re.sub(r":\s*\w+\[[^\]]*\]", "", line)
+                    result.append(line)
+                    i += 1
+                continue
+
+        # Simplify nested brackets for single-line annotations
+        # Use iterative approach to handle nested brackets
+        changed = True
+        while changed:
+            changed = False
+            # Find the rightmost [ that has a matching ]
+            for match in re.finditer(r"\w+\[", line):
+                start = match.end() - 1
+                # Find matching ]
+                depth = 1
+                pos = start + 1
+                while pos < len(line) and depth > 0:
+                    if line[pos] == "[":
+                        depth += 1
+                    elif line[pos] == "]":
+                        depth -= 1
+                    pos += 1
+                if depth == 0:
+                    # Found matching brackets, replace the whole thing
+                    name = line[match.start() : match.end() - 1]
+                    line = line[: match.start()] + name + line[pos:]
+                    changed = True
+                    break
+        # Remove type annotation: name: Type = value
+        line = re.sub(r"(\w+)\s*:\s*\w+(?:\.\w+)*\s*=", r"\1 =", line)
+        result.append(line)
+        i += 1
+    content = "\n".join(result)
+
+    return content
+
+
+def remove_async_await(content):
+    """Remove async/await keywords for Python 2.7 compatibility."""
+    # Remove 'async def' -> 'def'
+    content = re.sub(r"async\s+def", "def", content)
+    # Remove 'await ' keyword
+    content = re.sub(r"\bawait\s+", "", content)
+    return content
+
+
+def replace_dict_unpacking(content):
+    """Replace dictionary unpacking **expr with dict.update() pattern."""
+    lines = content.split("\n")
+    result = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        # Check if this line starts a dictionary assignment
+        if re.search(r"(\w+)\s*=\s*\{", line):
+            # Find the matching closing brace
+            brace_count = line.count("{") - line.count("}")
+            dict_lines = [line]
+            j = i + 1
+            while brace_count > 0 and j < len(lines):
+                dict_lines.append(lines[j])
+                brace_count += lines[j].count("{") - lines[j].count("}")
+                j += 1
+
+            # Process the dictionary
+            combined = "\n".join(dict_lines)
+
+            # Find all ** unpacking expressions
+            unpacking_vars = re.findall(r"\*\*(\w+)", combined)
+
+            if unpacking_vars:
+                # Get the variable being assigned to
+                assign_match = re.search(r"(\w+)\s*=\s*\{", line)
+                if assign_match:
+                    assign_var = assign_match.group(1)
+                    indent = line[: len(line) - len(line.lstrip())]
+
+                    # Get the first unpacking variable
+                    first_var = unpacking_vars[0]
+
+                    # Build replacement lines
+                    replacement_lines = [
+                        indent + assign_var + " = " + first_var
+                    ]
+
+                    # Check if there are more items in the dictionary
+                    # Remove ** unpacking and braces to see what's left
+                    temp = re.sub(r"\s*\*\*\w+\s*,?\s*", "", combined)
+                    # Remove the assignment part and opening brace
+                    temp = re.sub(r".*=\s*\{", "", temp)
+                    # Remove trailing brace and whitespace
+                    temp = re.sub(r"\}\s*$", "", temp, flags=re.MULTILINE)
+
+                    if temp.strip():
+                        # There are additional items - use update()
+                        replacement_lines.append(
+                            indent
+                            + assign_var
+                            + ".update({"
+                            + temp.strip()
+                            + "})"
+                        )
+
+                    result.extend(replacement_lines)
+                    i = j
+                    continue
+
+        result.append(line)
+        i += 1
+
+    content = "\n".join(result)
     return content
 
 
@@ -182,8 +419,11 @@ def remove_forward_references(content):
     result = []
     for line in lines:
         # Only remove quoted strings in type contexts
+        # Forward refs look like: "TypeName" or "Callable[...]"
+        # Replace the entire type annotation (including the colon)
         if re.search(r":\s*\"", line):
-            line = re.sub(r'"\w+"', "Type", line)
+            # Replace ": "..." with empty string (removes both colon and forward ref)
+            line = re.sub(r":\s*\"[^\"]*\"", "", line)
         result.append(line)
     content = "\n".join(result)
     return content
@@ -231,9 +471,11 @@ def refactor_file(filepath):
         content = remove_future_annotations(content)
         content = remove_typealias(content)
         content = replace_fstrings(content)
-        content = remove_type_hints(content)
-        content = remove_walrus_operators(content)
         content = remove_forward_references(content)
+        content = remove_type_hints(content)
+        content = remove_async_await(content)
+        content = replace_dict_unpacking(content)
+        content = remove_walrus_operators(content)
         content = replace_union_syntax(content)
         content = remove_dataclass_decorators(content)
         content = replace_raise_from(content)
