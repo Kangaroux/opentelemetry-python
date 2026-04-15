@@ -31,19 +31,39 @@ def replace_fstrings(content):
         inner = fstring[2:-1]
 
         exprs = []
-        result = inner
 
-        def extract_expr(m):
-            expr = m.group(1)
-            expr = expr.strip()
-            if ":" in expr:
-                expr = expr.split(":")[0].strip()
-            if "!" in expr:
-                expr = expr.rsplit("!", 1)[0].strip()
-            exprs.append(expr)
-            return "{}"
-
-        result = re.sub(r"\{([^}]*)\}", extract_expr, result)
+        result = ""
+        i = 0
+        while i < len(inner):
+            if inner[i] == "{" and i + 1 < len(inner) and inner[i + 1] == "{":
+                result += "{{"
+                i += 2
+            elif (
+                inner[i] == "}" and i + 1 < len(inner) and inner[i + 1] == "}"
+            ):
+                result += "}}"
+                i += 2
+            elif inner[i] == "{":
+                j = i + 1
+                depth = 1
+                while j < len(inner) and depth > 0:
+                    if inner[j] == "{":
+                        depth += 1
+                    elif inner[j] == "}":
+                        depth -= 1
+                    j += 1
+                expr = inner[i + 1 : j - 1]
+                expr = expr.strip()
+                if ":" in expr:
+                    expr = expr.split(":")[0].strip()
+                if "!" in expr:
+                    expr = expr.rsplit("!", 1)[0].strip()
+                exprs.append(expr)
+                result += "{}"
+                i = j
+            else:
+                result += inner[i]
+                i += 1
 
         if not exprs:
             return quote + result + quote
