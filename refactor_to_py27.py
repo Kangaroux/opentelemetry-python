@@ -102,13 +102,18 @@ def replace_fstrings(content):
         line = lines[i]
         stripped = line.rstrip()
 
+        # Only add + for f-string continuation, not for docstrings
+        # Check if this line contains an f-string that was converted
         if stripped.endswith(")"):
             if i + 1 < len(lines):
                 next_line = lines[i + 1]
                 next_stripped = next_line.lstrip()
-                if next_stripped.startswith('"') or next_stripped.startswith(
-                    "'"
-                ):
+                # Only add + if the next line looks like a string continuation
+                # (starts with quote and the current line has .format() which indicates f-string conversion)
+                if (
+                    next_stripped.startswith('"')
+                    or next_stripped.startswith("'")
+                ) and ".format(" in line:
                     indent = line[: len(line) - len(stripped)]
                     result.append(stripped + " +")
                     i += 1
@@ -154,7 +159,67 @@ def remove_type_hints(content):
 
             # Process each line of the signature separately
             processed_lines = []
-            for idx, sig_line in enumerate(sig_lines):
+            idx = 0
+            while idx < len(sig_lines):
+                sig_line = sig_lines[idx]
+
+                # Check if this line starts a multi-line type annotation (param: Type[)
+                # where the closing bracket is on a subsequent line
+                multi_line_match = re.search(r"(\w+)\s*:\s*\w+\[", sig_line)
+                if multi_line_match:
+                    # Check if this line has a matching closing bracket
+                    bracket_count = sig_line.count("[") - sig_line.count("]")
+                    if bracket_count > 0:
+                        # This is a multi-line type annotation
+                        # Collect all lines until the bracket is closed
+                        type_lines = [sig_line]
+                        j = idx + 1
+                        while bracket_count > 0 and j < len(sig_lines):
+                            type_lines.append(sig_lines[j])
+                            bracket_count += sig_lines[j].count(
+                                "["
+                            ) - sig_lines[j].count("]")
+                            j += 1
+
+                        # The type annotation is from "param: Type[" to the closing "]"
+                        # We need to remove everything from ":" to the closing "]" (and comma)
+                        param_name = multi_line_match.group(1)
+
+                        # Find the position of the closing bracket in the last line
+                        last_line = type_lines[-1]
+                        # Match ] followed by optional = value and optional comma
+                        bracket_match = re.search(r"\]", last_line)
+                        if bracket_match:
+                            after_bracket = last_line[bracket_match.end() :]
+                            # Check for = value
+                            eq_match = re.search(
+                                r"\s*=\s*(\S+)", after_bracket
+                            )
+                            default_value = ""
+                            if eq_match:
+                                default_value = " = " + eq_match.group(1)
+                                # Check for trailing comma after the value
+                                after_value = after_bracket[eq_match.end() :]
+                                comma_match = re.search(r",\s*$", after_value)
+                                suffix = "," if comma_match else ""
+                            else:
+                                # No = value, check for trailing comma directly
+                                comma_match = re.search(
+                                    r",\s*$", after_bracket
+                                )
+                                suffix = "," if comma_match else ""
+                        else:
+                            default_value = ""
+                            suffix = ""
+
+                        # Reconstruct the line with just the parameter name
+                        indent = len(sig_line) - len(sig_line.lstrip())
+                        processed_lines.append(
+                            " " * indent + param_name + default_value + suffix
+                        )
+                        idx = j
+                        continue
+
                 # First pass: replace Type[...] with just "Type" to simplify parsing
                 # Use bracket-matching to properly handle nested brackets
                 changed = True
@@ -206,6 +271,8 @@ def remove_type_hints(content):
                         r"\1\2",
                         sig_line,
                     )
+                    # Remove trailing comma before closing paren (left after type hint removal)
+                    sig_line = re.sub(r",\s*(\))", r"\1", sig_line)
                     # Remove return type hints: ) -> Type:
                     # Simply remove everything from -> to the final : (but not inside comments)
                     sig_line = re.sub(r"\)\s*->[^:#]*:", "):", sig_line)
@@ -216,8 +283,27 @@ def remove_type_hints(content):
                         r"\1",
                         sig_line,
                     )
+                    # Remove trailing comma at end of line only if next line starts with )
+                    # This handles cases where ) is on its own line after type hint removal
+                    if idx + 1 < len(sig_lines):
+                        next_sig_line = sig_lines[idx + 1].strip()
+                        if next_sig_line.startswith(
+                            ")"
+                        ) or next_sig_line.startswith("):"):
+                            sig_line = re.sub(r",\s*$", "", sig_line)
+                    # Remove keyword-only argument separator (*,) - Python 2.7 doesn't support it
+                    if sig_line.strip() == "*," or sig_line.strip() == "*":
+                        # Skip this line entirely
+                        processed_lines.append("")
+                        idx += 1
+                        continue
+                    # Also remove *, from the middle of a line (e.g., "self, *, param")
+                    sig_line = re.sub(r",\s*\*\s*,", ",,", sig_line)
+                    # Clean up double commas
+                    sig_line = re.sub(r",\s*,", ",", sig_line)
 
                 processed_lines.append(sig_line)
+                idx += 1
 
             # Add processed signature lines back
             result.extend(processed_lines)
@@ -240,7 +326,10 @@ def remove_type_hints(content):
         line = lines[i]
         # Skip if line contains dictionary access like self[key] or dict[key]
         # But not type annotations like Getter[Type]
-        if re.search(r"\b(self|dict|list|dict_|carrier)\s*\[", line):
+        # Only skip if it looks like actual dictionary access (variable[...]) not type annotation (name: Type[...])
+        if re.search(r"\b(self|dict_|carrier)\s*\[", line) and not re.search(
+            r":\s*\w+\s*\[", line
+        ):
             result.append(line)
             i += 1
             continue
@@ -281,9 +370,24 @@ def remove_type_hints(content):
                     result.append(combined)
                     i = j
                 else:
-                    # Single-line annotation - just remove the type annotation
-                    # Remove ": Type[...]" part
-                    line = re.sub(r":\s*\w+\[[^\]]*\]", "", line)
+                    # Single-line annotation - use bracket-matching to properly handle nested brackets
+                    # Find the colon and the type annotation that follows
+                    colon_match = re.search(r":\s*\w+\[", line)
+                    if colon_match:
+                        start = colon_match.start()
+                        # Find the matching closing bracket using bracket counting
+                        bracket_start = colon_match.end() - 1
+                        depth = 1
+                        pos = bracket_start + 1
+                        while pos < len(line) and depth > 0:
+                            if line[pos] == "[":
+                                depth += 1
+                            elif line[pos] == "]":
+                                depth -= 1
+                            pos += 1
+                        if depth == 0:
+                            # Found matching brackets, remove from colon to end of type
+                            line = line[:start] + line[pos:]
                     result.append(line)
                     i += 1
                 continue
@@ -313,6 +417,14 @@ def remove_type_hints(content):
                     break
         # Remove type annotation: name: Type = value
         line = re.sub(r"(\w+)\s*:\s*\w+(?:\.\w+)*\s*=", r"\1 =", line)
+        # Remove class attribute type annotations without assignment (e.g., _threshold: int)
+        # Only do this if the line is just a type annotation (possibly with leading whitespace)
+        if re.match(r"^\s*\w+\s*:\s*\w+(?:\.\w+)*\s*$", line):
+            # Extract just the variable name
+            match = re.match(r"^\s*(\w+)\s*:\s*\w+(?:\.\w+)*\s*$", line)
+            if match:
+                indent = len(line) - len(line.lstrip())
+                line = " " * indent + match.group(1)
         result.append(line)
         i += 1
     content = "\n".join(result)
@@ -440,10 +552,16 @@ def remove_forward_references(content):
     for line in lines:
         # Only remove quoted strings in type contexts
         # Forward refs look like: "TypeName" or "Callable[...]"
-        # Replace the entire type annotation (including the colon)
-        if re.search(r":\s*\"", line):
-            # Replace ": "..." with empty string (removes both colon and forward ref)
-            line = re.sub(r":\s*\"[^\"]*\"", "", line)
+        # The quoted string should contain only type names (alphanumeric, dots, brackets, commas)
+        # Not arbitrary content like "0x{...}" or dictionary values
+        # Pattern: param: "Type[Name]" or param: "TypeName"
+        # But not: "key": "value" (dictionary)
+        if re.search(r"\w+\s*:\s*\"", line):
+            # Replace ": "Type..." with empty string (removes both colon and forward ref)
+            # Only match if the quoted string looks like a type name
+            line = re.sub(
+                r"(\w+)\s*:\s*\"[A-Za-z_][A-Za-z0-9_\[\],\s\.]*\"", r"\1", line
+            )
         result.append(line)
     content = "\n".join(result)
     return content
@@ -459,10 +577,71 @@ def remove_dataclass_decorators(content):
 
 def replace_union_syntax(content):
     """Replace Python 3.10+ union syntax (X | Y) with Union[X, Y]."""
-    # Replace type | None with Optional[type]
-    content = re.sub(r"(\w+)\s*\|\s*None", r"Optional[\1]", content)
-    # Replace type1 | type2 with Union[type1, type2]
-    content = re.sub(r"(\w+)\s*\|\s*(\w+)", r"Union[\1, \2]", content)
+
+    def replace_union(match):
+        left = match.group(1).strip()
+        right = match.group(2).strip()
+        if right == "None":
+            return "Optional[{}]".format(left)
+        return "Union[{}, {}]".format(left, right)
+
+    # First, handle multi-line unions by joining lines that end with | or start with |
+    lines = content.split("\n")
+    result = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        # Check if line ends with | (multi-line union)
+        if re.search(r"\|\s*$", line):
+            # Collect all lines of the union
+            union_lines = [line.rstrip().rstrip("|").rstrip()]
+            j = i + 1
+            while j < len(lines):
+                next_line = lines[j].strip()
+                if next_line.startswith("|"):
+                    # Remove leading | and whitespace
+                    union_lines.append(next_line.lstrip("|").lstrip())
+                    j += 1
+                else:
+                    break
+            # Join the union into a single line with | separators
+            joined = " | ".join(union_lines)
+            # Add the rest of the last line if there was more content
+            if j > i + 1:
+                last_full_line = lines[j - 1]
+                after_pipe = last_full_line[
+                    len(lines[j - 1].strip().lstrip("|")) :
+                ]
+                joined += after_pipe
+            result.append(joined)
+            i = j
+            continue
+        # Check if next line starts with | (multi-line union starting on this line)
+        if i + 1 < len(lines) and lines[i + 1].strip().startswith("|"):
+            # Collect all lines of the union
+            union_lines = [line.rstrip()]
+            j = i + 1
+            while j < len(lines):
+                next_line = lines[j].strip()
+                if next_line.startswith("|"):
+                    # Remove leading | and whitespace
+                    union_lines.append(next_line.lstrip("|").lstrip())
+                    j += 1
+                else:
+                    break
+            # Join the union into a single line with | separators
+            joined = " | ".join(union_lines)
+            result.append(joined)
+            i = j
+            continue
+        result.append(line)
+        i += 1
+    content = "\n".join(result)
+
+    # Match type | type where type can include brackets (e.g., Sequence[Link] | None)
+    # This pattern handles nested brackets by matching non-greedy content
+    pattern = r"([^|\s]+\[[^\]]*\]|[\w.]+)\s*\|\s*([\w.]+)"
+    content = re.sub(pattern, replace_union, content)
     return content
 
 
@@ -479,6 +658,19 @@ def replace_raise_from(content):
     return content
 
 
+def replace_ellipsis_with_pass(content):
+    """Replace bare ellipsis (...) with pass for Python 2.7 compatibility."""
+    # Replace "): ..." with "): pass"
+    content = re.sub(r"\):\s*\.\.\.", "): pass", content)
+    # Replace "; ..." with "; pass"
+    content = re.sub(r";\s*\.\.\.", "; pass", content)
+    # Replace "...  # comment" with "pass  # comment" - preserve indentation
+    content = re.sub(
+        r"^(\s*)\.\.\.\s*(#.*)?$", r"\1pass \2", content, flags=re.MULTILINE
+    )
+    return content
+
+
 def refactor_file(filepath):
     """Refactor a single Python file for Python 2.7 compatibility."""
     try:
@@ -491,14 +683,15 @@ def refactor_file(filepath):
         content = remove_future_annotations(content)
         content = remove_typealias(content)
         content = replace_fstrings(content)
+        content = replace_union_syntax(content)
         content = remove_forward_references(content)
         content = remove_type_hints(content)
         content = remove_async_await(content)
         content = replace_dict_unpacking(content)
         content = remove_walrus_operators(content)
-        content = replace_union_syntax(content)
         content = remove_dataclass_decorators(content)
         content = replace_raise_from(content)
+        content = replace_ellipsis_with_pass(content)
 
         # Write back if changed
         if content != original_content:
