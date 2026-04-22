@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=too-many-lines
+# pylint =too-many-lines
 
 from future import standard_library
 standard_library.install_aliases()
@@ -392,7 +392,7 @@ class ResourceAttributes(object):
     Which states:
 
     > If generated according to one of the mechanisms defined in Rec.
-      ITU-T X.667 | ISO/IEC 9834-8, a UUID is either guaranteed to be
+      ITU-T Union/IEC 9834-8, a UUID is either guaranteed to be
       different from all other UUIDs generated before 3603 A.D., or is
       extremely likely to be different (depending on the mechanism chosen).
 

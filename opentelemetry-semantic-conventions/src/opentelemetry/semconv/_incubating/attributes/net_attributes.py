@@ -17,77 +17,77 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-NET_HOST_IP: Final = "net.host.ip"
+NET_HOST_IP = "net.host.ip"
 """
 Deprecated: Replaced by `network.local.address`.
 """
 
-NET_HOST_NAME: Final = "net.host.name"
+NET_HOST_NAME = "net.host.name"
 """
 Deprecated: Replaced by `server.address`.
 """
 
-NET_HOST_PORT: Final = "net.host.port"
+NET_HOST_PORT = "net.host.port"
 """
 Deprecated: Replaced by `server.port`.
 """
 
-NET_PEER_IP: Final = "net.peer.ip"
+NET_PEER_IP = "net.peer.ip"
 """
 Deprecated: Replaced by `network.peer.address`.
 """
 
-NET_PEER_NAME: Final = "net.peer.name"
+NET_PEER_NAME = "net.peer.name"
 """
 Deprecated: Replaced by `server.address` on client spans and `client.address` on server spans.
 """
 
-NET_PEER_PORT: Final = "net.peer.port"
+NET_PEER_PORT = "net.peer.port"
 """
 Deprecated: Replaced by `server.port` on client spans and `client.port` on server spans.
 """
 
-NET_PROTOCOL_NAME: Final = "net.protocol.name"
+NET_PROTOCOL_NAME = "net.protocol.name"
 """
 Deprecated: Replaced by `network.protocol.name`.
 """
 
-NET_PROTOCOL_VERSION: Final = "net.protocol.version"
+NET_PROTOCOL_VERSION = "net.protocol.version"
 """
 Deprecated: Replaced by `network.protocol.version`.
 """
 
-NET_SOCK_FAMILY: Final = "net.sock.family"
+NET_SOCK_FAMILY = "net.sock.family"
 """
 Deprecated: Split to `network.transport` and `network.type`.
 """
 
-NET_SOCK_HOST_ADDR: Final = "net.sock.host.addr"
+NET_SOCK_HOST_ADDR = "net.sock.host.addr"
 """
 Deprecated: Replaced by `network.local.address`.
 """
 
-NET_SOCK_HOST_PORT: Final = "net.sock.host.port"
+NET_SOCK_HOST_PORT = "net.sock.host.port"
 """
 Deprecated: Replaced by `network.local.port`.
 """
 
-NET_SOCK_PEER_ADDR: Final = "net.sock.peer.addr"
+NET_SOCK_PEER_ADDR = "net.sock.peer.addr"
 """
 Deprecated: Replaced by `network.peer.address`.
 """
 
-NET_SOCK_PEER_NAME: Final = "net.sock.peer.name"
+NET_SOCK_PEER_NAME = "net.sock.peer.name"
 """
 Deprecated: Removed. No replacement at this time.
 """
 
-NET_SOCK_PEER_PORT: Final = "net.sock.peer.port"
+NET_SOCK_PEER_PORT = "net.sock.peer.port"
 """
 Deprecated: Replaced by `network.peer.port`.
 """
 
-NET_TRANSPORT: Final = "net.transport"
+NET_TRANSPORT = "net.transport"
 """
 Deprecated: Replaced by `network.transport`.
 """

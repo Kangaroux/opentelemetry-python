@@ -33,7 +33,7 @@ class Observation:
         self,
         value,
         attributes = None,
-        context = None,
+        context = None
     ):
         self._value = value
         self._attributes = attributes

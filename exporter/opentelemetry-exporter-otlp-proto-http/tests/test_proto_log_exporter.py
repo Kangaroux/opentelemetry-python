@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=protected-access
+# pylint =protected-access
 
 import threading
 import time
@@ -118,7 +118,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
             OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "https://logs.endpoint.env",
             OTEL_EXPORTER_OTLP_LOGS_HEADERS: "logsEnv1=val1,logsEnv2=val2,logsEnv3===val3==,User-agent=LogsUserAgent",
             OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: "40",
-            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER: "credential_provider",
+            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER,
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.http._common.entry_points")
@@ -164,7 +164,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
     @patch.dict(
         "os.environ",
         {
-            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER: "provider_without_entry_point",
+            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER,
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.http._common.entry_points")
@@ -183,7 +183,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
     @patch.dict(
         "os.environ",
         {
-            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER: "provider_without_entry_point",
+            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER,
         },
     )
     def test_exception_raised_when_entrypoint_does_not_exist(self):
@@ -267,7 +267,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
         with patch("requests.Session.post") as mock_post:
             exporter = OTLPLogExporter()
             exporter.export([log])
-            request_body = mock_post.call_args[1]["data"]
+            request_body = mock_post.call_args
             request = ExportLogsServiceRequest()
             request.ParseFromString(request_body)
             request_dict = MessageToDict(request)
@@ -303,7 +303,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
         )
         log_records = TestOTLPHTTPLogExporter.export_log_and_deserialize(log)
         if log_records:
-            log_record = log_records[0]
+            log_record = log_records
             self.assertIn("spanId", log_record)
             self.assertNotIn(
                 "traceId",
@@ -339,7 +339,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
         )
         log_records = TestOTLPHTTPLogExporter.export_log_and_deserialize(log)
         if log_records:
-            log_record = log_records[0]
+            log_record = log_records
             self.assertIn("traceId", log_record)
             self.assertNotIn(
                 "spanId",
@@ -350,7 +350,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
             self.fail("No log records found")
 
     @staticmethod
-    def _get_sdk_log_data() -> List[ReadWriteLogRecord]:
+    def _get_sdk_log_data():
         ctx_log1 = set_span_in_context(
             NonRecordingSpan(
                 SpanContext(
@@ -481,7 +481,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
             self.assertTrue(0.75 < after - before < 1.25)
             self.assertIn(
                 "Transient error UNAVAILABLE encountered while exporting logs batch, retrying in",
-                warning.records[0].message,
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -498,8 +498,8 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
             # done twice at the moment.
             self.assertGreater(mock_post.call_count, 2)
             self.assertIn(
-                f"Transient error {msg} encountered while exporting logs batch, retrying in",
-                warning.records[0].message,
+                "Transient error {} encountered while exporting logs batch, retrying in".format(msg),
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -515,7 +515,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
             self.assertEqual(mock_post.call_count, 1)
             self.assertIn(
                 "Failed to export logs batch code",
-                warning.records[0].message,
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -525,7 +525,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
 
         def export_side_effect(*args, **kwargs):
             # Timeout should be set to something slightly less than 400 milliseconds depending on how much time has passed.
-            self.assertAlmostEqual(0.4, kwargs["timeout"], 2)
+            self.assertAlmostEqual(0.4, kwargs, 2)
             return resp
 
         mock_post.side_effect = export_side_effect
@@ -554,11 +554,11 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
             after = time.time()
             self.assertIn(
                 "Transient error UNAVAILABLE encountered while exporting logs batch, retrying in",
-                warning.records[0].message,
+                warning.records.message,
             )
             self.assertIn(
                 "Shutdown in progress, aborting retry.",
-                warning.records[1].message,
+                warning.records.message,
             )
 
             assert after - before < 0.2

@@ -38,7 +38,7 @@ handler that handles ``ZeroDivisionError``:
 
     class ErrorHandler0(ErrorHandler, ZeroDivisionError):
 
-        def _handle(self, error: Exception, *args, **kwargs):
+        def _handle(self, error, *args, **kwargs):
 
             logger.exception("ErrorHandler0 handling a ZeroDivisionError")
 
@@ -90,7 +90,7 @@ class _DefaultErrorHandler(ErrorHandler):
     This error handler just logs the exception using standard logging.
     """
 
-    # pylint: disable=useless-return
+    # pylint =useless-return
     def _handle(self, error, *args, **kwargs):
         logger.exception("Error handled by default error handler: ")
         return None
@@ -116,7 +116,7 @@ class GlobalErrorHandler(object):
     def __enter__(self):
         pass
 
-    # pylint: disable=no-self-use
+    # pylint =no-self-use
     def __exit__(self, exc_type, exc_value, traceback):
         if exc_value is None:
             return None
@@ -135,7 +135,7 @@ class GlobalErrorHandler(object):
                     error_handler_class()._handle(exc_value)
                     plugin_handled = True
 
-                # pylint: disable=broad-exception-caught
+                # pylint =broad-exception-caught
                 except Exception as error_handling_error:
                     logger.exception(
                         "%s error while handling error %s by error handler %s",

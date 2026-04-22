@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -44,7 +43,7 @@ class _CompositeSampler(Sampler):
         kind = None,
         attributes = None,
         links = None,
-        trace_state = None,
+        trace_state = None
     ):
         ot_trace_state = OtelTraceState.parse(trace_state)
 
@@ -84,7 +83,7 @@ class _CompositeSampler(Sampler):
 def _update_trace_state(
     trace_state,
     ot_trace_state,
-    intent,
+    intent
 ):
     otts = ot_trace_state.serialize()
     if not trace_state:

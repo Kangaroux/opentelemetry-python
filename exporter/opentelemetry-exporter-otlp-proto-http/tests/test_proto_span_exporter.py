@@ -71,7 +71,7 @@ BASIC_SPAN = _Span(
 )
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 class TestOTLPSpanExporter(unittest.TestCase):
     def test_constructor_default(self):
         exporter = OTLPSpanExporter()
@@ -113,7 +113,7 @@ class TestOTLPSpanExporter(unittest.TestCase):
             OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "https://traces.endpoint.env",
             OTEL_EXPORTER_OTLP_TRACES_HEADERS: "tracesEnv1=val1,tracesEnv2=val2,traceEnv3===val3==,User-agent=TraceUserAgent",
             OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: "40",
-            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_TRACES_CREDENTIAL_PROVIDER: "credential_provider",
+            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_TRACES_CREDENTIAL_PROVIDER,
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.http._common.entry_points")
@@ -234,7 +234,7 @@ class TestOTLPSpanExporter(unittest.TestCase):
 
         self.assertEqual(
             exporter._endpoint,
-            OS_ENV_ENDPOINT + f"/{DEFAULT_TRACES_EXPORT_PATH}",
+            OS_ENV_ENDPOINT + "/{}".format(DEFAULT_TRACES_EXPORT_PATH),
         )
 
     @patch.dict(
@@ -246,7 +246,7 @@ class TestOTLPSpanExporter(unittest.TestCase):
 
         self.assertEqual(
             exporter._endpoint,
-            OS_ENV_ENDPOINT + f"/{DEFAULT_TRACES_EXPORT_PATH}",
+            OS_ENV_ENDPOINT + "/{}".format(DEFAULT_TRACES_EXPORT_PATH),
         )
 
     @patch.dict(
@@ -260,7 +260,7 @@ class TestOTLPSpanExporter(unittest.TestCase):
             _ = OTLPSpanExporter()
 
             self.assertEqual(
-                cm.records[0].message,
+                cm.records.message,
                 (
                     "Header format invalid! Header values in environment "
                     "variables must be URL encoded per the OpenTelemetry "
@@ -301,7 +301,7 @@ class TestOTLPSpanExporter(unittest.TestCase):
             self.assertTrue(0.75 < after - before < 1.25)
             self.assertIn(
                 "Transient error UNAVAILABLE encountered while exporting span batch, retrying in",
-                warning.records[0].message,
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -318,8 +318,8 @@ class TestOTLPSpanExporter(unittest.TestCase):
             # done twice at the moment.
             self.assertGreater(mock_post.call_count, 2)
             self.assertIn(
-                f"Transient error {msg} encountered while exporting span batch, retrying in",
-                warning.records[0].message,
+                "Transient error {} encountered while exporting span batch, retrying in".format(msg),
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -335,7 +335,7 @@ class TestOTLPSpanExporter(unittest.TestCase):
             self.assertEqual(mock_post.call_count, 1)
             self.assertIn(
                 "Failed to export span batch code",
-                warning.records[0].message,
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -345,7 +345,7 @@ class TestOTLPSpanExporter(unittest.TestCase):
 
         def export_side_effect(*args, **kwargs):
             # Timeout should be set to something slightly less than 400 milliseconds depending on how much time has passed.
-            self.assertAlmostEqual(0.4, kwargs["timeout"], 2)
+            self.assertAlmostEqual(0.4, kwargs, 2)
             return resp
 
         mock_post.side_effect = export_side_effect
@@ -372,11 +372,11 @@ class TestOTLPSpanExporter(unittest.TestCase):
             after = time.time()
             self.assertIn(
                 "Transient error UNAVAILABLE encountered while exporting span batch, retrying in",
-                warning.records[0].message,
+                warning.records.message,
             )
             self.assertIn(
                 "Shutdown in progress, aborting retry.",
-                warning.records[1].message,
+                warning.records.message,
             )
 
             assert after - before < 0.2

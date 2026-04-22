@@ -15,27 +15,27 @@
 from enum import Enum
 from typing_extensions import Final
 
-OS_BUILD_ID: Final = "os.build_id"
+OS_BUILD_ID = "os.build_id"
 """
 Unique identifier for a particular build or compilation of the operating system.
 """
 
-OS_DESCRIPTION: Final = "os.description"
+OS_DESCRIPTION = "os.description"
 """
 Human readable (not intended to be parsed) OS version information, like e.g. reported by `ver` or `lsb_release -a` commands.
 """
 
-OS_NAME: Final = "os.name"
+OS_NAME = "os.name"
 """
 Human readable operating system name.
 """
 
-OS_TYPE: Final = "os.type"
+OS_TYPE = "os.type"
 """
 The operating system type.
 """
 
-OS_VERSION: Final = "os.version"
+OS_VERSION = "os.version"
 """
 The version string of the operating system as defined in [Version Attributes](/docs/resource/README.md#version-attributes).
 """

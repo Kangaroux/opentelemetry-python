@@ -15,82 +15,82 @@
 from enum import Enum
 from typing_extensions import Final
 
-CICD_PIPELINE_ACTION_NAME: Final = "cicd.pipeline.action.name"
+CICD_PIPELINE_ACTION_NAME = "cicd.pipeline.action.name"
 """
 The kind of action a pipeline run is performing.
 """
 
-CICD_PIPELINE_NAME: Final = "cicd.pipeline.name"
+CICD_PIPELINE_NAME = "cicd.pipeline.name"
 """
 The human readable name of the pipeline within a CI/CD system.
 """
 
-CICD_PIPELINE_RESULT: Final = "cicd.pipeline.result"
+CICD_PIPELINE_RESULT = "cicd.pipeline.result"
 """
 The result of a pipeline run.
 """
 
-CICD_PIPELINE_RUN_ID: Final = "cicd.pipeline.run.id"
+CICD_PIPELINE_RUN_ID = "cicd.pipeline.run.id"
 """
 The unique identifier of a pipeline run within a CI/CD system.
 """
 
-CICD_PIPELINE_RUN_STATE: Final = "cicd.pipeline.run.state"
+CICD_PIPELINE_RUN_STATE = "cicd.pipeline.run.state"
 """
 The pipeline run goes through these states during its lifecycle.
 """
 
-CICD_PIPELINE_RUN_URL_FULL: Final = "cicd.pipeline.run.url.full"
+CICD_PIPELINE_RUN_URL_FULL = "cicd.pipeline.run.url.full"
 """
 The [URL](https://wikipedia.org/wiki/URL) of the pipeline run, providing the complete address in order to locate and identify the pipeline run.
 """
 
-CICD_PIPELINE_TASK_NAME: Final = "cicd.pipeline.task.name"
+CICD_PIPELINE_TASK_NAME = "cicd.pipeline.task.name"
 """
 The human readable name of a task within a pipeline. Task here most closely aligns with a [computing process](https://wikipedia.org/wiki/Pipeline_(computing)) in a pipeline. Other terms for tasks include commands, steps, and procedures.
 """
 
-CICD_PIPELINE_TASK_RUN_ID: Final = "cicd.pipeline.task.run.id"
+CICD_PIPELINE_TASK_RUN_ID = "cicd.pipeline.task.run.id"
 """
 The unique identifier of a task run within a pipeline.
 """
 
-CICD_PIPELINE_TASK_RUN_RESULT: Final = "cicd.pipeline.task.run.result"
+CICD_PIPELINE_TASK_RUN_RESULT = "cicd.pipeline.task.run.result"
 """
 The result of a task run.
 """
 
-CICD_PIPELINE_TASK_RUN_URL_FULL: Final = "cicd.pipeline.task.run.url.full"
+CICD_PIPELINE_TASK_RUN_URL_FULL = "cicd.pipeline.task.run.url.full"
 """
 The [URL](https://wikipedia.org/wiki/URL) of the pipeline task run, providing the complete address in order to locate and identify the pipeline task run.
 """
 
-CICD_PIPELINE_TASK_TYPE: Final = "cicd.pipeline.task.type"
+CICD_PIPELINE_TASK_TYPE = "cicd.pipeline.task.type"
 """
 The type of the task within a pipeline.
 """
 
-CICD_SYSTEM_COMPONENT: Final = "cicd.system.component"
+CICD_SYSTEM_COMPONENT = "cicd.system.component"
 """
 The name of a component of the CICD system.
 """
 
-CICD_WORKER_ID: Final = "cicd.worker.id"
+CICD_WORKER_ID = "cicd.worker.id"
 """
 The unique identifier of a worker within a CICD system.
 """
 
-CICD_WORKER_NAME: Final = "cicd.worker.name"
+CICD_WORKER_NAME = "cicd.worker.name"
 """
 The name of a worker within a CICD system.
 """
 
-CICD_WORKER_STATE: Final = "cicd.worker.state"
+CICD_WORKER_STATE = "cicd.worker.state"
 """
 The state of a CICD worker / agent.
 """
 
-CICD_WORKER_URL_FULL: Final = "cicd.worker.url.full"
+CICD_WORKER_URL_FULL = "cicd.worker.url.full"
 """
 The [URL](https://wikipedia.org/wiki/URL) of the worker, providing the complete address in order to locate and identify the worker.
 """

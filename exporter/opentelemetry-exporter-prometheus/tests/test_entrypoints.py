@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=no-self-use
+# pylint =no-self-use
 
 from future import standard_library
 standard_library.install_aliases()
@@ -48,7 +48,7 @@ class TestEntrypoints(TestCase):
         )
 
         self.assertIs(
-            metric_exporters["prometheus"],
+            metric_exporters,
             _AutoPrometheusMetricReader,
         )
 

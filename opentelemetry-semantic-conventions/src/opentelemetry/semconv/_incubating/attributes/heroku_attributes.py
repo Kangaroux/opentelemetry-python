@@ -14,17 +14,17 @@
 
 from typing_extensions import Final
 
-HEROKU_APP_ID: Final = "heroku.app.id"
+HEROKU_APP_ID = "heroku.app.id"
 """
 Unique identifier for the application.
 """
 
-HEROKU_RELEASE_COMMIT: Final = "heroku.release.commit"
+HEROKU_RELEASE_COMMIT = "heroku.release.commit"
 """
 Commit hash for the current release.
 """
 
-HEROKU_RELEASE_CREATION_TIMESTAMP: Final = "heroku.release.creation_timestamp"
+HEROKU_RELEASE_CREATION_TIMESTAMP = "heroku.release.creation_timestamp"
 """
 Time and date the release was created.
 """

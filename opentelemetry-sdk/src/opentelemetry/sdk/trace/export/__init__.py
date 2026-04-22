@@ -2,7 +2,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
-from __future__ import annotations
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -71,7 +70,7 @@ class SpanExporter(object):
 
     def export(
         self, spans
-    ):  # pyright: ignore[reportReturnType]
+    ):  # pyright: ignore
         """Exports a batch of telemetry data.
 
         Args:
@@ -87,7 +86,7 @@ class SpanExporter(object):
         Called when the SDK is shut down.
         """
 
-    def force_flush(self, timeout_millis = 30000):  # pyright: ignore[reportReturnType]
+    def force_flush(self, timeout_millis = 30000):  # pyright: ignore
         """Hint to ensure that the export of any spans the exporter has received
         prior to the call to ForceFlush SHOULD be completed as soon as possible, preferably
         before returning from this method.
@@ -118,7 +117,7 @@ class SimpleSpanProcessor(SpanProcessor):
         token = attach(set_value(_SUPPRESS_INSTRUMENTATION_KEY, True))
         try:
             self.span_exporter.export((span,))
-        # pylint: disable=broad-exception-caught
+        # pylint =broad-exception-caught
         except Exception:
             logger.exception("Exception while exporting Span.")
         detach(token)
@@ -127,7 +126,7 @@ class SimpleSpanProcessor(SpanProcessor):
         self.span_exporter.shutdown()
 
     def force_flush(self, timeout_millis = 30000):
-        # pylint: disable=unused-argument
+        # pylint =unused-argument
         return True
 
 
@@ -154,7 +153,7 @@ class BatchSpanProcessor(SpanProcessor):
         max_queue_size = None,
         schedule_delay_millis = None,
         max_export_batch_size = None,
-        export_timeout_millis = None,
+        export_timeout_millis = None
     ):
         if max_queue_size is None:
             max_queue_size = BatchSpanProcessor._default_max_queue_size()
@@ -191,7 +190,7 @@ class BatchSpanProcessor(SpanProcessor):
     # Added for backward compatibility. Not recommended to directly access/use underlying exporter.
     @property
     def span_exporter(self):
-        return self._batch_processor._exporter  # pylint: disable=protected-access
+        return self._batch_processor._exporter  # pylint =protected-access
 
     def on_start(
         self, span, parent_context = None

@@ -14,7 +14,7 @@
 
 from typing_extensions import Final
 
-SERVICE_INSTANCE_ID: Final = "service.instance.id"
+SERVICE_INSTANCE_ID = "service.instance.id"
 """
 The string ID of the service instance.
 Note: MUST be unique for each instance of the same `service.namespace,service.name` pair (in other words
@@ -45,19 +45,19 @@ for that telemetry. This is typically the case for scraping receivers, as they k
 port.
 """
 
-SERVICE_NAME: Final = "service.name"
+SERVICE_NAME = "service.name"
 """
 Logical name of the service.
 Note: MUST be the same for all instances of horizontally scaled services. If the value was not specified, SDKs MUST fallback to `unknown_service:` concatenated with [`process.executable.name`](process.md), e.g. `unknown_service:bash`. If `process.executable.name` is not available, the value MUST be set to `unknown_service`.
 """
 
-SERVICE_NAMESPACE: Final = "service.namespace"
+SERVICE_NAMESPACE = "service.namespace"
 """
 A namespace for `service.name`.
 Note: A string value having a meaning that helps to distinguish a group of services, for example the team name that owns a group of services. `service.name` is expected to be unique within the same namespace. If `service.namespace` is not specified in the Resource then `service.name` is expected to be unique for all services that have no explicit namespace defined (so the empty/unspecified namespace is simply one more valid namespace). Zero-length namespace string is assumed equal to unspecified namespace.
 """
 
-SERVICE_VERSION: Final = "service.version"
+SERVICE_VERSION = "service.version"
 """
 The version string of the service component. The format is not defined by these conventions.
 """

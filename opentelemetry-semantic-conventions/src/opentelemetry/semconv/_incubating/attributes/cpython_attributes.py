@@ -15,7 +15,7 @@
 from enum import Enum
 from typing_extensions import Final
 
-CPYTHON_GC_GENERATION: Final = "cpython.gc.generation"
+CPYTHON_GC_GENERATION = "cpython.gc.generation"
 """
 Value of the garbage collector collection generation.
 """

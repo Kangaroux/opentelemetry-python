@@ -375,18 +375,18 @@ _REPORTRESPONSE = _descriptor.Descriptor(
 )
 
 _SPAN_TAGSENTRY.containing_type = _SPAN
-_SPAN.fields_by_name['kind'].enum_type = _SPAN_KIND
-_SPAN.fields_by_name['local_endpoint'].message_type = _ENDPOINT
-_SPAN.fields_by_name['remote_endpoint'].message_type = _ENDPOINT
-_SPAN.fields_by_name['annotations'].message_type = _ANNOTATION
-_SPAN.fields_by_name['tags'].message_type = _SPAN_TAGSENTRY
+_SPAN.fields_by_name.enum_type = _SPAN_KIND
+_SPAN.fields_by_name.message_type = _ENDPOINT
+_SPAN.fields_by_name.message_type = _ENDPOINT
+_SPAN.fields_by_name.message_type = _ANNOTATION
+_SPAN.fields_by_name.message_type = _SPAN_TAGSENTRY
 _SPAN_KIND.containing_type = _SPAN
-_LISTOFSPANS.fields_by_name['spans'].message_type = _SPAN
-DESCRIPTOR.message_types_by_name['Span'] = _SPAN
-DESCRIPTOR.message_types_by_name['Endpoint'] = _ENDPOINT
-DESCRIPTOR.message_types_by_name['Annotation'] = _ANNOTATION
-DESCRIPTOR.message_types_by_name['ListOfSpans'] = _LISTOFSPANS
-DESCRIPTOR.message_types_by_name['ReportResponse'] = _REPORTRESPONSE
+_LISTOFSPANS.fields_by_name.message_type = _SPAN
+DESCRIPTOR.message_types_by_name = _SPAN
+DESCRIPTOR.message_types_by_name = _ENDPOINT
+DESCRIPTOR.message_types_by_name = _ANNOTATION
+DESCRIPTOR.message_types_by_name = _LISTOFSPANS
+DESCRIPTOR.message_types_by_name = _REPORTRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Span = _reflection.GeneratedProtocolMessageType('Span', (_message.Message,), {
@@ -459,6 +459,6 @@ _SPANSERVICE = _descriptor.ServiceDescriptor(
 ])
 _sym_db.RegisterServiceDescriptor(_SPANSERVICE)
 
-DESCRIPTOR.services_by_name['SpanService'] = _SPANSERVICE
+DESCRIPTOR.services_by_name = _SPANSERVICE
 
 # @@protoc_insertion_point(module_scope)

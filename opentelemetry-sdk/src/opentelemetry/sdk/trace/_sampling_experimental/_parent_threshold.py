@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 from typing import Sequence
 
 from opentelemetry.context import Context
@@ -30,19 +28,19 @@ from ._util import (
 
 
 class _ComposableParentThreshold(ComposableSampler):
-    def __init__(self, root_sampler: ComposableSampler):
+    def __init__(self, root_sampler):
         self._root_sampler = root_sampler
-        self._description = f"ComposableParentThreshold{{root={root_sampler.get_description()}}}"
+        self._description = "ComposableParentThreshold{{root={}}}".format(root_sampler.get_description())
 
     def sampling_intent(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None = None,
-    ) -> SamplingIntent:
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state = None
+    ):
         parent_span = get_current_span(parent_ctx)
         parent_span_ctx = parent_span.get_span_context()
         is_root = not parent_span_ctx.is_valid
@@ -66,13 +64,13 @@ class _ComposableParentThreshold(ComposableSampler):
         )
         return SamplingIntent(threshold=threshold, threshold_reliable=False)
 
-    def get_description(self) -> str:
+    def get_description(self):
         return self._description
 
 
 def composable_parent_threshold(
-    root_sampler: ComposableSampler,
-) -> ComposableSampler:
+    root_sampler
+):
     """Returns a consistent sampler that respects the sampling decision of
     the parent span or falls-back to the given sampler if it is a root span.
 

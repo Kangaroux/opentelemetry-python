@@ -14,22 +14,22 @@
 
 from typing_extensions import Final
 
-EXCEPTION_ESCAPED: Final = "exception.escaped"
+EXCEPTION_ESCAPED = "exception.escaped"
 """
 Deprecated: It's no longer recommended to record exceptions that are handled and do not escape the scope of a span.
 """
 
-EXCEPTION_MESSAGE: Final = "exception.message"
+EXCEPTION_MESSAGE = "exception.message"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.exception_attributes.EXCEPTION_MESSAGE`.
 """
 
-EXCEPTION_STACKTRACE: Final = "exception.stacktrace"
+EXCEPTION_STACKTRACE = "exception.stacktrace"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.exception_attributes.EXCEPTION_STACKTRACE`.
 """
 
-EXCEPTION_TYPE: Final = "exception.type"
+EXCEPTION_TYPE = "exception.type"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.exception_attributes.EXCEPTION_TYPE`.
 """

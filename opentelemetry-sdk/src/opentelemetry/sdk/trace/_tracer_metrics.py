@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-from __future__ import annotations
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
@@ -48,7 +47,7 @@ class TracerMetrics(object):
     def start_span(
         self,
         parent_span_context,
-        sampling_decision,
+        sampling_decision
     ):
         sampling_result_value = sampling_result(sampling_decision)
         self._started_spans.add(

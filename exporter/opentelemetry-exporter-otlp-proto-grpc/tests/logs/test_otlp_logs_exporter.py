@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=too-many-lines
+# pylint =too-many-lines
 
 from builtins import int
 from future import standard_library
@@ -185,7 +185,7 @@ class TestOTLPLogExporter(TestCase):
         )
 
     def test_exporting(self):
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(self.exporter._exporting, "logs")
 
     @patch.dict(
@@ -194,7 +194,7 @@ class TestOTLPLogExporter(TestCase):
             OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "logs:4317",
             OTEL_EXPORTER_OTLP_LOGS_HEADERS: " key1=value1,KEY2 = VALUE=2",
             OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: "10",
-            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION: "gzip",
+            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION,
         },
     )
     @patch(
@@ -204,27 +204,27 @@ class TestOTLPLogExporter(TestCase):
         OTLPLogExporter()
 
         self.assertTrue(len(mock_exporter_mixin.call_args_list) == 1)
-        _, kwargs = mock_exporter_mixin.call_args_list[0]
-        self.assertEqual(kwargs["endpoint"], "logs:4317")
-        self.assertEqual(kwargs["headers"], " key1=value1,KEY2 = VALUE=2")
-        self.assertEqual(kwargs["timeout"], 10)
-        self.assertEqual(kwargs["compression"], Compression.Gzip)
-        self.assertIsNone(kwargs["credentials"])
+        _, kwargs = mock_exporter_mixin.call_args_list
+        self.assertEqual(kwargs, "logs:4317")
+        self.assertEqual(kwargs, " key1=value1,KEY2 = VALUE=2")
+        self.assertEqual(kwargs, 10)
+        self.assertEqual(kwargs, Compression.Gzip)
+        self.assertIsNone(kwargs)
 
     # Create a new test method specifically for client certificates
     @patch.dict(
         "os.environ",
         {
             OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "logs:4317",
-            OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE: THIS_DIR
+            OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE
             + "/../fixtures/test.cert",
-            OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE: THIS_DIR
+            OTEL_EXPORTER_OTLP_LOGS_CLIENT_CERTIFICATE
             + "/../fixtures/test-client-cert.pem",
-            OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY: THIS_DIR
+            OTEL_EXPORTER_OTLP_LOGS_CLIENT_KEY
             + "/../fixtures/test-client-key.pem",
             OTEL_EXPORTER_OTLP_LOGS_HEADERS: " key1=value1,KEY2 = VALUE=2",
             OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: "10",
-            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION: "gzip",
+            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION,
         },
     )
     @patch(
@@ -234,23 +234,23 @@ class TestOTLPLogExporter(TestCase):
         OTLPLogExporter()
 
         self.assertTrue(len(mock_exporter_mixin.call_args_list) == 1)
-        _, kwargs = mock_exporter_mixin.call_args_list[0]
-        self.assertEqual(kwargs["endpoint"], "logs:4317")
-        self.assertEqual(kwargs["headers"], " key1=value1,KEY2 = VALUE=2")
-        self.assertEqual(kwargs["timeout"], 10)
-        self.assertEqual(kwargs["compression"], Compression.Gzip)
-        self.assertIsNotNone(kwargs["credentials"])
-        self.assertIsInstance(kwargs["credentials"], ChannelCredentials)
+        _, kwargs = mock_exporter_mixin.call_args_list
+        self.assertEqual(kwargs, "logs:4317")
+        self.assertEqual(kwargs, " key1=value1,KEY2 = VALUE=2")
+        self.assertEqual(kwargs, 10)
+        self.assertEqual(kwargs, Compression.Gzip)
+        self.assertIsNotNone(kwargs)
+        self.assertIsInstance(kwargs, ChannelCredentials)
 
     @patch.dict(
         "os.environ",
         {
             OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "logs:4317",
-            OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE: THIS_DIR
+            OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE
             + "/../fixtures/test.cert",
             OTEL_EXPORTER_OTLP_LOGS_HEADERS: " key1=value1,KEY2 = VALUE=2",
             OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: "10",
-            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION: "gzip",
+            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION,
         },
     )
     @patch(
@@ -263,13 +263,13 @@ class TestOTLPLogExporter(TestCase):
         OTLPLogExporter()
 
         self.assertTrue(len(mock_exporter_mixin.call_args_list) == 1)
-        _, kwargs = mock_exporter_mixin.call_args_list[0]
-        self.assertEqual(kwargs["endpoint"], "logs:4317")
-        self.assertEqual(kwargs["headers"], " key1=value1,KEY2 = VALUE=2")
-        self.assertEqual(kwargs["timeout"], 10)
-        self.assertEqual(kwargs["compression"], Compression.Gzip)
-        self.assertIsNotNone(kwargs["credentials"])
-        self.assertIsInstance(kwargs["credentials"], ChannelCredentials)
+        _, kwargs = mock_exporter_mixin.call_args_list
+        self.assertEqual(kwargs, "logs:4317")
+        self.assertEqual(kwargs, " key1=value1,KEY2 = VALUE=2")
+        self.assertEqual(kwargs, 10)
+        self.assertEqual(kwargs, Compression.Gzip)
+        self.assertIsNotNone(kwargs)
+        self.assertIsInstance(kwargs, ChannelCredentials)
 
         mock_logger_error.assert_not_called()
 
@@ -277,11 +277,11 @@ class TestOTLPLogExporter(TestCase):
         "os.environ",
         {
             OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "logs:4317",
-            OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE: THIS_DIR
+            OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE
             + "/../fixtures/test.cert",
             OTEL_EXPORTER_OTLP_LOGS_HEADERS: " key1=value1,KEY2 = VALUE=2",
             OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: "10",
-            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION: "gzip",
+            OTEL_EXPORTER_OTLP_LOGS_COMPRESSION,
         },
     )
     @patch(
@@ -302,18 +302,18 @@ class TestOTLPLogExporter(TestCase):
         )
 
         self.assertTrue(len(mock_exporter_mixin.call_args_list) == 1)
-        _, kwargs = mock_exporter_mixin.call_args_list[0]
-        self.assertEqual(kwargs["endpoint"], "logs:4318")
-        self.assertEqual(kwargs["headers"], (("an", "header"),))
-        self.assertEqual(kwargs["timeout"], 20)
-        self.assertEqual(kwargs["compression"], Compression.NoCompression)
-        self.assertEqual(kwargs["credentials"], credentials_mock)
-        self.assertEqual(kwargs["channel_options"], (("some", "options"),))
+        _, kwargs = mock_exporter_mixin.call_args_list
+        self.assertEqual(kwargs, "logs:4318")
+        self.assertEqual(kwargs, (("an", "header"),))
+        self.assertEqual(kwargs, 20)
+        self.assertEqual(kwargs, Compression.NoCompression)
+        self.assertEqual(kwargs, credentials_mock)
+        self.assertEqual(kwargs, (("some", "options"),))
 
         mock_logger_error.assert_not_called()
 
     def export_log_and_deserialize(self, log_data):
-        # pylint: disable=protected-access
+        # pylint =protected-access
         translated_data = self.exporter._translate_data([log_data])
         request_dict = MessageToDict(translated_data)
         log_records = (
@@ -326,7 +326,7 @@ class TestOTLPLogExporter(TestCase):
     def test_exported_log_without_trace_id(self):
         log_records = self.export_log_and_deserialize(self.log_data_4)
         if log_records:
-            log_record = log_records[0]
+            log_record = log_records
             self.assertIn("spanId", log_record)
             self.assertNotIn(
                 "traceId",
@@ -339,7 +339,7 @@ class TestOTLPLogExporter(TestCase):
     def test_exported_log_without_span_id(self):
         log_records = self.export_log_and_deserialize(self.log_data_5)
         if log_records:
-            log_record = log_records[0]
+            log_record = log_records
             self.assertIn("traceId", log_record)
             self.assertNotIn(
                 "spanId",
@@ -367,7 +367,7 @@ class TestOTLPLogExporter(TestCase):
                             ),
                             log_records=[
                                 PB2LogRecord(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     time_unix_nano=self.log_data_1.log_record.timestamp,
                                     observed_time_unix_nano=self.log_data_1.log_record.observed_timestamp,
                                     severity_number=self.log_data_1.log_record.severity_number.value,
@@ -404,7 +404,7 @@ class TestOTLPLogExporter(TestCase):
             ]
         )
 
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(
             expected, self.exporter._translate_data([self.log_data_1])
         )
@@ -427,7 +427,7 @@ class TestOTLPLogExporter(TestCase):
                             ),
                             log_records=[
                                 PB2LogRecord(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     time_unix_nano=self.log_data_1.log_record.timestamp,
                                     observed_time_unix_nano=self.log_data_1.log_record.observed_timestamp,
                                     severity_number=self.log_data_1.log_record.severity_number.value,
@@ -465,7 +465,7 @@ class TestOTLPLogExporter(TestCase):
                             ),
                             log_records=[
                                 PB2LogRecord(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     time_unix_nano=self.log_data_2.log_record.timestamp,
                                     observed_time_unix_nano=self.log_data_2.log_record.observed_timestamp,
                                     severity_number=self.log_data_2.log_record.severity_number.value,
@@ -511,7 +511,7 @@ class TestOTLPLogExporter(TestCase):
                             ),
                             log_records=[
                                 PB2LogRecord(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     time_unix_nano=self.log_data_3.log_record.timestamp,
                                     observed_time_unix_nano=self.log_data_3.log_record.observed_timestamp,
                                     severity_number=self.log_data_3.log_record.severity_number.value,
@@ -539,7 +539,7 @@ class TestOTLPLogExporter(TestCase):
             ]
         )
 
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(
             expected,
             self.exporter._translate_data(

@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 from typing import Sequence, Tuple, Union
 
 try:
@@ -32,42 +30,42 @@ from ._util import INVALID_THRESHOLD
 class PredicateT(Protocol):
     def __call__(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None,
-    ) -> bool: ...
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state
+    ): pass
 
-    def __str__(self) -> str: ...
+    def __str__(self): pass
 
 
 class AttributePredicate:
     """An exact match of an attribute value"""
 
-    def __init__(self, key: str, value: AnyValue):
+    def __init__(self, key, value):
         self.key = key
         self.value = value
 
     def __call__(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None,
-    ) -> bool:
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state
+    ):
         if not attributes:
             return False
         return attributes.get(self.key) == self.value
 
     def __str__(self):
-        return f"{self.key}={self.value}"
+        return "{}={}".format(self.key, self.value)
 
 
-RulesT = Sequence[Tuple[PredicateT, ComposableSampler]]
+RulesT = Sequence
 
 _non_sampling_intent = SamplingIntent(
     threshold=INVALID_THRESHOLD, threshold_reliable=False
@@ -75,19 +73,19 @@ _non_sampling_intent = SamplingIntent(
 
 
 class _ComposableRuleBased(ComposableSampler):
-    def __init__(self, rules: RulesT):
+    def __init__(self, rules):
         # work on an internal copy of the rules
         self._rules = list(rules)
 
     def sampling_intent(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None = None,
-    ) -> SamplingIntent:
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state = None
+    ):
         for predicate, sampler in self._rules:
             if predicate(
                 parent_ctx=parent_ctx,
@@ -107,17 +105,17 @@ class _ComposableRuleBased(ComposableSampler):
                 )
         return _non_sampling_intent
 
-    def get_description(self) -> str:
+    def get_description(self):
         rules_str = ",".join(
-            f"({predicate}:{sampler.get_description()})"
+            "({}:{})".format(predicate, sampler.get_description())
             for predicate, sampler in self._rules
         )
-        return f"ComposableRuleBased{{[{rules_str}]}}"
+        return "ComposableRuleBased{{[{}]}}".format(rules_str)
 
 
 def composable_rule_based(
-    rules: RulesT,
-) -> ComposableSampler:
+    rules
+):
     """Returns a consistent sampler that:
 
     - Evaluates a series of rules based on predicates and returns the SamplingIntent from the first matching sampler

@@ -14,7 +14,7 @@
 
 from typing_extensions import Final
 
-MAINFRAME_LPAR_NAME: Final = "mainframe.lpar.name"
+MAINFRAME_LPAR_NAME = "mainframe.lpar.name"
 """
 Name of the logical partition that hosts a systems with a mainframe operating system.
 """

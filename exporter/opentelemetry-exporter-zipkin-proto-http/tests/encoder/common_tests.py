@@ -37,7 +37,7 @@ from opentelemetry.trace.status import Status, StatusCode
 TEST_SERVICE_NAME = "test_service"
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 class CommonEncoderTestCases(object):
     class CommonEncoderTest(unittest.TestCase):
         @staticmethod
@@ -172,7 +172,7 @@ class CommonEncoderTestCases(object):
 
         @staticmethod
         def get_data_for_max_tag_length_test(
-            max_tag_length,
+            max_tag_length
         ):
             start_time = 683647322 * 10**9  # in ns
             duration = 50 * 10**6
@@ -332,7 +332,7 @@ class CommonEncoderTestCases(object):
                 },
             }
 
-            return span, expected_outputs[max_tag_length]
+            return span, expected_outputs
 
         @staticmethod
         def get_exhaustive_otel_span_list():
@@ -346,10 +346,10 @@ class CommonEncoderTestCases(object):
                 base_time + 400 * 10**6,
             )
             end_times = (
-                start_times[0] + (50 * 10**6),
-                start_times[1] + (100 * 10**6),
-                start_times[2] + (200 * 10**6),
-                start_times[3] + (300 * 10**6),
+                start_times + (50 * 10**6),
+                start_times + (100 * 10**6),
+                start_times + (200 * 10**6),
+                start_times + (300 * 10**6),
             )
 
             parent_span_context = trace_api.SpanContext(
@@ -387,12 +387,12 @@ class CommonEncoderTestCases(object):
                 ),
                 resource=trace.Resource({}),
             )
-            span1.start(start_time=start_times[0])
+            span1.start(start_time=start_times)
             span1.set_attribute("key_bool", False)
             span1.set_attribute("key_string", "hello_world")
             span1.set_attribute("key_float", 111.22)
             span1.set_status(Status(StatusCode.OK))
-            span1.end(end_time=end_times[0])
+            span1.end(end_time=end_times)
 
             span2 = trace._Span(
                 name="test-span-2",
@@ -402,9 +402,9 @@ class CommonEncoderTestCases(object):
                     attributes={"key_resource": "some_resource"}
                 ),
             )
-            span2.start(start_time=start_times[1])
+            span2.start(start_time=start_times)
             span2.set_status(Status(StatusCode.ERROR, "Example description"))
-            span2.end(end_time=end_times[1])
+            span2.end(end_time=end_times)
 
             span3 = trace._Span(
                 name="test-span-3",
@@ -414,9 +414,9 @@ class CommonEncoderTestCases(object):
                     attributes={"key_resource": "some_resource"}
                 ),
             )
-            span3.start(start_time=start_times[2])
+            span3.start(start_time=start_times)
             span3.set_attribute("key_string", "hello_world")
-            span3.end(end_time=end_times[2])
+            span3.end(end_time=end_times)
 
             span4 = trace._Span(
                 name="test-span-3",
@@ -427,12 +427,12 @@ class CommonEncoderTestCases(object):
                     name="name", version="version"
                 ),
             )
-            span4.start(start_time=start_times[3])
-            span4.end(end_time=end_times[3])
+            span4.start(start_time=start_times)
+            span4.end(end_time=end_times)
 
             return [span1, span2, span3, span4]
 
-    # pylint: disable=W0223
+    # pylint =W0223
     class CommonJsonEncoderTest(CommonEncoderTest, abc.ABC):
         def test_encode_trace_id(self):
             for trace_id in (1, 1024, 2**32, 2**64, 2**65):
@@ -480,7 +480,7 @@ class CommonEncoderTestCases(object):
             """
             popped_item = source_list.pop(source_index, None)
             if popped_item is not None:
-                popped_item = sorted(popped_item, key=lambda x: x[sort_key])
+                popped_item = sorted(popped_item, key=lambda x)
             return popped_item
 
         def assert_equal_encoded_spans(self, expected_spans, actual_spans):

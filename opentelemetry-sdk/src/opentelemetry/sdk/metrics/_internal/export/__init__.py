@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
-
 import math
 import os
 import weakref
@@ -102,25 +100,12 @@ class MetricExporter(ABC):
             more details on what preferred aggregation is.
     """
 
-    def __init__(
-        self,
-        preferred_temporality: Optional[
-            Dict[Type, AggregationTemporality]
-        ] = None,
-        preferred_aggregation: Optional[
-            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
-        ] = None,
-    ) -> None:
+    def __init__(self, preferred_temporality=None, preferred_aggregation=None):
         self._preferred_temporality = preferred_temporality
         self._preferred_aggregation = preferred_aggregation
 
     @abstractmethod
-    def export(
-        self,
-        metrics_data: MetricsData,
-        timeout_millis: float = 10_000,
-        **kwargs,
-    ) -> MetricExportResult:
+    def export(self, metrics_data, timeout_millis=10000, **kwargs):
         """Exports a batch of telemetry data.
 
         Args:
@@ -131,14 +116,14 @@ class MetricExporter(ABC):
         """
 
     @abstractmethod
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis=10000):
         """
         Ensure that export of any metrics currently received by the exporter
         are completed as soon as possible.
         """
 
     @abstractmethod
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis=30000, **kwargs):
         """Shuts down the exporter.
 
         Called when the SDK is shut down.
@@ -155,16 +140,10 @@ class ConsoleMetricExporter(MetricExporter):
 
     def __init__(
         self,
-        out: IO = stdout,
-        formatter: Callable[[MetricsData], str] = lambda metrics_data: (
-            metrics_data.to_json() + linesep
-        ),
-        preferred_temporality: Optional[
-            Dict[Type, AggregationTemporality]
-        ] = None,
-        preferred_aggregation: Optional[
-            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
-        ] = None,
+        out=stdout,
+        formatter=lambda metrics_data: (metrics_data.to_json() + linesep),
+        preferred_temporality=None,
+        preferred_aggregation=None,
     ):
         super().__init__(
             preferred_temporality=preferred_temporality,
@@ -173,25 +152,20 @@ class ConsoleMetricExporter(MetricExporter):
         self.out = out
         self.formatter = formatter
 
-    def export(
-        self,
-        metrics_data: MetricsData,
-        timeout_millis: float = 10_000,
-        **kwargs,
-    ) -> MetricExportResult:
+    def export(self, metrics_data, timeout_millis=10000, **kwargs):
         self.out.write(self.formatter(metrics_data))
         self.out.flush()
         return MetricExportResult.SUCCESS
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis=30000, **kwargs):
         pass
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis=10000):
         return True
 
 
 class MetricReader(ABC):
-    # pylint: disable=too-many-branches,broad-exception-raised
+    # pylint =too-many-branches,broad-exception-raised
     """
     Base class for all metric readers
 
@@ -226,22 +200,11 @@ class MetricReader(ABC):
 
     def __init__(
         self,
-        preferred_temporality: Optional[
-            Dict[Type, AggregationTemporality]
-        ] = None,
-        preferred_aggregation: Optional[
-            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
-        ] = None,
-        *,
-        otel_component_type: Optional[OtelComponentTypeValues] = None,
-    ) -> None:
-        self._collect: Callable[
-            [
-                "opentelemetry.sdk.metrics.export.MetricReader",
-                AggregationTemporality,
-            ],
-            Iterable["opentelemetry.sdk.metrics.export.Metric"],
-        ] = None
+        preferred_temporality=None,
+        preferred_aggregation=None,
+        otel_component_type=None,
+    ):
+        self._collect = None
 
         self._instrument_class_temporality = {
             _Counter: AggregationTemporality.CUMULATIVE,
@@ -260,37 +223,33 @@ class MetricReader(ABC):
                     AggregationTemporality.DELTA,
                 ):
                     raise Exception(
-                        f"Invalid temporality value found {temporality}"
+                        "Invalid temporality value found {}".format(
+                            temporality
+                        )
                     )
 
         if preferred_temporality is not None:
             for typ, temporality in preferred_temporality.items():
                 if typ is Counter:
-                    self._instrument_class_temporality[_Counter] = temporality
+                    self._instrument_class_temporality = temporality
                 elif typ is UpDownCounter:
-                    self._instrument_class_temporality[_UpDownCounter] = (
-                        temporality
-                    )
+                    self._instrument_class_temporality = temporality
                 elif typ is Histogram:
-                    self._instrument_class_temporality[_Histogram] = (
-                        temporality
-                    )
+                    self._instrument_class_temporality = temporality
                 elif typ is Gauge:
-                    self._instrument_class_temporality[_Gauge] = temporality
+                    self._instrument_class_temporality = temporality
                 elif typ is ObservableCounter:
-                    self._instrument_class_temporality[_ObservableCounter] = (
-                        temporality
-                    )
+                    self._instrument_class_temporality = temporality
                 elif typ is ObservableUpDownCounter:
                     self._instrument_class_temporality[
                         _ObservableUpDownCounter
                     ] = temporality
                 elif typ is ObservableGauge:
-                    self._instrument_class_temporality[_ObservableGauge] = (
-                        temporality
-                    )
+                    self._instrument_class_temporality = temporality
                 else:
-                    raise Exception(f"Invalid instrument class found {typ}")
+                    raise Exception(
+                        "Invalid instrument class found {}".format(typ)
+                    )
 
         self._preferred_temporality = preferred_temporality
         self._instrument_class_aggregation = {
@@ -306,31 +265,25 @@ class MetricReader(ABC):
         if preferred_aggregation is not None:
             for typ, aggregation in preferred_aggregation.items():
                 if typ is Counter:
-                    self._instrument_class_aggregation[_Counter] = aggregation
+                    self._instrument_class_aggregation = aggregation
                 elif typ is UpDownCounter:
-                    self._instrument_class_aggregation[_UpDownCounter] = (
-                        aggregation
-                    )
+                    self._instrument_class_aggregation = aggregation
                 elif typ is Histogram:
-                    self._instrument_class_aggregation[_Histogram] = (
-                        aggregation
-                    )
+                    self._instrument_class_aggregation = aggregation
                 elif typ is Gauge:
-                    self._instrument_class_aggregation[_Gauge] = aggregation
+                    self._instrument_class_aggregation = aggregation
                 elif typ is ObservableCounter:
-                    self._instrument_class_aggregation[_ObservableCounter] = (
-                        aggregation
-                    )
+                    self._instrument_class_aggregation = aggregation
                 elif typ is ObservableUpDownCounter:
                     self._instrument_class_aggregation[
                         _ObservableUpDownCounter
                     ] = aggregation
                 elif typ is ObservableGauge:
-                    self._instrument_class_aggregation[_ObservableGauge] = (
-                        aggregation
-                    )
+                    self._instrument_class_aggregation = aggregation
                 else:
-                    raise Exception(f"Invalid instrument class found {typ}")
+                    raise Exception(
+                        "Invalid instrument class found {}".format(typ)
+                    )
 
         self._otel_component_type = (
             otel_component_type.value
@@ -342,7 +295,7 @@ class MetricReader(ABC):
         )
 
     @final
-    def collect(self, timeout_millis: float = 10_000) -> None:
+    def collect(self, timeout_millis=10000):
         """Collects the metrics from the internal SDK state and
         invokes the `_receive_metrics` with the collection.
 
@@ -373,39 +326,25 @@ class MetricReader(ABC):
             )
 
     @final
-    def _set_collect_callback(
-        self,
-        func: Callable[
-            [
-                "opentelemetry.sdk.metrics.export.MetricReader",
-                AggregationTemporality,
-            ],
-            MetricsData,
-        ],
-    ) -> None:
+    def _set_collect_callback(self, func):
         """This function is internal to the SDK. It should not be called or overridden by users"""
         self._collect = func
 
     @abstractmethod
-    def _receive_metrics(
-        self,
-        metrics_data: MetricsData,
-        timeout_millis: float = 10_000,
-        **kwargs,
-    ) -> None:
+    def _receive_metrics(self, metrics_data, timeout_millis=10000, **kwargs):
         """Called by `MetricReader.collect` when it receives a batch of metrics"""
 
-    def _set_meter_provider(self, meter_provider: MeterProvider) -> None:
+    def _set_meter_provider(self, meter_provider):
         self._metrics = MetricReaderMetrics(
             self._otel_component_type, meter_provider
         )
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis=10000):
         self.collect(timeout_millis=timeout_millis)
         return True
 
     @abstractmethod
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis=30000, **kwargs):
         """Shuts down the MetricReader. This method provides a way
         for the MetricReader to do any cleanup required. A metric reader can
         only be shutdown once, any subsequent calls are ignored and return
@@ -424,23 +363,15 @@ class InMemoryMetricReader(MetricReader):
     This is useful for e.g. unit tests.
     """
 
-    def __init__(
-        self,
-        preferred_temporality: Optional[Dict[Type, AggregationTemporality]] = None,
-        preferred_aggregation: Optional[
-            Dict[Type, "opentelemetry.sdk.metrics.view.Aggregation"]
-        ] = None,
-    ) -> None:
+    def __init__(self, preferred_temporality=None, preferred_aggregation=None):
         super().__init__(
             preferred_temporality=preferred_temporality,
             preferred_aggregation=preferred_aggregation,
         )
         self._lock = RLock()
-        self._metrics_data = None  # type: Optional[MetricsData]
+        self._metrics_data = None  # type
 
-    def get_metrics_data(
-        self,
-    ) -> Optional[MetricsData]:
+    def get_metrics_data(self):
         """Reads and returns current metrics from the SDK"""
         with self._lock:
             self.collect()
@@ -448,16 +379,11 @@ class InMemoryMetricReader(MetricReader):
             self._metrics_data = None
         return metrics_data
 
-    def _receive_metrics(
-        self,
-        metrics_data: MetricsData,
-        timeout_millis: float = 10_000,
-        **kwargs,
-    ) -> None:
+    def _receive_metrics(self, metrics_data, timeout_millis=10000, **kwargs):
         with self._lock:
             self._metrics_data = metrics_data
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis=30000, **kwargs):
         pass
 
 
@@ -472,11 +398,8 @@ class PeriodicExportingMetricReader(MetricReader):
     """
 
     def __init__(
-        self,
-        exporter: MetricExporter,
-        export_interval_millis: Optional[float] = None,
-        export_timeout_millis: Optional[float] = None,
-    ) -> None:
+        self, exporter, export_interval_millis=None, export_timeout_millis=None
+    ):
         # PeriodicExportingMetricReader defers to exporter for configuration
         super().__init__(
             preferred_temporality=exporter._preferred_temporality,
@@ -530,12 +453,13 @@ class PeriodicExportingMetricReader(MetricReader):
                 weak_at_fork = weakref.WeakMethod(self._at_fork_reinit)
 
                 os.register_at_fork(
-                    after_in_child=lambda: weak_at_fork()()  # pylint: disable=unnecessary-lambda
+                    after_in_child=lambda: weak_at_fork()()  # pylint =unnecessary-lambda
                 )
         elif self._export_interval_millis <= 0:
             raise ValueError(
-                f"interval value {self._export_interval_millis} is invalid \
-                and needs to be larger than zero."
+                "interval value {} is invalid and needs to be larger than zero.".format(
+                    self._export_interval_millis
+                )
             )
 
     def _at_fork_reinit(self):
@@ -546,7 +470,7 @@ class PeriodicExportingMetricReader(MetricReader):
         )
         self._daemon_thread.start()
 
-    def _ticker(self) -> None:
+    def _ticker(self):
         interval_secs = self._export_interval_millis / 1e3
         while not self._shutdown_event.wait(interval_secs):
             try:
@@ -566,14 +490,9 @@ class PeriodicExportingMetricReader(MetricReader):
                 exc_info=True,
             )
 
-    def _receive_metrics(
-        self,
-        metrics_data: MetricsData,
-        timeout_millis: float = 10_000,
-        **kwargs,
-    ) -> None:
+    def _receive_metrics(self, metrics_data, timeout_millis=10000, **kwargs):
         token = attach(set_value(_SUPPRESS_INSTRUMENTATION_KEY, True))
-        # pylint: disable=broad-exception-caught,invalid-name
+        # pylint =broad-exception-caught,invalid-name
         try:
             with self._export_lock:
                 self._exporter.export(
@@ -583,7 +502,7 @@ class PeriodicExportingMetricReader(MetricReader):
             _logger.exception("Exception while exporting metrics")
         detach(token)
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis=30000, **kwargs):
         deadline_ns = time_ns() + timeout_millis * 10**6
 
         def _shutdown():
@@ -599,7 +518,7 @@ class PeriodicExportingMetricReader(MetricReader):
             self._daemon_thread.join(timeout=(deadline_ns - time_ns()) / 10**9)
         self._exporter.shutdown(timeout=(deadline_ns - time_ns()) / 10**6)
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis=10000):
         super().force_flush(timeout_millis=timeout_millis)
         self._exporter.force_flush(timeout_millis=timeout_millis)
         return True

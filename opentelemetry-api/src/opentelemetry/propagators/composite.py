@@ -45,7 +45,7 @@ class CompositePropagator(textmap.TextMapPropagator):
         self,
         carrier,
         context = None,
-        getter = textmap.default_getter,
+        getter = textmap.default_getter
     ):
         """Run each of the configured propagators with the given context and carrier.
         Propagators are run in the order they are configured, if multiple
@@ -62,7 +62,7 @@ class CompositePropagator(textmap.TextMapPropagator):
         self,
         carrier,
         context = None,
-        setter = textmap.default_setter,
+        setter = textmap.default_setter
     ):
         """Run each of the configured propagators with the given context and carrier.
         Propagators are run in the order they are configured, if multiple

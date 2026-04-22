@@ -17,10 +17,10 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Counter, Histogram, Meter, UpDownCounter
 
-OTEL_SDK_EXPORTER_LOG_EXPORTED: Final = "otel.sdk.exporter.log.exported"
+OTEL_SDK_EXPORTER_LOG_EXPORTED = "otel.sdk.exporter.log.exported"
 """
 The number of log records for which the export has finished, either successful or failed
-Instrument: counter
+Instrument
 Unit: {log_record}
 Note: For successful exports, `error.type` MUST NOT be set. For failed exports, `error.type` MUST contain the failure cause.
 For exporters with partial success semantics (e.g. OTLP with `rejected_log_records`), rejected log records MUST count as failed and only non-rejected log records count as success.
@@ -28,7 +28,7 @@ If no rejection reason is available, `rejected` SHOULD be used as value for `err
 """
 
 
-def create_otel_sdk_exporter_log_exported(meter: Meter) -> Counter:
+def create_otel_sdk_exporter_log_exported(meter):
     """The number of log records for which the export has finished, either successful or failed"""
     return meter.create_counter(
         name=OTEL_SDK_EXPORTER_LOG_EXPORTED,
@@ -37,16 +37,16 @@ def create_otel_sdk_exporter_log_exported(meter: Meter) -> Counter:
     )
 
 
-OTEL_SDK_EXPORTER_LOG_INFLIGHT: Final = "otel.sdk.exporter.log.inflight"
+OTEL_SDK_EXPORTER_LOG_INFLIGHT = "otel.sdk.exporter.log.inflight"
 """
 The number of log records which were passed to the exporter, but that have not been exported yet (neither successful, nor failed)
-Instrument: updowncounter
+Instrument
 Unit: {log_record}
 Note: For successful exports, `error.type` MUST NOT be set. For failed exports, `error.type` MUST contain the failure cause.
 """
 
 
-def create_otel_sdk_exporter_log_inflight(meter: Meter) -> UpDownCounter:
+def create_otel_sdk_exporter_log_inflight(meter):
     """The number of log records which were passed to the exporter, but that have not been exported yet (neither successful, nor failed)"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_EXPORTER_LOG_INFLIGHT,
@@ -55,12 +55,12 @@ def create_otel_sdk_exporter_log_inflight(meter: Meter) -> UpDownCounter:
     )
 
 
-OTEL_SDK_EXPORTER_METRIC_DATA_POINT_EXPORTED: Final = (
+OTEL_SDK_EXPORTER_METRIC_DATA_POINT_EXPORTED = (
     "otel.sdk.exporter.metric_data_point.exported"
 )
 """
 The number of metric data points for which the export has finished, either successful or failed
-Instrument: counter
+Instrument
 Unit: {data_point}
 Note: For successful exports, `error.type` MUST NOT be set. For failed exports, `error.type` MUST contain the failure cause.
 For exporters with partial success semantics (e.g. OTLP with `rejected_data_points`), rejected data points MUST count as failed and only non-rejected data points count as success.
@@ -69,8 +69,8 @@ If no rejection reason is available, `rejected` SHOULD be used as value for `err
 
 
 def create_otel_sdk_exporter_metric_data_point_exported(
-    meter: Meter,
-) -> Counter:
+    meter
+):
     """The number of metric data points for which the export has finished, either successful or failed"""
     return meter.create_counter(
         name=OTEL_SDK_EXPORTER_METRIC_DATA_POINT_EXPORTED,
@@ -79,20 +79,20 @@ def create_otel_sdk_exporter_metric_data_point_exported(
     )
 
 
-OTEL_SDK_EXPORTER_METRIC_DATA_POINT_INFLIGHT: Final = (
+OTEL_SDK_EXPORTER_METRIC_DATA_POINT_INFLIGHT = (
     "otel.sdk.exporter.metric_data_point.inflight"
 )
 """
 The number of metric data points which were passed to the exporter, but that have not been exported yet (neither successful, nor failed)
-Instrument: updowncounter
+Instrument
 Unit: {data_point}
 Note: For successful exports, `error.type` MUST NOT be set. For failed exports, `error.type` MUST contain the failure cause.
 """
 
 
 def create_otel_sdk_exporter_metric_data_point_inflight(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The number of metric data points which were passed to the exporter, but that have not been exported yet (neither successful, nor failed)"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_EXPORTER_METRIC_DATA_POINT_INFLIGHT,
@@ -101,20 +101,20 @@ def create_otel_sdk_exporter_metric_data_point_inflight(
     )
 
 
-OTEL_SDK_EXPORTER_OPERATION_DURATION: Final = (
+OTEL_SDK_EXPORTER_OPERATION_DURATION = (
     "otel.sdk.exporter.operation.duration"
 )
 """
 The duration of exporting a batch of telemetry records
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 Note: This metric defines successful operations using the full success definitions for [http](https://github.com/open-telemetry/opentelemetry-proto/blob/v1.5.0/docs/specification.md#full-success-1)
 and [grpc](https://github.com/open-telemetry/opentelemetry-proto/blob/v1.5.0/docs/specification.md#full-success). Anything else is defined as an unsuccessful operation. For successful
 operations, `error.type` MUST NOT be set. For unsuccessful export operations, `error.type` MUST contain a relevant failure cause.
 """
 
 
-def create_otel_sdk_exporter_operation_duration(meter: Meter) -> Histogram:
+def create_otel_sdk_exporter_operation_duration(meter):
     """The duration of exporting a batch of telemetry records"""
     return meter.create_histogram(
         name=OTEL_SDK_EXPORTER_OPERATION_DURATION,
@@ -123,10 +123,10 @@ def create_otel_sdk_exporter_operation_duration(meter: Meter) -> Histogram:
     )
 
 
-OTEL_SDK_EXPORTER_SPAN_EXPORTED: Final = "otel.sdk.exporter.span.exported"
+OTEL_SDK_EXPORTER_SPAN_EXPORTED = "otel.sdk.exporter.span.exported"
 """
 The number of spans for which the export has finished, either successful or failed
-Instrument: counter
+Instrument
 Unit: {span}
 Note: For successful exports, `error.type` MUST NOT be set. For failed exports, `error.type` MUST contain the failure cause.
 For exporters with partial success semantics (e.g. OTLP with `rejected_spans`), rejected spans MUST count as failed and only non-rejected spans count as success.
@@ -134,7 +134,7 @@ If no rejection reason is available, `rejected` SHOULD be used as value for `err
 """
 
 
-def create_otel_sdk_exporter_span_exported(meter: Meter) -> Counter:
+def create_otel_sdk_exporter_span_exported(meter):
     """The number of spans for which the export has finished, either successful or failed"""
     return meter.create_counter(
         name=OTEL_SDK_EXPORTER_SPAN_EXPORTED,
@@ -143,7 +143,7 @@ def create_otel_sdk_exporter_span_exported(meter: Meter) -> Counter:
     )
 
 
-OTEL_SDK_EXPORTER_SPAN_EXPORTED_COUNT: Final = (
+OTEL_SDK_EXPORTER_SPAN_EXPORTED_COUNT = (
     "otel.sdk.exporter.span.exported.count"
 )
 """
@@ -152,8 +152,8 @@ Deprecated: Replaced by `otel.sdk.exporter.span.exported`.
 
 
 def create_otel_sdk_exporter_span_exported_count(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """Deprecated, use `otel.sdk.exporter.span.exported` instead"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_EXPORTER_SPAN_EXPORTED_COUNT,
@@ -162,16 +162,16 @@ def create_otel_sdk_exporter_span_exported_count(
     )
 
 
-OTEL_SDK_EXPORTER_SPAN_INFLIGHT: Final = "otel.sdk.exporter.span.inflight"
+OTEL_SDK_EXPORTER_SPAN_INFLIGHT = "otel.sdk.exporter.span.inflight"
 """
 The number of spans which were passed to the exporter, but that have not been exported yet (neither successful, nor failed)
-Instrument: updowncounter
+Instrument
 Unit: {span}
 Note: For successful exports, `error.type` MUST NOT be set. For failed exports, `error.type` MUST contain the failure cause.
 """
 
 
-def create_otel_sdk_exporter_span_inflight(meter: Meter) -> UpDownCounter:
+def create_otel_sdk_exporter_span_inflight(meter):
     """The number of spans which were passed to the exporter, but that have not been exported yet (neither successful, nor failed)"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_EXPORTER_SPAN_INFLIGHT,
@@ -180,7 +180,7 @@ def create_otel_sdk_exporter_span_inflight(meter: Meter) -> UpDownCounter:
     )
 
 
-OTEL_SDK_EXPORTER_SPAN_INFLIGHT_COUNT: Final = (
+OTEL_SDK_EXPORTER_SPAN_INFLIGHT_COUNT = (
     "otel.sdk.exporter.span.inflight.count"
 )
 """
@@ -189,8 +189,8 @@ Deprecated: Replaced by `otel.sdk.exporter.span.inflight`.
 
 
 def create_otel_sdk_exporter_span_inflight_count(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """Deprecated, use `otel.sdk.exporter.span.inflight` instead"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_EXPORTER_SPAN_INFLIGHT_COUNT,
@@ -199,15 +199,15 @@ def create_otel_sdk_exporter_span_inflight_count(
     )
 
 
-OTEL_SDK_LOG_CREATED: Final = "otel.sdk.log.created"
+OTEL_SDK_LOG_CREATED = "otel.sdk.log.created"
 """
 The number of logs submitted to enabled SDK Loggers
-Instrument: counter
+Instrument
 Unit: {log_record}
 """
 
 
-def create_otel_sdk_log_created(meter: Meter) -> Counter:
+def create_otel_sdk_log_created(meter):
     """The number of logs submitted to enabled SDK Loggers"""
     return meter.create_counter(
         name=OTEL_SDK_LOG_CREATED,
@@ -216,21 +216,21 @@ def create_otel_sdk_log_created(meter: Meter) -> Counter:
     )
 
 
-OTEL_SDK_METRIC_READER_COLLECTION_DURATION: Final = (
+OTEL_SDK_METRIC_READER_COLLECTION_DURATION = (
     "otel.sdk.metric_reader.collection.duration"
 )
 """
 The duration of the collect operation of the metric reader
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 Note: For successful collections, `error.type` MUST NOT be set. For failed collections, `error.type` SHOULD contain the failure cause.
 It can happen that metrics collection is successful for some MetricProducers, while others fail. In that case `error.type` SHOULD be set to any of the failure causes.
 """
 
 
 def create_otel_sdk_metric_reader_collection_duration(
-    meter: Meter,
-) -> Histogram:
+    meter
+):
     """The duration of the collect operation of the metric reader"""
     return meter.create_histogram(
         name=OTEL_SDK_METRIC_READER_COLLECTION_DURATION,
@@ -239,10 +239,10 @@ def create_otel_sdk_metric_reader_collection_duration(
     )
 
 
-OTEL_SDK_PROCESSOR_LOG_PROCESSED: Final = "otel.sdk.processor.log.processed"
+OTEL_SDK_PROCESSOR_LOG_PROCESSED = "otel.sdk.processor.log.processed"
 """
 The number of log records for which the processing has finished, either successful or failed
-Instrument: counter
+Instrument
 Unit: {log_record}
 Note: For successful processing, `error.type` MUST NOT be set. For failed processing, `error.type` MUST contain the failure cause.
 For the SDK Simple and Batching Log Record Processor a log record is considered to be processed already when it has been submitted to the exporter,
@@ -250,7 +250,7 @@ not when the corresponding export call has finished.
 """
 
 
-def create_otel_sdk_processor_log_processed(meter: Meter) -> Counter:
+def create_otel_sdk_processor_log_processed(meter):
     """The number of log records for which the processing has finished, either successful or failed"""
     return meter.create_counter(
         name=OTEL_SDK_PROCESSOR_LOG_PROCESSED,
@@ -259,20 +259,20 @@ def create_otel_sdk_processor_log_processed(meter: Meter) -> Counter:
     )
 
 
-OTEL_SDK_PROCESSOR_LOG_QUEUE_CAPACITY: Final = (
+OTEL_SDK_PROCESSOR_LOG_QUEUE_CAPACITY = (
     "otel.sdk.processor.log.queue.capacity"
 )
 """
 The maximum number of log records the queue of a given instance of an SDK Log Record processor can hold
-Instrument: updowncounter
+Instrument
 Unit: {log_record}
 Note: Only applies to Log Record processors which use a queue, e.g. the SDK Batching Log Record Processor.
 """
 
 
 def create_otel_sdk_processor_log_queue_capacity(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The maximum number of log records the queue of a given instance of an SDK Log Record processor can hold"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_PROCESSOR_LOG_QUEUE_CAPACITY,
@@ -281,16 +281,16 @@ def create_otel_sdk_processor_log_queue_capacity(
     )
 
 
-OTEL_SDK_PROCESSOR_LOG_QUEUE_SIZE: Final = "otel.sdk.processor.log.queue.size"
+OTEL_SDK_PROCESSOR_LOG_QUEUE_SIZE = "otel.sdk.processor.log.queue.size"
 """
 The number of log records in the queue of a given instance of an SDK log processor
-Instrument: updowncounter
+Instrument
 Unit: {log_record}
 Note: Only applies to log record processors which use a queue, e.g. the SDK Batching Log Record Processor.
 """
 
 
-def create_otel_sdk_processor_log_queue_size(meter: Meter) -> UpDownCounter:
+def create_otel_sdk_processor_log_queue_size(meter):
     """The number of log records in the queue of a given instance of an SDK log processor"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_PROCESSOR_LOG_QUEUE_SIZE,
@@ -299,17 +299,17 @@ def create_otel_sdk_processor_log_queue_size(meter: Meter) -> UpDownCounter:
     )
 
 
-OTEL_SDK_PROCESSOR_SPAN_PROCESSED: Final = "otel.sdk.processor.span.processed"
+OTEL_SDK_PROCESSOR_SPAN_PROCESSED = "otel.sdk.processor.span.processed"
 """
 The number of spans for which the processing has finished, either successful or failed
-Instrument: counter
+Instrument
 Unit: {span}
 Note: For successful processing, `error.type` MUST NOT be set. For failed processing, `error.type` MUST contain the failure cause.
 For the SDK Simple and Batching Span Processor a span is considered to be processed already when it has been submitted to the exporter, not when the corresponding export call has finished.
 """
 
 
-def create_otel_sdk_processor_span_processed(meter: Meter) -> Counter:
+def create_otel_sdk_processor_span_processed(meter):
     """The number of spans for which the processing has finished, either successful or failed"""
     return meter.create_counter(
         name=OTEL_SDK_PROCESSOR_SPAN_PROCESSED,
@@ -318,7 +318,7 @@ def create_otel_sdk_processor_span_processed(meter: Meter) -> Counter:
     )
 
 
-OTEL_SDK_PROCESSOR_SPAN_PROCESSED_COUNT: Final = (
+OTEL_SDK_PROCESSOR_SPAN_PROCESSED_COUNT = (
     "otel.sdk.processor.span.processed.count"
 )
 """
@@ -327,8 +327,8 @@ Deprecated: Replaced by `otel.sdk.processor.span.processed`.
 
 
 def create_otel_sdk_processor_span_processed_count(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """Deprecated, use `otel.sdk.processor.span.processed` instead"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_PROCESSOR_SPAN_PROCESSED_COUNT,
@@ -337,20 +337,20 @@ def create_otel_sdk_processor_span_processed_count(
     )
 
 
-OTEL_SDK_PROCESSOR_SPAN_QUEUE_CAPACITY: Final = (
+OTEL_SDK_PROCESSOR_SPAN_QUEUE_CAPACITY = (
     "otel.sdk.processor.span.queue.capacity"
 )
 """
 The maximum number of spans the queue of a given instance of an SDK span processor can hold
-Instrument: updowncounter
+Instrument
 Unit: {span}
 Note: Only applies to span processors which use a queue, e.g. the SDK Batching Span Processor.
 """
 
 
 def create_otel_sdk_processor_span_queue_capacity(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The maximum number of spans the queue of a given instance of an SDK span processor can hold"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_PROCESSOR_SPAN_QUEUE_CAPACITY,
@@ -359,18 +359,18 @@ def create_otel_sdk_processor_span_queue_capacity(
     )
 
 
-OTEL_SDK_PROCESSOR_SPAN_QUEUE_SIZE: Final = (
+OTEL_SDK_PROCESSOR_SPAN_QUEUE_SIZE = (
     "otel.sdk.processor.span.queue.size"
 )
 """
 The number of spans in the queue of a given instance of an SDK span processor
-Instrument: updowncounter
+Instrument
 Unit: {span}
 Note: Only applies to span processors which use a queue, e.g. the SDK Batching Span Processor.
 """
 
 
-def create_otel_sdk_processor_span_queue_size(meter: Meter) -> UpDownCounter:
+def create_otel_sdk_processor_span_queue_size(meter):
     """The number of spans in the queue of a given instance of an SDK span processor"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_PROCESSOR_SPAN_QUEUE_SIZE,
@@ -379,13 +379,13 @@ def create_otel_sdk_processor_span_queue_size(meter: Meter) -> UpDownCounter:
     )
 
 
-OTEL_SDK_SPAN_ENDED: Final = "otel.sdk.span.ended"
+OTEL_SDK_SPAN_ENDED = "otel.sdk.span.ended"
 """
 Deprecated: Obsoleted.
 """
 
 
-def create_otel_sdk_span_ended(meter: Meter) -> Counter:
+def create_otel_sdk_span_ended(meter):
     """Use `otel.sdk.span.started` minus `otel.sdk.span.live` to derive this value"""
     return meter.create_counter(
         name=OTEL_SDK_SPAN_ENDED,
@@ -394,13 +394,13 @@ def create_otel_sdk_span_ended(meter: Meter) -> Counter:
     )
 
 
-OTEL_SDK_SPAN_ENDED_COUNT: Final = "otel.sdk.span.ended.count"
+OTEL_SDK_SPAN_ENDED_COUNT = "otel.sdk.span.ended.count"
 """
 Deprecated: Obsoleted.
 """
 
 
-def create_otel_sdk_span_ended_count(meter: Meter) -> Counter:
+def create_otel_sdk_span_ended_count(meter):
     """Use `otel.sdk.span.started` minus `otel.sdk.span.live` to derive this value"""
     return meter.create_counter(
         name=OTEL_SDK_SPAN_ENDED_COUNT,
@@ -409,15 +409,15 @@ def create_otel_sdk_span_ended_count(meter: Meter) -> Counter:
     )
 
 
-OTEL_SDK_SPAN_LIVE: Final = "otel.sdk.span.live"
+OTEL_SDK_SPAN_LIVE = "otel.sdk.span.live"
 """
 The number of created spans with `recording=true` for which the end operation has not been called yet
-Instrument: updowncounter
+Instrument
 Unit: {span}
 """
 
 
-def create_otel_sdk_span_live(meter: Meter) -> UpDownCounter:
+def create_otel_sdk_span_live(meter):
     """The number of created spans with `recording=true` for which the end operation has not been called yet"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_SPAN_LIVE,
@@ -426,13 +426,13 @@ def create_otel_sdk_span_live(meter: Meter) -> UpDownCounter:
     )
 
 
-OTEL_SDK_SPAN_LIVE_COUNT: Final = "otel.sdk.span.live.count"
+OTEL_SDK_SPAN_LIVE_COUNT = "otel.sdk.span.live.count"
 """
 Deprecated: Replaced by `otel.sdk.span.live`.
 """
 
 
-def create_otel_sdk_span_live_count(meter: Meter) -> UpDownCounter:
+def create_otel_sdk_span_live_count(meter):
     """Deprecated, use `otel.sdk.span.live` instead"""
     return meter.create_up_down_counter(
         name=OTEL_SDK_SPAN_LIVE_COUNT,
@@ -441,16 +441,16 @@ def create_otel_sdk_span_live_count(meter: Meter) -> UpDownCounter:
     )
 
 
-OTEL_SDK_SPAN_STARTED: Final = "otel.sdk.span.started"
+OTEL_SDK_SPAN_STARTED = "otel.sdk.span.started"
 """
 The number of created spans
-Instrument: counter
+Instrument
 Unit: {span}
 Note: Implementations MUST record this metric for all spans, even for non-recording ones.
 """
 
 
-def create_otel_sdk_span_started(meter: Meter) -> Counter:
+def create_otel_sdk_span_started(meter):
     """The number of created spans"""
     return meter.create_counter(
         name=OTEL_SDK_SPAN_STARTED,

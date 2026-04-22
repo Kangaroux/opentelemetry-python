@@ -57,7 +57,7 @@ above example.
 """
 
 # ResourceAttributes is deprecated
-# pyright: reportDeprecated=false
+# pyright =false
 
 import abc
 import concurrent.futures
@@ -81,12 +81,12 @@ from opentelemetry.sdk.environment_variables import (
 )
 from opentelemetry.semconv.resource import ResourceAttributes
 from opentelemetry.util._importlib_metadata import (
-    entry_points,  # type: ignore[reportUnknownVariableType]
+    entry_points,  # type
     version,
 )
 from opentelemetry.util.types import AttributeValue
 
-psutil: Optional[ModuleType] = None
+psutil = None
 
 try:
     import psutil as psutil_module
@@ -96,7 +96,7 @@ except ImportError:
     pass
 
 LabelValue = AttributeValue
-Attributes = typing.Mapping[str, LabelValue]
+Attributes = typing.Mapping
 logger = logging.getLogger(__name__)
 
 CLOUD_PROVIDER = ResourceAttributes.CLOUD_PROVIDER
@@ -158,28 +158,23 @@ TELEMETRY_SDK_VERSION = ResourceAttributes.TELEMETRY_SDK_VERSION
 TELEMETRY_AUTO_VERSION = ResourceAttributes.TELEMETRY_AUTO_VERSION
 TELEMETRY_SDK_LANGUAGE = ResourceAttributes.TELEMETRY_SDK_LANGUAGE
 
-_OPENTELEMETRY_SDK_VERSION: str = version("opentelemetry-sdk")
+_OPENTELEMETRY_SDK_VERSION = version("opentelemetry-sdk")
 
 
 class Resource:
     """A Resource is an immutable representation of the entity producing telemetry as Attributes."""
 
-    _attributes: BoundedAttributes
-    _schema_url: str
+    _attributes
+    _schema_url
 
-    def __init__(
-        self, attributes: Attributes, schema_url: typing.Optional[str] = None
-    ):
+    def __init__(self, attributes, schema_url=None):
         self._attributes = BoundedAttributes(attributes=attributes)
         if schema_url is None:
             schema_url = ""
         self._schema_url = schema_url
 
     @staticmethod
-    def create(
-        attributes: typing.Optional[Attributes] = None,
-        schema_url: typing.Optional[str] = None,
-    ) -> "Resource":
+    def create(attributes=None, schema_url=None):
         """Creates a new `Resource` from attributes.
 
         `ResourceDetector` instances should not call this method.
@@ -195,7 +190,7 @@ class Resource:
         if not attributes:
             attributes = {}
 
-        otel_experimental_resource_detectors: Set[str] = {"otel"}.union(
+        otel_experimental_resource_detectors = {"otel"}.union(
             {
                 otel_experimental_resource_detector.strip()
                 for otel_experimental_resource_detector in environ.get(
@@ -205,7 +200,7 @@ class Resource:
             }
         )
 
-        resource_detectors: List[ResourceDetector] = []
+        resource_detectors = []
 
         if "*" in otel_experimental_resource_detectors:
             otel_experimental_resource_detectors = entry_points(
@@ -220,11 +215,11 @@ class Resource:
                             entry_points(
                                 group="opentelemetry_resource_detector",
                                 name=resource_detector.strip(),
-                            )  # type: ignore[reportUnknownArgumentType]
+                            )  # type
                         )
                     ).load()()
                 )
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:  # pylint =broad-exception-caught
                 logger.exception(
                     "Failed to load resource detector '%s', skipping",
                     resource_detector,
@@ -237,7 +232,7 @@ class Resource:
         if not resource.attributes.get(SERVICE_NAME, None):
             default_service_name = "unknown_service"
             process_executable_name = cast(
-                Optional[str],
+                Optional,
                 resource.attributes.get(PROCESS_EXECUTABLE_NAME, None),
             )
             if process_executable_name:
@@ -248,18 +243,18 @@ class Resource:
         return resource
 
     @staticmethod
-    def get_empty() -> "Resource":
+    def get_empty():
         return _EMPTY_RESOURCE
 
     @property
-    def attributes(self) -> Attributes:
+    def attributes(self):
         return self._attributes
 
     @property
-    def schema_url(self) -> str:
+    def schema_url(self):
         return self._schema_url
 
-    def merge(self, other: "Resource") -> "Resource":
+    def merge(self, other):
         """Merges this resource and an updating resource into a new `Resource`.
 
         If a key exists on both the old and updating resource, the value of the
@@ -294,7 +289,7 @@ class Resource:
             return self
         return Resource(merged_attributes, schema_url)
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self, other):
         if not isinstance(other, Resource):
             return False
         return (
@@ -302,12 +297,15 @@ class Resource:
             and self._schema_url == other._schema_url
         )
 
-    def __hash__(self) -> int:
+    def __hash__(self):
         return hash(
-            f"{dumps(self._attributes.copy(), sort_keys=True)}|{self._schema_url}"
+            "{}|{}".format(
+                dumps(self._attributes.copy(), sort_keys=True),
+                self._schema_url,
+            )
         )
 
-    def to_json(self, indent: Optional[int] = 4) -> str:
+    def to_json(self, indent=4):
         return dumps(
             {
                 "attributes": dict(self.attributes),
@@ -328,20 +326,20 @@ _DEFAULT_RESOURCE = Resource(
 
 
 class ResourceDetector(abc.ABC):
-    def __init__(self, raise_on_error: bool = False) -> None:
+    def __init__(self, raise_on_error=False):
         self.raise_on_error = raise_on_error
 
     @abc.abstractmethod
-    def detect(self) -> "Resource":
+    def detect(self):
         """Don't call `Resource.create` here to avoid an infinite loop, instead instantiate `Resource` directly"""
         raise NotImplementedError()
 
 
 class OTELResourceDetector(ResourceDetector):
-    # pylint: disable=no-self-use
-    def detect(self) -> "Resource":
+    # pylint =no-self-use
+    def detect(self):
         env_resources_items = environ.get(OTEL_RESOURCE_ATTRIBUTES)
-        env_resource_map: dict[str, AttributeValue] = {}
+        env_resource_map = {}
 
         if env_resources_items:
             for item in env_resources_items.split(","):
@@ -355,22 +353,22 @@ class OTELResourceDetector(ResourceDetector):
                     )
                     continue
                 value_url_decoded = parse.unquote(value.strip())
-                env_resource_map[key.strip()] = value_url_decoded
+                env_resource_map = value_url_decoded
 
         service_name = environ.get(OTEL_SERVICE_NAME)
         if service_name:
-            env_resource_map[SERVICE_NAME] = service_name
+            env_resource_map = service_name
         return Resource(env_resource_map)
 
 
 class ProcessResourceDetector(ResourceDetector):
-    # pylint: disable=no-self-use
-    def detect(self) -> "Resource":
+    # pylint =no-self-use
+    def detect(self):
         _runtime_version = ".".join(
             map(
                 str,
                 (
-                    sys.version_info[:3]
+                    sys.version_info
                     if sys.version_info.releaselevel == "final"
                     and not sys.version_info.serial
                     else sys.version_info
@@ -380,7 +378,7 @@ class ProcessResourceDetector(ResourceDetector):
         _process_pid = os.getpid()
         _process_executable_name = sys.executable
         _process_executable_path = os.path.dirname(_process_executable_name)
-        _process_command = sys.argv[0]
+        _process_command = sys.argv
         _process_command_line = " ".join(sys.argv)
         _process_command_args = sys.argv
         resource_info = {
@@ -396,12 +394,12 @@ class ProcessResourceDetector(ResourceDetector):
         }
         if hasattr(os, "getppid"):
             # pypy3 does not have getppid()
-            resource_info[PROCESS_PARENT_PID] = os.getppid()
+            resource_info = os.getppid()
 
         if psutil is not None:
             process = psutil.Process()
             username = process.username()
-            resource_info[PROCESS_OWNER] = username
+            resource_info = username
 
         return Resource(resource_info)  # type: ignore
 
@@ -409,7 +407,7 @@ class ProcessResourceDetector(ResourceDetector):
 class OsResourceDetector(ResourceDetector):
     """Detect os resources based on `Operating System conventions <https://opentelemetry.io/docs/specs/semconv/resource/os/>`_."""
 
-    def detect(self) -> "Resource":
+    def detect(self):
         """Returns a resource with with ``os.type`` and ``os.version``.
 
         Python's platform library
@@ -490,12 +488,12 @@ class OsResourceDetector(ResourceDetector):
         )
 
 
-class _HostResourceDetector(ResourceDetector):  # type: ignore[reportUnusedClass]
+class _HostResourceDetector(ResourceDetector):  # type
     """
     The HostResourceDetector detects the hostname and architecture attributes.
     """
 
-    def detect(self) -> "Resource":
+    def detect(self):
         return Resource(
             {
                 HOST_NAME: socket.gethostname(),
@@ -504,11 +502,7 @@ class _HostResourceDetector(ResourceDetector):  # type: ignore[reportUnusedClass
         )
 
 
-def get_aggregated_resources(
-    detectors: typing.List["ResourceDetector"],
-    initial_resource: typing.Optional[Resource] = None,
-    timeout: int = 5,
-) -> "Resource":
+def get_aggregated_resources(detectors, initial_resource=None, timeout=5):
     """Retrieves resources from detectors in the order that they were passed
 
     :param detectors: List of resources in order of priority
@@ -521,8 +515,8 @@ def get_aggregated_resources(
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         futures = [executor.submit(detector.detect) for detector in detectors]
         for detector_ind, future in enumerate(futures):
-            detector = detectors[detector_ind]
-            detected_resource: Resource = _EMPTY_RESOURCE
+            detector = detectors
+            detected_resource = _EMPTY_RESOURCE
             try:
                 detected_resource = future.result(timeout=timeout)
             except concurrent.futures.TimeoutError as ex:
@@ -533,7 +527,7 @@ def get_aggregated_resources(
                     detector,
                     timeout,
                 )
-            # pylint: disable=broad-exception-caught
+            # pylint =broad-exception-caught
             except Exception as ex:
                 if detector.raise_on_error:
                     raise ex

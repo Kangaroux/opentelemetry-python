@@ -34,57 +34,57 @@ class MetricInstruments(object):
     HTTP_SERVER_DURATION = "http.server.duration"
     """
     Measures the duration of inbound HTTP requests
-    Instrument: histogram
-    Unit: s
+    Instrument
+    Unit
     """
 
     HTTP_SERVER_ACTIVE_REQUESTS = "http.server.active_requests"
     """
     Measures the number of concurrent HTTP requests that are currently in-flight
-    Instrument: updowncounter
+    Instrument
     Unit: {request}
     """
 
     HTTP_SERVER_REQUEST_SIZE = "http.server.request.size"
     """
     Measures the size of HTTP request messages (compressed)
-    Instrument: histogram
-    Unit: By
+    Instrument
+    Unit
     """
 
     HTTP_SERVER_RESPONSE_SIZE = "http.server.response.size"
     """
     Measures the size of HTTP response messages (compressed)
-    Instrument: histogram
-    Unit: By
+    Instrument
+    Unit
     """
 
     HTTP_CLIENT_DURATION = "http.client.duration"
     """
     Measures the duration of outbound HTTP requests
-    Instrument: histogram
-    Unit: s
+    Instrument
+    Unit
     """
 
     HTTP_CLIENT_REQUEST_SIZE = "http.client.request.size"
     """
     Measures the size of HTTP request messages (compressed)
-    Instrument: histogram
-    Unit: By
+    Instrument
+    Unit
     """
 
     HTTP_CLIENT_RESPONSE_SIZE = "http.client.response.size"
     """
     Measures the size of HTTP response messages (compressed)
-    Instrument: histogram
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_MEMORY_INIT = "process.runtime.jvm.memory.init"
     """
     Measure of initial memory requested
-    Instrument: updowncounter
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_SYSTEM_CPU_UTILIZATION = (
@@ -92,8 +92,8 @@ class MetricInstruments(object):
     )
     """
     Recent CPU utilization for the whole system as reported by the JVM
-    Instrument: gauge
-    Unit: 1
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_SYSTEM_CPU_LOAD_1M = (
@@ -101,36 +101,36 @@ class MetricInstruments(object):
     )
     """
     Average CPU load of the whole system for the last minute as reported by the JVM
-    Instrument: gauge
-    Unit: 1
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_BUFFER_USAGE = "process.runtime.jvm.buffer.usage"
     """
     Measure of memory used by buffers
-    Instrument: updowncounter
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_BUFFER_LIMIT = "process.runtime.jvm.buffer.limit"
     """
     Measure of total memory capacity of buffers
-    Instrument: updowncounter
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_BUFFER_COUNT = "process.runtime.jvm.buffer.count"
     """
     Number of buffers in the pool
-    Instrument: updowncounter
+    Instrument
     Unit: {buffer}
     """
 
     PROCESS_RUNTIME_JVM_MEMORY_USAGE = "process.runtime.jvm.memory.usage"
     """
     Measure of memory used
-    Instrument: updowncounter
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_MEMORY_COMMITTED = (
@@ -138,15 +138,15 @@ class MetricInstruments(object):
     )
     """
     Measure of memory committed
-    Instrument: updowncounter
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_MEMORY_LIMIT = "process.runtime.jvm.memory.limit"
     """
     Measure of max obtainable memory
-    Instrument: updowncounter
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_MEMORY_USAGE_AFTER_LAST_GC = (
@@ -154,28 +154,28 @@ class MetricInstruments(object):
     )
     """
     Measure of memory used, as measured after the most recent garbage collection event on this pool
-    Instrument: updowncounter
-    Unit: By
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_GC_DURATION = "process.runtime.jvm.gc.duration"
     """
     Duration of JVM garbage collection actions
-    Instrument: histogram
-    Unit: s
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_THREADS_COUNT = "process.runtime.jvm.threads.count"
     """
     Number of executing platform threads
-    Instrument: updowncounter
+    Instrument
     Unit: {thread}
     """
 
     PROCESS_RUNTIME_JVM_CLASSES_LOADED = "process.runtime.jvm.classes.loaded"
     """
     Number of classes loaded since JVM start
-    Instrument: counter
+    Instrument
     Unit: {class}
     """
 
@@ -184,7 +184,7 @@ class MetricInstruments(object):
     )
     """
     Number of classes unloaded since JVM start
-    Instrument: counter
+    Instrument
     Unit: {class}
     """
 
@@ -193,15 +193,15 @@ class MetricInstruments(object):
     )
     """
     Number of classes currently loaded
-    Instrument: updowncounter
+    Instrument
     Unit: {class}
     """
 
     PROCESS_RUNTIME_JVM_CPU_TIME = "process.runtime.jvm.cpu.time"
     """
     CPU time used by the process as reported by the JVM
-    Instrument: counter
-    Unit: s
+    Instrument
+    Unit
     """
 
     PROCESS_RUNTIME_JVM_CPU_RECENT_UTILIZATION = (
@@ -209,8 +209,8 @@ class MetricInstruments(object):
     )
     """
     Recent CPU utilization for the process as reported by the JVM
-    Instrument: gauge
-    Unit: 1
+    Instrument
+    Unit
     """
 
     # Manually defined metrics
@@ -218,6 +218,6 @@ class MetricInstruments(object):
     DB_CLIENT_CONNECTIONS_USAGE = "db.client.connections.usage"
     """
     The number of connections that are currently in state described by the `state` attribute
-    Instrument: UpDownCounter
+    Instrument
     Unit: {connection}
     """

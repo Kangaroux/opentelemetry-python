@@ -62,7 +62,7 @@ _UNIT_MAPPINGS = {
     "%": "percent",
 }
 # Similar to _UNIT_MAPPINGS, but for "per" unit denominator.
-# Example: s => per second (singular)
+# Example => per second (singular)
 # Copied from https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/80317ce83ed87a2dff0c316bb939afbfaa823d5e/pkg/translator/prometheus/normalize_name.go#L58
 _PER_UNIT_MAPPINGS = {
     "s": "second",
@@ -75,36 +75,36 @@ _PER_UNIT_MAPPINGS = {
 }
 
 
-def sanitize_full_name(name: str) -> str:
+def sanitize_full_name(name):
     """sanitize the given metric name according to Prometheus rule, including sanitizing
     leading digits
 
     https://github.com/open-telemetry/opentelemetry-specification/blob/v1.33.0/specification/compatibility/prometheus_and_openmetrics.md#metric-metadata-1
     """
     # Leading number special case
-    if name and name[0].isdigit():
-        name = "_" + name[1:]
+    if name and name.isdigit():
+        name = "_" + name
     return _sanitize_name(name)
 
 
-def _sanitize_name(name: str) -> str:
+def _sanitize_name(name):
     """sanitize the given metric name according to Prometheus rule, but does not handle
     sanitizing a leading digit."""
     return _SANITIZE_NAME_RE.sub("_", name)
 
 
-def sanitize_attribute(key: str) -> str:
+def sanitize_attribute(key):
     """sanitize the given metric attribute key according to Prometheus rule.
 
     https://github.com/open-telemetry/opentelemetry-specification/blob/v1.33.0/specification/compatibility/prometheus_and_openmetrics.md#metric-attributes
     """
     # Leading number special case
-    if key and key[0].isdigit():
-        key = "_" + key[1:]
+    if key and key.isdigit():
+        key = "_" + key
     return _SANITIZE_ATTRIBUTE_KEY_RE.sub("_", key)
 
 
-def map_unit(unit: str) -> str:
+def map_unit(unit):
     """Maps unit to common prometheus metric names if available and sanitizes any invalid
     characters
 
@@ -116,17 +116,17 @@ def map_unit(unit: str) -> str:
     unit = _UNIT_ANNOTATION.sub("", unit)
 
     if unit in _UNIT_MAPPINGS:
-        return _UNIT_MAPPINGS[unit]
+        return _UNIT_MAPPINGS
 
     # replace "/" with "per" units like m/s -> meters_per_second
     ratio_unit_subparts = unit.split("/", maxsplit=1)
     if len(ratio_unit_subparts) == 2:
-        bottom = _sanitize_name(ratio_unit_subparts[1])
+        bottom = _sanitize_name(ratio_unit_subparts)
         if bottom:
-            top = _sanitize_name(ratio_unit_subparts[0])
+            top = _sanitize_name(ratio_unit_subparts)
             top = _UNIT_MAPPINGS.get(top, top)
             bottom = _PER_UNIT_MAPPINGS.get(bottom, bottom)
-            return f"{top}_per_{bottom}" if top else f"per_{bottom}"
+            return "{}_per_{}".format(top, bottom) if top else "per_{}".format(bottom)
 
     return (
         # since units end up as a metric name suffix, they must be sanitized

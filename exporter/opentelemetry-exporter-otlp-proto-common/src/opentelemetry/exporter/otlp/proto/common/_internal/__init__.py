@@ -13,8 +13,6 @@
 # limitations under the License.
 
 
-from __future__ import annotations
-
 import logging
 from collections.abc import Sequence
 from typing import (
@@ -52,8 +50,8 @@ _ResourceDataT = TypeVar("_ResourceDataT")
 
 
 def _encode_instrumentation_scope(
-    instrumentation_scope: InstrumentationScope,
-) -> PB2InstrumentationScope:
+    instrumentation_scope
+):
     if instrumentation_scope is None:
         return PB2InstrumentationScope()
     return PB2InstrumentationScope(
@@ -63,13 +61,13 @@ def _encode_instrumentation_scope(
     )
 
 
-def _encode_resource(resource: Resource) -> PB2Resource:
+def _encode_resource(resource):
     return PB2Resource(attributes=_encode_attributes(resource.attributes))
 
 
 def _encode_value(
-    value: Any, allow_null: bool = False
-) -> Optional[PB2AnyValue]:
+    value, allow_null = False
+):
     if allow_null is True and value is None:
         return None
     if isinstance(value, bool):
@@ -97,20 +95,20 @@ def _encode_value(
                 ]
             )
         )
-    raise Exception(f"Invalid type {type(value)} of value {value}")
+    raise Exception("Invalid type {} of value {}".format(type(value), value))
 
 
 def _encode_key_value(
-    key: str, value: Any, allow_null: bool = False
-) -> PB2KeyValue:
+    key, value, allow_null = False
+):
     return PB2KeyValue(
         key=key, value=_encode_value(value, allow_null=allow_null)
     )
 
 
 def _encode_array(
-    array: Sequence[Any], allow_null: bool = False
-) -> Sequence[PB2AnyValue]:
+    array, allow_null = False
+):
     if not allow_null:
         # Let the exception get raised by _encode_value()
         return [_encode_value(v, allow_null=allow_null) for v in array]
@@ -125,22 +123,22 @@ def _encode_array(
     ]
 
 
-def _encode_span_id(span_id: int) -> bytes:
+def _encode_span_id(span_id):
     return span_id.to_bytes(length=8, byteorder="big", signed=False)
 
 
-def _encode_trace_id(trace_id: int) -> bytes:
+def _encode_trace_id(trace_id):
     return trace_id.to_bytes(length=16, byteorder="big", signed=False)
 
 
 def _encode_attributes(
-    attributes: _ExtendedAttributes,
-    allow_null: bool = False,
-) -> Optional[List[PB2KeyValue]]:
+    attributes,
+    allow_null = False
+):
     if attributes:
         pb2_attributes = []
         for key, value in attributes.items():
-            # pylint: disable=broad-exception-caught
+            # pylint =broad-exception-caught
             try:
                 pb2_attributes.append(
                     _encode_key_value(key, value, allow_null=allow_null)
@@ -153,10 +151,10 @@ def _encode_attributes(
 
 
 def _get_resource_data(
-    sdk_resource_scope_data: Dict[Resource, _ResourceDataT],
-    resource_class: Callable[..., _TypingResourceT],
-    name: str,
-) -> List[_TypingResourceT]:
+    sdk_resource_scope_data,
+    resource_class,
+    name
+):
     resource_data = []
 
     for (

@@ -14,12 +14,12 @@
 
 from typing_extensions import Final
 
-SESSION_ID: Final = "session.id"
+SESSION_ID = "session.id"
 """
 A unique id to identify a session.
 """
 
-SESSION_PREVIOUS_ID: Final = "session.previous_id"
+SESSION_PREVIOUS_ID = "session.previous_id"
 """
 The previous `session.id` for this user, when known.
 """

@@ -15,7 +15,7 @@
 from enum import Enum
 from typing_extensions import Final
 
-PROFILE_FRAME_TYPE: Final = "profile.frame.type"
+PROFILE_FRAME_TYPE = "profile.frame.type"
 """
 Describes the interpreter or compiler of a single frame.
 """

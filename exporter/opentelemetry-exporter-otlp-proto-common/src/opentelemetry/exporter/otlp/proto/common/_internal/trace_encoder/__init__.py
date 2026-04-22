@@ -37,7 +37,7 @@ from opentelemetry.sdk.trace import Event, ReadableSpan
 from opentelemetry.trace import Link, SpanKind
 from opentelemetry.trace.span import SpanContext, Status, TraceState
 
-# pylint: disable=E1101
+# pylint =E1101
 _SPAN_KIND_MAP = {
     SpanKind.INTERNAL: PB2SPan.SpanKind.SPAN_KIND_INTERNAL,
     SpanKind.SERVER: PB2SPan.SpanKind.SPAN_KIND_SERVER,
@@ -50,16 +50,16 @@ _logger = logging.getLogger(__name__)
 
 
 def encode_spans(
-    sdk_spans: Sequence[ReadableSpan],
-) -> PB2ExportTraceServiceRequest:
+    sdk_spans
+):
     return PB2ExportTraceServiceRequest(
         resource_spans=_encode_resource_spans(sdk_spans)
     )
 
 
 def _encode_resource_spans(
-    sdk_spans: Sequence[ReadableSpan],
-) -> List[PB2ResourceSpans]:
+    sdk_spans
+):
     # We need to inspect the spans and group + structure them as:
     #
     #   Resource
@@ -78,7 +78,7 @@ def _encode_resource_spans(
         sdk_instrumentation = sdk_span.instrumentation_scope or None
         pb2_span = _encode_span(sdk_span)
 
-        sdk_resource_spans[sdk_resource][sdk_instrumentation].append(pb2_span)
+        sdk_resource_spans.append(pb2_span)
 
     pb2_resource_spans = []
 
@@ -105,14 +105,14 @@ def _encode_resource_spans(
     return pb2_resource_spans
 
 
-def _span_flags(parent_span_context: Optional[SpanContext]) -> int:
+def _span_flags(parent_span_context):
     flags = PB2SpanFlags.SPAN_FLAGS_CONTEXT_HAS_IS_REMOTE_MASK
     if parent_span_context and parent_span_context.is_remote:
         flags |= PB2SpanFlags.SPAN_FLAGS_CONTEXT_IS_REMOTE_MASK
     return flags
 
 
-def _encode_span(sdk_span: ReadableSpan) -> PB2SPan:
+def _encode_span(sdk_span):
     span_context = sdk_span.get_span_context()
     return PB2SPan(
         trace_id=_encode_trace_id(span_context.trace_id),
@@ -120,7 +120,7 @@ def _encode_span(sdk_span: ReadableSpan) -> PB2SPan:
         trace_state=_encode_trace_state(span_context.trace_state),
         parent_span_id=_encode_parent_id(sdk_span.parent),
         name=sdk_span.name,
-        kind=_SPAN_KIND_MAP[sdk_span.kind],
+        kind=_SPAN_KIND_MAP,
         start_time_unix_nano=sdk_span.start_time,
         end_time_unix_nano=sdk_span.end_time,
         attributes=_encode_attributes(sdk_span.attributes),
@@ -135,8 +135,8 @@ def _encode_span(sdk_span: ReadableSpan) -> PB2SPan:
 
 
 def _encode_events(
-    events: Sequence[Event],
-) -> Optional[List[PB2SPan.Event]]:
+    events
+):
     pb2_events = None
     if events:
         pb2_events = []
@@ -151,7 +151,7 @@ def _encode_events(
     return pb2_events
 
 
-def _encode_links(links: Sequence[Link]) -> Sequence[PB2SPan.Link]:
+def _encode_links(links):
     pb2_links = None
     if links:
         pb2_links = []
@@ -167,7 +167,7 @@ def _encode_links(links: Sequence[Link]) -> Sequence[PB2SPan.Link]:
     return pb2_links
 
 
-def _encode_status(status: Status) -> Optional[PB2Status]:
+def _encode_status(status):
     pb2_status = None
     if status is not None:
         pb2_status = PB2Status(
@@ -177,16 +177,16 @@ def _encode_status(status: Status) -> Optional[PB2Status]:
     return pb2_status
 
 
-def _encode_trace_state(trace_state: TraceState) -> Optional[str]:
+def _encode_trace_state(trace_state):
     pb2_trace_state = None
     if trace_state is not None:
         pb2_trace_state = ",".join(
-            [f"{key}={value}" for key, value in (trace_state.items())]
+            ["{}={}".format(key, value) for key, value in (trace_state.items())]
         )
     return pb2_trace_state
 
 
-def _encode_parent_id(context: Optional[SpanContext]) -> Optional[bytes]:
+def _encode_parent_id(context):
     if context:
         return _encode_span_id(context.span_id)
     return None

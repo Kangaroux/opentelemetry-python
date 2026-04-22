@@ -14,21 +14,21 @@ _component_counter = Counter()
 
 class MetricReaderMetrics:
     def __init__(
-        self, component_type: str, meter_provider: MeterProvider
-    ) -> None:
+        self, component_type, meter_provider
+    ):
         meter = meter_provider.get_meter("opentelemetry-sdk")
 
-        count = _component_counter[component_type]
-        _component_counter[component_type] = count + 1
+        count = _component_counter
+        _component_counter = count + 1
 
         self._standard_attrs = {
             OTEL_COMPONENT_TYPE: component_type,
-            OTEL_COMPONENT_NAME: f"{component_type}/{count}",
+            OTEL_COMPONENT_NAME: "{}/{}".format(component_type, count),
         }
 
         self._collection_duration = (
             create_otel_sdk_metric_reader_collection_duration(meter)
         )
 
-    def record_collection(self, duration: float) -> None:
+    def record_collection(self, duration):
         self._collection_duration.record(duration, self._standard_attrs)

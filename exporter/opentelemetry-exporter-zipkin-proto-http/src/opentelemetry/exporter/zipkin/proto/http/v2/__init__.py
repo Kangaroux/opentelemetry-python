@@ -54,7 +54,7 @@ class ProtobufEncoder(Encoder):
         self, spans, local_endpoint
     ):
         encoded_local_endpoint = self._encode_local_endpoint(local_endpoint)
-        # pylint: disable=no-member
+        # pylint =no-member
         encoded_spans = zipkin_pb2.ListOfSpans()
         for span in spans:
             encoded_spans.spans.append(
@@ -66,7 +66,7 @@ class ProtobufEncoder(Encoder):
         self, span, encoded_local_endpoint
     ):
         context = span.get_span_context()
-        # pylint: disable=no-member
+        # pylint =no-member
         encoded_span = zipkin_pb2.Span(
             trace_id=self._encode_trace_id(context.trace_id),
             id=self._encode_span_id(context.span_id),
@@ -74,7 +74,7 @@ class ProtobufEncoder(Encoder):
             timestamp=self._nsec_to_usec_round(span.start_time),
             duration=self._nsec_to_usec_round(span.end_time - span.start_time),
             local_endpoint=encoded_local_endpoint,
-            kind=self.SPAN_KIND_MAP[span.kind],
+            kind=self.SPAN_KIND_MAP,
         )
 
         tags = self._extract_tags_from_span(span)
@@ -106,15 +106,15 @@ class ProtobufEncoder(Encoder):
             for annotation in annotations:
                 encoded_annotations.append(
                     zipkin_pb2.Annotation(
-                        timestamp=annotation["timestamp"],
-                        value=annotation["value"],
+                        timestamp=annotation,
+                        value=annotation,
                     )
                 )
         return encoded_annotations
 
     @staticmethod
     def _encode_local_endpoint(
-        local_endpoint,
+        local_endpoint
     ):
         encoded_local_endpoint = zipkin_pb2.Endpoint(
             service_name=local_endpoint.service_name,

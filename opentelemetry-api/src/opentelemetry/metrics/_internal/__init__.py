@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=too-many-ancestors
+# pylint =too-many-ancestors
 
 """
 The OpenTelemetry metrics API  describes the classes used to generate
@@ -83,7 +83,7 @@ from opentelemetry.util.types import (
 _logger = getLogger(__name__)
 
 
-# pylint: disable=invalid-name
+# pylint =invalid-name
 _ProxyInstrumentT = Union[
     _ProxyCounter,
     _ProxyHistogram,
@@ -106,7 +106,7 @@ class MeterProvider(ABC):
         name,
         version = None,
         schema_url = None,
-        attributes = None,
+        attributes = None
     ):
         """Returns a `Meter` for use by the given instrumentation library.
 
@@ -145,7 +145,7 @@ class NoOpMeterProvider(MeterProvider):
         name,
         version = None,
         schema_url = None,
-        attributes = None,
+        attributes = None
     ):
         """Returns a NoOpMeter."""
         return NoOpMeter(name, version=version, schema_url=schema_url)
@@ -162,7 +162,7 @@ class _ProxyMeterProvider(MeterProvider):
         name,
         version = None,
         schema_url = None,
-        attributes = None,
+        attributes = None
     ):
         with self._lock:
             if self._real_meter_provider is not None:
@@ -200,7 +200,7 @@ class Meter(ABC):
         self,
         name,
         version = None,
-        schema_url = None,
+        schema_url = None
     ):
         super().__init__()
         self._name = name
@@ -236,7 +236,7 @@ class Meter(ABC):
         type_,
         unit,
         description,
-        advisory = None,
+        advisory = None
     ):
         """
         Register an instrument with the name, type, unit and description as
@@ -262,10 +262,10 @@ class Meter(ABC):
             # we are not using get because None is a valid value
             already_registered = instrument_id in self._instrument_ids
             if already_registered:
-                current_advisory = self._instrument_ids[instrument_id]
+                current_advisory = self._instrument_ids
                 conflict = current_advisory != advisory
             else:
-                self._instrument_ids[instrument_id] = advisory
+                self._instrument_ids = advisory
 
         return _InstrumentRegistrationStatus(
             instrument_id=instrument_id,
@@ -280,7 +280,7 @@ class Meter(ABC):
         instrumentation_type,
         unit,
         description,
-        status,
+        status
     ):
         _logger.warning(
             "An instrument with name %s, type %s, unit %s and "
@@ -298,7 +298,7 @@ class Meter(ABC):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Creates a `Counter` instrument
 
@@ -314,7 +314,7 @@ class Meter(ABC):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Creates an `UpDownCounter` instrument
 
@@ -331,7 +331,7 @@ class Meter(ABC):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Creates an `ObservableCounter` instrument
 
@@ -349,9 +349,9 @@ class Meter(ABC):
                     for line in procstat:
                         if not line.startswith("cpu"): break
                         cpu, *states = line.split()
-                        observations.append(Observation(int(states[0]) // 100, {"cpu": cpu, "state": "user"}))
-                        observations.append(Observation(int(states[1]) // 100, {"cpu": cpu, "state": "nice"}))
-                        observations.append(Observation(int(states[2]) // 100, {"cpu": cpu, "state": "system"}))
+                        observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "user"}))
+                        observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "nice"}))
+                        observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "system"}))
                         # ... other states
                 return observations
 
@@ -371,8 +371,8 @@ class Meter(ABC):
                     for line in procstat:
                         if not line.startswith("cpu"): break
                         cpu, *states = line.split()
-                        yield Observation(int(states[0]) // 100, {"cpu": cpu, "state": "user"})
-                        yield Observation(int(states[1]) // 100, {"cpu": cpu, "state": "nice"})
+                        yield Observation(int(states) // 100, {"cpu": cpu, "state": "user"})
+                        yield Observation(int(states) // 100, {"cpu": cpu, "state": "nice"})
                         # ... other states
 
         Alternatively, you can pass a sequence of generators directly instead of a sequence of
@@ -389,9 +389,9 @@ class Meter(ABC):
                             if not line.startswith("cpu"): break
                             cpu, *states = line.split()
                             if "user" in states_to_include:
-                                observations.append(Observation(int(states[0]) // 100, {"cpu": cpu, "state": "user"}))
+                                observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "user"}))
                             if "nice" in states_to_include:
-                                observations.append(Observation(int(states[1]) // 100, {"cpu": cpu, "state": "nice"}))
+                                observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "nice"}))
                             # ... other states
                     # yield the observations and receive the options for next iteration
                     options = yield observations
@@ -428,7 +428,7 @@ class Meter(ABC):
         name,
         unit = "",
         description = "",
-        explicit_bucket_boundaries_advisory = None,
+        explicit_bucket_boundaries_advisory = None
     ):
         """Creates a :class:`~opentelemetry.metrics.Histogram` instrument
 
@@ -456,7 +456,7 @@ class Meter(ABC):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Creates an `ObservableGauge` instrument
 
@@ -476,7 +476,7 @@ class Meter(ABC):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Creates an `ObservableUpDownCounter` instrument
 
@@ -496,7 +496,7 @@ class _ProxyMeter(Meter):
         self,
         name,
         version = None,
-        schema_url = None,
+        schema_url = None
     ):
         super().__init__(name, version=version, schema_url=schema_url)
         self._lock = Lock()
@@ -524,7 +524,7 @@ class _ProxyMeter(Meter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         with self._lock:
             if self._real_meter:
@@ -537,7 +537,7 @@ class _ProxyMeter(Meter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         with self._lock:
             if self._real_meter:
@@ -553,7 +553,7 @@ class _ProxyMeter(Meter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         with self._lock:
             if self._real_meter:
@@ -571,7 +571,7 @@ class _ProxyMeter(Meter):
         name,
         unit = "",
         description = "",
-        explicit_bucket_boundaries_advisory = None,
+        explicit_bucket_boundaries_advisory = None
     ):
         with self._lock:
             if self._real_meter:
@@ -591,7 +591,7 @@ class _ProxyMeter(Meter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         with self._lock:
             if self._real_meter:
@@ -605,7 +605,7 @@ class _ProxyMeter(Meter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         with self._lock:
             if self._real_meter:
@@ -623,7 +623,7 @@ class _ProxyMeter(Meter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         with self._lock:
             if self._real_meter:
@@ -650,7 +650,7 @@ class NoOpMeter(Meter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Returns a no-op Counter."""
         status = self._register_instrument(
@@ -671,7 +671,7 @@ class NoOpMeter(Meter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Returns a no-op Gauge."""
         status = self._register_instrument(name, NoOpGauge, unit, description)
@@ -689,7 +689,7 @@ class NoOpMeter(Meter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Returns a no-op UpDownCounter."""
         status = self._register_instrument(
@@ -710,7 +710,7 @@ class NoOpMeter(Meter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Returns a no-op ObservableCounter."""
         status = self._register_instrument(
@@ -736,7 +736,7 @@ class NoOpMeter(Meter):
         name,
         unit = "",
         description = "",
-        explicit_bucket_boundaries_advisory = None,
+        explicit_bucket_boundaries_advisory = None
     ):
         """Returns a no-op Histogram."""
         status = self._register_instrument(
@@ -768,7 +768,7 @@ class NoOpMeter(Meter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Returns a no-op ObservableGauge."""
         status = self._register_instrument(
@@ -794,7 +794,7 @@ class NoOpMeter(Meter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         """Returns a no-op ObservableUpDownCounter."""
         status = self._register_instrument(
@@ -826,7 +826,7 @@ def get_meter(
     version = "",
     meter_provider = None,
     schema_url = None,
-    attributes = None,
+    attributes = None
 ):
     """Returns a `Meter` for use by the given instrumentation library.
 
@@ -842,7 +842,7 @@ def get_meter(
 
 def _set_meter_provider(meter_provider, log):
     def set_mp():
-        global _METER_PROVIDER  # pylint: disable=global-statement
+        global _METER_PROVIDER  # pylint =global-statement
         _METER_PROVIDER = meter_provider
 
         # gives all proxies real instruments off the newly set meter provider

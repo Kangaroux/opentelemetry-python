@@ -14,12 +14,12 @@
 
 from typing_extensions import Final
 
-OPENSHIFT_CLUSTERQUOTA_NAME: Final = "openshift.clusterquota.name"
+OPENSHIFT_CLUSTERQUOTA_NAME = "openshift.clusterquota.name"
 """
 The name of the cluster quota.
 """
 
-OPENSHIFT_CLUSTERQUOTA_UID: Final = "openshift.clusterquota.uid"
+OPENSHIFT_CLUSTERQUOTA_UID = "openshift.clusterquota.uid"
 """
 The UID of the cluster quota.
 """

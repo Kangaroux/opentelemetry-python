@@ -63,31 +63,29 @@ class MetricReaderStorage:
 
     def __init__(
         self,
-        sdk_config: SdkConfiguration,
-        instrument_class_temporality: Dict[type, AggregationTemporality],
-        instrument_class_aggregation: Dict[type, Aggregation],
-    ) -> None:
+        sdk_config,
+        instrument_class_temporality,
+        instrument_class_aggregation
+    ):
         self._lock = RLock()
         self._sdk_config = sdk_config
-        self._instrument_view_instrument_matches: Dict[
-            Instrument, List[_ViewInstrumentMatch]
-        ] = {}
+        self._instrument_view_instrument_matches        = {}
         self._instrument_class_temporality = instrument_class_temporality
         self._instrument_class_aggregation = instrument_class_aggregation
 
     def _get_or_init_view_instrument_match(
-        self, instrument: Instrument
-    ) -> List[_ViewInstrumentMatch]:
+        self, instrument
+    ):
         # Optimistically get the relevant views for the given instrument. Once set for a given
         # instrument, the mapping will never change
 
         if instrument in self._instrument_view_instrument_matches:
-            return self._instrument_view_instrument_matches[instrument]
+            return self._instrument_view_instrument_matches
 
         with self._lock:
             # double check if it was set before we held the lock
             if instrument in self._instrument_view_instrument_matches:
-                return self._instrument_view_instrument_matches[instrument]
+                return self._instrument_view_instrument_matches
 
             # not present, hold the lock and add a new mapping
             view_instrument_matches = []
@@ -107,15 +105,15 @@ class MetricReaderStorage:
                         ),
                     )
                 )
-            self._instrument_view_instrument_matches[instrument] = (
+            self._instrument_view_instrument_matches = (
                 view_instrument_matches
             )
 
             return view_instrument_matches
 
     def consume_measurement(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
-    ) -> None:
+        self, measurement, should_sample_exemplar = True
+    ):
         for view_instrument_match in self._get_or_init_view_instrument_match(
             measurement.instrument
         ):
@@ -123,7 +121,7 @@ class MetricReaderStorage:
                 measurement, should_sample_exemplar
             )
 
-    def collect(self) -> Optional[MetricsData]:
+    def collect(self):
         # Use a list instead of yielding to prevent a slow reader from holding
         # SDK locks
 
@@ -139,9 +137,7 @@ class MetricReaderStorage:
         collection_start_nanos = time_ns()
 
         with self._lock:
-            instrumentation_scope_scope_metrics: Dict[
-                InstrumentationScope, ScopeMetrics
-            ] = {}
+            instrumentation_scope_scope_metrics            = {}
 
             instrument_matches_snapshot = list(
                 self._instrument_view_instrument_matches.items()
@@ -155,7 +151,7 @@ class MetricReaderStorage:
                     instrument.__class__
                 ]
 
-                metrics: List[Metric] = []
+                metrics = []
 
                 for view_instrument_match in view_instrument_matches:
                     data_points = view_instrument_match.collect(
@@ -166,7 +162,7 @@ class MetricReaderStorage:
                         continue
 
                     if isinstance(
-                        # pylint: disable=protected-access
+                        # pylint =protected-access
                         view_instrument_match._aggregation,
                         _SumAggregation,
                     ):
@@ -178,13 +174,13 @@ class MetricReaderStorage:
                             ),
                         )
                     elif isinstance(
-                        # pylint: disable=protected-access
+                        # pylint =protected-access
                         view_instrument_match._aggregation,
                         _LastValueAggregation,
                     ):
                         data = Gauge(data_points=data_points)
                     elif isinstance(
-                        # pylint: disable=protected-access
+                        # pylint =protected-access
                         view_instrument_match._aggregation,
                         _ExplicitBucketHistogramAggregation,
                     ):
@@ -193,14 +189,14 @@ class MetricReaderStorage:
                             aggregation_temporality=aggregation_temporality,
                         )
                     elif isinstance(
-                        # pylint: disable=protected-access
+                        # pylint =protected-access
                         view_instrument_match._aggregation,
                         _DropAggregation,
                     ):
                         continue
 
                     elif isinstance(
-                        # pylint: disable=protected-access
+                        # pylint =protected-access
                         view_instrument_match._aggregation,
                         _ExponentialBucketHistogramAggregation,
                     ):
@@ -211,8 +207,8 @@ class MetricReaderStorage:
 
                     metrics.append(
                         Metric(
-                            # pylint: disable=protected-access
-                            # pylint: disable=possibly-used-before-assignment
+                            # pylint =protected-access
+                            # pylint =possibly-used-before-assignment
                             name=view_instrument_match._name,
                             description=view_instrument_match._description,
                             unit=view_instrument_match._instrument.unit,
@@ -253,11 +249,11 @@ class MetricReaderStorage:
 
     def _handle_view_instrument_match(
         self,
-        instrument: Instrument,
-        view_instrument_matches: List["_ViewInstrumentMatch"],
-    ) -> None:
+        instrument,
+        view_instrument_matches
+    ):
         for view in self._sdk_config.views:
-            # pylint: disable=protected-access
+            # pylint =protected-access
             if not view._match(instrument):
                 continue
 
@@ -292,8 +288,8 @@ class MetricReaderStorage:
 
     @staticmethod
     def _check_view_instrument_compatibility(
-        view: View, instrument: Instrument
-    ) -> bool:
+        view, instrument
+    ):
         """
         Checks if a view and an instrument are compatible.
 
@@ -303,7 +299,7 @@ class MetricReaderStorage:
 
         result = True
 
-        # pylint: disable=protected-access
+        # pylint =protected-access
         if isinstance(instrument, Asynchronous) and isinstance(
             view._aggregation, ExplicitBucketHistogramAggregation
         ):

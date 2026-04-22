@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=unused-import
+# pylint =unused-import
 
 from abc import ABC, abstractmethod
 from threading import Lock
@@ -34,38 +34,24 @@ from opentelemetry.sdk.metrics._internal.point import MetricsData
 
 class MeasurementConsumer(ABC):
     @abstractmethod
-    def consume_measurement(self, measurement: Measurement) -> None:
+    def consume_measurement(self, measurement):
         pass
 
     @abstractmethod
-    def register_asynchronous_instrument(
-        self,
-        instrument: (
-            "opentelemetry.sdk.metrics._internal.instrument_Asynchronous"
-        ),
-    ):
+    def register_asynchronous_instrument(self, instrument):
         pass
 
     @abstractmethod
-    def collect(
-        self,
-        metric_reader: "opentelemetry.sdk.metrics.MetricReader",
-        timeout_millis: float = 10_000,
-    ) -> Optional[MetricsData]:
+    def collect(self, metric_reader, timeout_millis=10000):
         pass
 
 
 class SynchronousMeasurementConsumer(MeasurementConsumer):
-    def __init__(
-        self,
-        sdk_config: "opentelemetry.sdk.metrics._internal.SdkConfiguration",
-    ) -> None:
+    def __init__(self, sdk_config):
         self._lock = Lock()
         self._sdk_config = sdk_config
         # should never be mutated
-        self._reader_storages: Mapping[
-            "opentelemetry.sdk.metrics.MetricReader", MetricReaderStorage
-        ] = {
+        self._reader_storages = {
             reader: MetricReaderStorage(
                 sdk_config,
                 reader._instrument_class_temporality,
@@ -73,11 +59,9 @@ class SynchronousMeasurementConsumer(MeasurementConsumer):
             )
             for reader in sdk_config.metric_readers
         }
-        self._async_instruments: List[
-            "opentelemetry.sdk.metrics._internal.instrument._Asynchronous"
-        ] = []
+        self._async_instruments = []
 
-    def consume_measurement(self, measurement: Measurement) -> None:
+    def consume_measurement(self, measurement):
         should_sample_exemplar = (
             self._sdk_config.exemplar_filter.should_sample(
                 measurement.value,
@@ -91,22 +75,13 @@ class SynchronousMeasurementConsumer(MeasurementConsumer):
                 measurement, should_sample_exemplar
             )
 
-    def register_asynchronous_instrument(
-        self,
-        instrument: (
-            "opentelemetry.sdk.metrics._internal.instrument._Asynchronous"
-        ),
-    ) -> None:
+    def register_asynchronous_instrument(self, instrument):
         with self._lock:
             self._async_instruments.append(instrument)
 
-    def collect(
-        self,
-        metric_reader: "opentelemetry.sdk.metrics.MetricReader",
-        timeout_millis: float = 10_000,
-    ) -> Optional[MetricsData]:
+    def collect(self, metric_reader, timeout_millis=10000):
         with self._lock:
-            metric_reader_storage = self._reader_storages[metric_reader]
+            metric_reader_storage = self._reader_storages
             # for now, just use the defaults
             callback_options = CallbackOptions()
             deadline_ns = time_ns() + (timeout_millis * 1e6)
@@ -140,6 +115,6 @@ class SynchronousMeasurementConsumer(MeasurementConsumer):
                         measurement, should_sample_exemplar
                     )
 
-            result = self._reader_storages[metric_reader].collect()
+            result = self._reader_storages.collect()
 
         return result

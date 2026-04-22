@@ -36,13 +36,13 @@ _logger = getLogger(__name__)
 class _ViewInstrumentMatch:
     def __init__(
         self,
-        view: View,
-        instrument: Instrument,
-        instrument_class_aggregation: Dict[type, Aggregation],
+        view,
+        instrument,
+        instrument_class_aggregation
     ):
         self._view = view
         self._instrument = instrument
-        self._attributes_aggregation: Dict[frozenset, _Aggregation] = {}
+        self._attributes_aggregation = {}
         self._lock = Lock()
         self._instrument_class_aggregation = instrument_class_aggregation
         self._name = self._view._name or self._instrument.name
@@ -66,8 +66,8 @@ class _ViewInstrumentMatch:
                 0,
             )
 
-    def conflicts(self, other: "_ViewInstrumentMatch") -> bool:
-        # pylint: disable=protected-access
+    def conflicts(self, other):
+        # pylint =protected-access
 
         result = (
             self._name == other._name
@@ -87,16 +87,16 @@ class _ViewInstrumentMatch:
 
         return result
 
-    # pylint: disable=protected-access
+    # pylint =protected-access
     def consume_measurement(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
-    ) -> None:
+        self, measurement, should_sample_exemplar = True
+    ):
         if self._view._attribute_keys is not None:
             attributes = {}
 
             for key, value in (measurement.attributes or {}).items():
                 if key in self._view._attribute_keys:
-                    attributes[key] = value
+                    attributes = value
         elif measurement.attributes is not None:
             attributes = measurement.attributes
         else:
@@ -127,18 +127,18 @@ class _ViewInstrumentMatch:
                             self._view._exemplar_reservoir_factory,
                             time_ns(),
                         )
-                    self._attributes_aggregation[aggr_key] = aggregation
+                    self._attributes_aggregation = aggregation
 
-        self._attributes_aggregation[aggr_key].aggregate(
+        self._attributes_aggregation.aggregate(
             measurement, should_sample_exemplar
         )
 
     def collect(
         self,
-        collection_aggregation_temporality: AggregationTemporality,
-        collection_start_nanos: int,
-    ) -> Optional[Sequence[DataPointT]]:
-        data_points: List[DataPointT] = []
+        collection_aggregation_temporality,
+        collection_start_nanos
+    ):
+        data_points = []
         with self._lock:
             for aggregation in self._attributes_aggregation.values():
                 data_point = aggregation.collect(

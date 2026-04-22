@@ -14,15 +14,15 @@
 
 from typing_extensions import Final
 
-URL_FRAGMENT: Final = "url.fragment"
+URL_FRAGMENT = "url.fragment"
 """
 The [URI fragment](https://www.rfc-editor.org/rfc/rfc3986#section-3.5) component.
 """
 
-URL_FULL: Final = "url.full"
+URL_FULL = "url.full"
 """
 Absolute URL describing a network resource according to [RFC3986](https://www.rfc-editor.org/rfc/rfc3986).
-Note: For network calls, URL usually has `scheme://host[:port][path][?query][#fragment]` format, where the fragment
+Note: For network calls, URL usually has `scheme://host` format, where the fragment
 is not transmitted over HTTP, but if it is known, it SHOULD be included nevertheless.
 
 `url.full` MUST NOT contain credentials passed via URL in form of `https://username:password@www.example.com/`.
@@ -57,13 +57,13 @@ When a query string value is redacted, the query string key SHOULD still be pres
 `https://www.example.com/path?color=blue&sig=REDACTED`.
 """
 
-URL_PATH: Final = "url.path"
+URL_PATH = "url.path"
 """
 The [URI path](https://www.rfc-editor.org/rfc/rfc3986#section-3.3) component.
 Note: Sensitive content provided in `url.path` SHOULD be scrubbed when instrumentations can identify it.
 """
 
-URL_QUERY: Final = "url.query"
+URL_QUERY = "url.query"
 """
 The [URI query](https://www.rfc-editor.org/rfc/rfc3986#section-3.4) component.
 Note: Sensitive content provided in `url.query` SHOULD be scrubbed when instrumentations can identify it.
@@ -91,7 +91,7 @@ When a query string value is redacted, the query string key SHOULD still be pres
 `q=OpenTelemetry&sig=REDACTED`.
 """
 
-URL_SCHEME: Final = "url.scheme"
+URL_SCHEME = "url.scheme"
 """
 The [URI scheme](https://www.rfc-editor.org/rfc/rfc3986#section-3.1) component identifying the used protocol.
 """

@@ -28,7 +28,7 @@ from opentelemetry.metrics._internal import _ProxyMeterProvider
 from opentelemetry.util._once import Once
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 def reset_trace_globals():
     """WARNING: only use this for tests."""
     trace_api._TRACER_PROVIDER_SET_ONCE = Once()
@@ -36,34 +36,34 @@ def reset_trace_globals():
     trace_api._PROXY_TRACER_PROVIDER = trace_api.ProxyTracerProvider()
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 def reset_metrics_globals():
     """WARNING: only use this for tests."""
-    metrics_api._METER_PROVIDER_SET_ONCE = Once()  # type: ignore[attr-defined]
-    metrics_api._METER_PROVIDER = None  # type: ignore[attr-defined]
-    metrics_api._PROXY_METER_PROVIDER = _ProxyMeterProvider()  # type: ignore[attr-defined]
+    metrics_api._METER_PROVIDER_SET_ONCE = Once()  # type
+    metrics_api._METER_PROVIDER = None  # type
+    metrics_api._PROXY_METER_PROVIDER = _ProxyMeterProvider()  # type
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 def reset_logging_globals():
     """WARNING: only use this for tests."""
-    logging_api._LOGGER_PROVIDER_SET_ONCE = Once()  # type: ignore[attr-defined]
-    logging_api._LOGGER_PROVIDER = None  # type: ignore[attr-defined]
-    logging_api._PROXY_LOGGER_PROVIDER = logging_api.ProxyLoggerProvider()  # type: ignore[attr-defined]
+    logging_api._LOGGER_PROVIDER_SET_ONCE = Once()  # type
+    logging_api._LOGGER_PROVIDER = None  # type
+    logging_api._PROXY_LOGGER_PROVIDER = logging_api.ProxyLoggerProvider()  # type
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 def reset_event_globals():
     """WARNING: only use this for tests."""
-    from opentelemetry import (  # pylint: disable=import-outside-toplevel # noqa: PLC0415
+    from opentelemetry import (  # pylint =import-outside-toplevel # noqa: PLC0415
         _events as events_api,
     )
 
-    events_api._EVENT_LOGGER_PROVIDER_SET_ONCE = Once()  # type: ignore[attr-defined]
-    events_api._EVENT_LOGGER_PROVIDER = None  # type: ignore[attr-defined]
+    events_api._EVENT_LOGGER_PROVIDER_SET_ONCE = Once()  # type
+    events_api._EVENT_LOGGER_PROVIDER = None  # type
     events_api._PROXY_EVENT_LOGGER_PROVIDER = (
         events_api.ProxyEventLoggerProvider()
-    )  # type: ignore[attr-defined]
+    )  # type: ignore
 
 
 class TraceGlobalsTest(unittest.TestCase):

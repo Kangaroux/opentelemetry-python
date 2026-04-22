@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -40,7 +39,7 @@ class _ComposableAlwaysOffSampler(ComposableSampler):
         span_kind,
         attributes,
         links,
-        trace_state = None,
+        trace_state = None
     ):
         return _intent
 

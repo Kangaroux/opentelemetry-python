@@ -15,7 +15,7 @@
 from enum import Enum
 from typing_extensions import Final
 
-ERROR_TYPE: Final = "error.type"
+ERROR_TYPE = "error.type"
 """
 Describes a class of error the operation ended with.
 Note: The `error.type` SHOULD be predictable, and SHOULD have low cardinality.

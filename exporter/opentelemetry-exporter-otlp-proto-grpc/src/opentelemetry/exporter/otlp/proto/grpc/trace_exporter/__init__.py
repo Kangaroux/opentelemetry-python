@@ -62,17 +62,17 @@ from opentelemetry.sdk.trace.export import SpanExporter, SpanExportResult
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable=no-member
+# pylint =no-member
 class OTLPSpanExporter(
     SpanExporter,
     OTLPExporterMixin[
-        Sequence[ReadableSpan],
+        Sequence,
         ExportTraceServiceRequest,
         SpanExportResult,
         TraceServiceStub,
     ],
 ):
-    # pylint: disable=unsubscriptable-object
+    # pylint =unsubscriptable-object
     """OTLP span exporter
 
     Args:
@@ -86,15 +86,13 @@ class OTLPSpanExporter(
 
     def __init__(
         self,
-        endpoint: Optional[str] = None,
-        insecure: Optional[bool] = None,
-        credentials: Optional[ChannelCredentials] = None,
-        headers: Optional[
-            Union[TypingSequence[Tuple[str, str]], Dict[str, str], str]
-        ] = None,
-        timeout: Optional[float] = None,
-        compression: Optional[Compression] = None,
-        channel_options: Optional[Tuple[Tuple[str, str]]] = None,
+        endpoint = None,
+        insecure = None,
+        credentials = None,
+        headers = None,
+        timeout = None,
+        compression = None,
+        channel_options = None
     ):
         insecure_spans = environ.get(OTEL_EXPORTER_OTLP_TRACES_INSECURE)
         if insecure is None and insecure_spans is not None:
@@ -138,17 +136,17 @@ class OTLPSpanExporter(
         )
 
     def _translate_data(
-        self, data: Sequence[ReadableSpan]
-    ) -> ExportTraceServiceRequest:
+        self, data
+    ):
         return encode_spans(data)
 
-    def export(self, spans: Sequence[ReadableSpan]) -> SpanExportResult:
+    def export(self, spans):
         return self._export(spans)
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis = 30000, **kwargs):
         OTLPExporterMixin.shutdown(self, timeout_millis=timeout_millis)
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         """Nothing is buffered in this exporter, so this method does nothing."""
         return True
 

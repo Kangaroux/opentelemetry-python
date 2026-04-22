@@ -26,7 +26,7 @@ from opentelemetry.sdk.environment_variables import (
 from opentelemetry.util._importlib_metadata import entry_points
 
 
-def _is_retryable(resp: requests.Response) -> bool:
+def _is_retryable(resp):
     if resp.status_code == 408:
         return True
     if resp.status_code >= 500 and resp.status_code <= 599:
@@ -35,12 +35,8 @@ def _is_retryable(resp: requests.Response) -> bool:
 
 
 def _load_session_from_envvar(
-    cred_envvar: Literal[
-        _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER,
-        _OTEL_PYTHON_EXPORTER_OTLP_HTTP_TRACES_CREDENTIAL_PROVIDER,
-        _OTEL_PYTHON_EXPORTER_OTLP_HTTP_METRICS_CREDENTIAL_PROVIDER,
-    ],
-) -> Optional[requests.Session]:
+    cred_envvar,
+):
     _credential_env = environ.get(
         _OTEL_PYTHON_EXPORTER_OTLP_HTTP_CREDENTIAL_PROVIDER
     ) or environ.get(cred_envvar)
@@ -56,14 +52,14 @@ def _load_session_from_envvar(
             ).load()()
         except StopIteration:
             raise RuntimeError(
-                f"Requested component '{_credential_env}' not found in "
-                f"entry point 'opentelemetry_otlp_credential_provider'"
+                "Requested component '{}' not found in ".format(_credential_env) +
+                "entry point 'opentelemetry_otlp_credential_provider'"
             )
         if isinstance(maybe_session, requests.Session):
             return maybe_session
         else:
             raise RuntimeError(
-                f"Requested component '{_credential_env}' is of type {type(maybe_session)}"
-                f" must be of type `requests.Session`."
+                "Requested component '{}' is of type {}".format(_credential_env, type(maybe_session)) +
+                " must be of type `requests.Session`."
             )
     return None

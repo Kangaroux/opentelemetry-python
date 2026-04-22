@@ -17,186 +17,186 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-DB_CASSANDRA_CONSISTENCY_LEVEL: Final = "db.cassandra.consistency_level"
+DB_CASSANDRA_CONSISTENCY_LEVEL = "db.cassandra.consistency_level"
 """
 Deprecated: Replaced by `cassandra.consistency.level`.
 """
 
-DB_CASSANDRA_COORDINATOR_DC: Final = "db.cassandra.coordinator.dc"
+DB_CASSANDRA_COORDINATOR_DC = "db.cassandra.coordinator.dc"
 """
 Deprecated: Replaced by `cassandra.coordinator.dc`.
 """
 
-DB_CASSANDRA_COORDINATOR_ID: Final = "db.cassandra.coordinator.id"
+DB_CASSANDRA_COORDINATOR_ID = "db.cassandra.coordinator.id"
 """
 Deprecated: Replaced by `cassandra.coordinator.id`.
 """
 
-DB_CASSANDRA_IDEMPOTENCE: Final = "db.cassandra.idempotence"
+DB_CASSANDRA_IDEMPOTENCE = "db.cassandra.idempotence"
 """
 Deprecated: Replaced by `cassandra.query.idempotent`.
 """
 
-DB_CASSANDRA_PAGE_SIZE: Final = "db.cassandra.page_size"
+DB_CASSANDRA_PAGE_SIZE = "db.cassandra.page_size"
 """
 Deprecated: Replaced by `cassandra.page.size`.
 """
 
-DB_CASSANDRA_SPECULATIVE_EXECUTION_COUNT: Final = (
+DB_CASSANDRA_SPECULATIVE_EXECUTION_COUNT = (
     "db.cassandra.speculative_execution_count"
 )
 """
 Deprecated: Replaced by `cassandra.speculative_execution.count`.
 """
 
-DB_CASSANDRA_TABLE: Final = "db.cassandra.table"
+DB_CASSANDRA_TABLE = "db.cassandra.table"
 """
 Deprecated: Replaced by `db.collection.name`.
 """
 
-DB_CLIENT_CONNECTION_POOL_NAME: Final = "db.client.connection.pool.name"
+DB_CLIENT_CONNECTION_POOL_NAME = "db.client.connection.pool.name"
 """
 The name of the connection pool; unique within the instrumented application. In case the connection pool implementation doesn't provide a name, instrumentation SHOULD use a combination of parameters that would make the name unique, for example, combining attributes `server.address`, `server.port`, and `db.namespace`, formatted as `server.address:server.port/db.namespace`. Instrumentations that generate connection pool name following different patterns SHOULD document it.
 """
 
-DB_CLIENT_CONNECTION_STATE: Final = "db.client.connection.state"
+DB_CLIENT_CONNECTION_STATE = "db.client.connection.state"
 """
 The state of a connection in the pool.
 """
 
-DB_CLIENT_CONNECTIONS_POOL_NAME: Final = "db.client.connections.pool.name"
+DB_CLIENT_CONNECTIONS_POOL_NAME = "db.client.connections.pool.name"
 """
 Deprecated: Replaced by `db.client.connection.pool.name`.
 """
 
-DB_CLIENT_CONNECTIONS_STATE: Final = "db.client.connections.state"
+DB_CLIENT_CONNECTIONS_STATE = "db.client.connections.state"
 """
 Deprecated: Replaced by `db.client.connection.state`.
 """
 
-DB_COLLECTION_NAME: Final = "db.collection.name"
+DB_COLLECTION_NAME = "db.collection.name"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_COLLECTION_NAME`.
 """
 
-DB_CONNECTION_STRING: Final = "db.connection_string"
+DB_CONNECTION_STRING = "db.connection_string"
 """
 Deprecated: Replaced by `server.address` and `server.port`.
 """
 
-DB_COSMOSDB_CLIENT_ID: Final = "db.cosmosdb.client_id"
+DB_COSMOSDB_CLIENT_ID = "db.cosmosdb.client_id"
 """
 Deprecated: Replaced by `azure.client.id`.
 """
 
-DB_COSMOSDB_CONNECTION_MODE: Final = "db.cosmosdb.connection_mode"
+DB_COSMOSDB_CONNECTION_MODE = "db.cosmosdb.connection_mode"
 """
 Deprecated: Replaced by `azure.cosmosdb.connection.mode`.
 """
 
-DB_COSMOSDB_CONSISTENCY_LEVEL: Final = "db.cosmosdb.consistency_level"
+DB_COSMOSDB_CONSISTENCY_LEVEL = "db.cosmosdb.consistency_level"
 """
 Deprecated: Replaced by `azure.cosmosdb.consistency.level`.
 """
 
-DB_COSMOSDB_CONTAINER: Final = "db.cosmosdb.container"
+DB_COSMOSDB_CONTAINER = "db.cosmosdb.container"
 """
 Deprecated: Replaced by `db.collection.name`.
 """
 
-DB_COSMOSDB_OPERATION_TYPE: Final = "db.cosmosdb.operation_type"
+DB_COSMOSDB_OPERATION_TYPE = "db.cosmosdb.operation_type"
 """
 Deprecated: Removed, no replacement at this time.
 """
 
-DB_COSMOSDB_REGIONS_CONTACTED: Final = "db.cosmosdb.regions_contacted"
+DB_COSMOSDB_REGIONS_CONTACTED = "db.cosmosdb.regions_contacted"
 """
 Deprecated: Replaced by `azure.cosmosdb.operation.contacted_regions`.
 """
 
-DB_COSMOSDB_REQUEST_CHARGE: Final = "db.cosmosdb.request_charge"
+DB_COSMOSDB_REQUEST_CHARGE = "db.cosmosdb.request_charge"
 """
 Deprecated: Replaced by `azure.cosmosdb.operation.request_charge`.
 """
 
-DB_COSMOSDB_REQUEST_CONTENT_LENGTH: Final = (
+DB_COSMOSDB_REQUEST_CONTENT_LENGTH = (
     "db.cosmosdb.request_content_length"
 )
 """
 Deprecated: Replaced by `azure.cosmosdb.request.body.size`.
 """
 
-DB_COSMOSDB_STATUS_CODE: Final = "db.cosmosdb.status_code"
+DB_COSMOSDB_STATUS_CODE = "db.cosmosdb.status_code"
 """
 Deprecated: Use `db.response.status_code` instead.
 """
 
-DB_COSMOSDB_SUB_STATUS_CODE: Final = "db.cosmosdb.sub_status_code"
+DB_COSMOSDB_SUB_STATUS_CODE = "db.cosmosdb.sub_status_code"
 """
 Deprecated: Replaced by `azure.cosmosdb.response.sub_status_code`.
 """
 
-DB_ELASTICSEARCH_CLUSTER_NAME: Final = "db.elasticsearch.cluster.name"
+DB_ELASTICSEARCH_CLUSTER_NAME = "db.elasticsearch.cluster.name"
 """
 Deprecated: Replaced by `db.namespace`.
 """
 
-DB_ELASTICSEARCH_NODE_NAME: Final = "db.elasticsearch.node.name"
+DB_ELASTICSEARCH_NODE_NAME = "db.elasticsearch.node.name"
 """
 Deprecated: Replaced by `elasticsearch.node.name`.
 """
 
-DB_ELASTICSEARCH_PATH_PARTS_TEMPLATE: Final = "db.elasticsearch.path_parts"
+DB_ELASTICSEARCH_PATH_PARTS_TEMPLATE = "db.elasticsearch.path_parts"
 """
 Deprecated: Replaced by `db.operation.parameter`.
 """
 
-DB_INSTANCE_ID: Final = "db.instance.id"
+DB_INSTANCE_ID = "db.instance.id"
 """
 Deprecated: Removed, no general replacement at this time. For Elasticsearch, use `db.elasticsearch.node.name` instead.
 """
 
-DB_JDBC_DRIVER_CLASSNAME: Final = "db.jdbc.driver_classname"
+DB_JDBC_DRIVER_CLASSNAME = "db.jdbc.driver_classname"
 """
 Deprecated: Removed, no replacement at this time.
 """
 
-DB_MONGODB_COLLECTION: Final = "db.mongodb.collection"
+DB_MONGODB_COLLECTION = "db.mongodb.collection"
 """
 Deprecated: Replaced by `db.collection.name`.
 """
 
-DB_MSSQL_INSTANCE_NAME: Final = "db.mssql.instance_name"
+DB_MSSQL_INSTANCE_NAME = "db.mssql.instance_name"
 """
 Deprecated: Removed, no replacement at this time.
 """
 
-DB_NAME: Final = "db.name"
+DB_NAME = "db.name"
 """
 Deprecated: Replaced by `db.namespace`.
 """
 
-DB_NAMESPACE: Final = "db.namespace"
+DB_NAMESPACE = "db.namespace"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_NAMESPACE`.
 """
 
-DB_OPERATION: Final = "db.operation"
+DB_OPERATION = "db.operation"
 """
 Deprecated: Replaced by `db.operation.name`.
 """
 
-DB_OPERATION_BATCH_SIZE: Final = "db.operation.batch.size"
+DB_OPERATION_BATCH_SIZE = "db.operation.batch.size"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_OPERATION_BATCH_SIZE`.
 """
 
-DB_OPERATION_NAME: Final = "db.operation.name"
+DB_OPERATION_NAME = "db.operation.name"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_OPERATION_NAME`.
 """
 
-DB_OPERATION_PARAMETER_TEMPLATE: Final = "db.operation.parameter"
+DB_OPERATION_PARAMETER_TEMPLATE = "db.operation.parameter"
 """
 A database operation parameter, with `<key>` being the parameter name, and the attribute value being a string representation of the parameter value.
 Note: For example, a client-side maximum number of rows to read from the database
@@ -206,7 +206,7 @@ MAY be recorded as the `db.operation.parameter.max_rows` attribute.
 instead of `db.operation.parameter.<key>`.
 """
 
-DB_QUERY_PARAMETER_TEMPLATE: Final = "db.query.parameter"
+DB_QUERY_PARAMETER_TEMPLATE = "db.query.parameter"
 """
 A database query parameter, with `<key>` being the parameter name, and the attribute value being a string representation of the parameter value.
 Note: If a query parameter has no name and instead is referenced only by index,
@@ -229,57 +229,57 @@ Examples:
   `userName = "jdoe"`, the attribute `db.query.parameter.userName` SHOULD be set to `"jdoe"`.
 """
 
-DB_QUERY_SUMMARY: Final = "db.query.summary"
+DB_QUERY_SUMMARY = "db.query.summary"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_QUERY_SUMMARY`.
 """
 
-DB_QUERY_TEXT: Final = "db.query.text"
+DB_QUERY_TEXT = "db.query.text"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_QUERY_TEXT`.
 """
 
-DB_REDIS_DATABASE_INDEX: Final = "db.redis.database_index"
+DB_REDIS_DATABASE_INDEX = "db.redis.database_index"
 """
 Deprecated: Uncategorized.
 """
 
-DB_RESPONSE_RETURNED_ROWS: Final = "db.response.returned_rows"
+DB_RESPONSE_RETURNED_ROWS = "db.response.returned_rows"
 """
 Number of rows returned by the operation.
 """
 
-DB_RESPONSE_STATUS_CODE: Final = "db.response.status_code"
+DB_RESPONSE_STATUS_CODE = "db.response.status_code"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_RESPONSE_STATUS_CODE`.
 """
 
-DB_SQL_TABLE: Final = "db.sql.table"
+DB_SQL_TABLE = "db.sql.table"
 """
 Deprecated: Replaced by `db.collection.name`, but only if not extracting the value from `db.query.text`.
 """
 
-DB_STATEMENT: Final = "db.statement"
+DB_STATEMENT = "db.statement"
 """
 Deprecated: Replaced by `db.query.text`.
 """
 
-DB_STORED_PROCEDURE_NAME: Final = "db.stored_procedure.name"
+DB_STORED_PROCEDURE_NAME = "db.stored_procedure.name"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_STORED_PROCEDURE_NAME`.
 """
 
-DB_SYSTEM: Final = "db.system"
+DB_SYSTEM = "db.system"
 """
 Deprecated: Replaced by `db.system.name`.
 """
 
-DB_SYSTEM_NAME: Final = "db.system.name"
+DB_SYSTEM_NAME = "db.system.name"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.db_attributes.DB_SYSTEM_NAME`.
 """
 
-DB_USER: Final = "db.user"
+DB_USER = "db.user"
 """
 Deprecated: Removed, no replacement at this time.
 """

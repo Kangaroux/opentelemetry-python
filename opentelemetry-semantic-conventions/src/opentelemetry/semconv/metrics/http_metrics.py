@@ -15,17 +15,17 @@
 
 from typing_extensions import Final
 
-HTTP_CLIENT_REQUEST_DURATION: Final = "http.client.request.duration"
+HTTP_CLIENT_REQUEST_DURATION = "http.client.request.duration"
 """
 Duration of HTTP client requests
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-HTTP_SERVER_REQUEST_DURATION: Final = "http.server.request.duration"
+HTTP_SERVER_REQUEST_DURATION = "http.server.request.duration"
 """
 Duration of HTTP server requests
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """

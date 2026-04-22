@@ -37,7 +37,7 @@ class HttpTestBase(unittest.TestCase):
 
         STATUS_RE = re.compile(r"/status/(\d+)")
 
-        def do_GET(self):  # pylint:disable=invalid-name
+        def do_GET(self):  # pylint =invalid-name
             status_match = self.STATUS_RE.fullmatch(self.path)
             status = 200
             if status_match:

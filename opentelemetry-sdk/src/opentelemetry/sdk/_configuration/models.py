@@ -2,33 +2,28 @@
 #   filename:  schema.json
 #   timestamp: 2026-03-11T13:56:48+00:00
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
-from typing_extensions import TypeAlias
-
-AlwaysOffSampler: TypeAlias = Optional[Dict[str, Any]]
+AlwaysOffSampler = Optional
 
 
-AlwaysOnSampler: TypeAlias = Optional[Dict[str, Any]]
+AlwaysOnSampler = Optional
 
 
-@dataclass
 class AttributeLimits:
-    attribute_value_length_limit: Optional[int] = None
-    attribute_count_limit: Optional[int] = None
+    attribute_value_length_limit = None
+    attribute_count_limit = None
 
 
-Value: TypeAlias = List[str]
+Value = List
 
 
-Value1: TypeAlias = List[bool]
+Value1 = List
 
 
-Value2: TypeAlias = List[float]
+Value2 = List
 
 
 class AttributeType(Enum):
@@ -42,44 +37,42 @@ class AttributeType(Enum):
     double_array = "double_array"
 
 
-B3MultiPropagator: TypeAlias = Optional[Dict[str, Any]]
+B3MultiPropagator = Optional
 
 
-B3Propagator: TypeAlias = Optional[Dict[str, Any]]
+B3Propagator = Optional
 
 
-BaggagePropagator: TypeAlias = Optional[Dict[str, Any]]
+BaggagePropagator = Optional
 
 
-@dataclass
 class Base2ExponentialBucketHistogramAggregation:
-    max_scale: Optional[int] = None
-    max_size: Optional[int] = None
-    record_min_max: Optional[bool] = None
+    max_scale = None
+    max_size = None
+    record_min_max = None
 
 
-@dataclass
 class CardinalityLimits:
-    default: Optional[int] = None
-    counter: Optional[int] = None
-    gauge: Optional[int] = None
-    histogram: Optional[int] = None
-    observable_counter: Optional[int] = None
-    observable_gauge: Optional[int] = None
-    observable_up_down_counter: Optional[int] = None
-    up_down_counter: Optional[int] = None
+    default = None
+    counter = None
+    gauge = None
+    histogram = None
+    observable_counter = None
+    observable_gauge = None
+    observable_up_down_counter = None
+    up_down_counter = None
 
 
-ConsoleExporter: TypeAlias = Optional[Dict[str, Any]]
+ConsoleExporter = Optional
 
 
-DefaultAggregation: TypeAlias = Optional[Dict[str, Any]]
+DefaultAggregation = Optional
 
 
-Distribution: TypeAlias = Dict[str, Dict[str, Any]]
+Distribution = Dict
 
 
-DropAggregation: TypeAlias = Optional[Dict[str, Any]]
+DropAggregation = Optional
 
 
 class ExemplarFilter(Enum):
@@ -88,77 +81,68 @@ class ExemplarFilter(Enum):
     trace_based = "trace_based"
 
 
-ExperimentalComposableAlwaysOffSampler: TypeAlias = Optional[Dict[str, Any]]
+ExperimentalComposableAlwaysOffSampler = Optional
 
 
-ExperimentalComposableAlwaysOnSampler: TypeAlias = Optional[Dict[str, Any]]
+ExperimentalComposableAlwaysOnSampler = Optional
 
 
-@dataclass
 class ExperimentalComposableProbabilitySampler:
-    ratio: Optional[float] = None
+    ratio = None
 
 
-@dataclass
 class ExperimentalComposableRuleBasedSamplerRuleAttributePatterns:
-    key: str
-    included: Optional[list[str]] = None
-    excluded: Optional[list[str]] = None
+    key
+    included = None
+    excluded = None
 
 
-@dataclass
 class ExperimentalComposableRuleBasedSamplerRuleAttributeValues:
-    key: str
-    values: list[str]
+    key
+    values
 
 
-ExperimentalContainerResourceDetector: TypeAlias = Optional[Dict[str, Any]]
+ExperimentalContainerResourceDetector = Optional
 
 
-ExperimentalHostResourceDetector: TypeAlias = Optional[Dict[str, Any]]
+ExperimentalHostResourceDetector = Optional
 
 
-@dataclass
 class ExperimentalHttpClientInstrumentation:
-    request_captured_headers: Optional[list[str]] = None
-    response_captured_headers: Optional[list[str]] = None
-    known_methods: Optional[list[str]] = None
+    request_captured_headers = None
+    response_captured_headers = None
+    known_methods = None
 
 
-@dataclass
 class ExperimentalHttpServerInstrumentation:
-    request_captured_headers: Optional[list[str]] = None
-    response_captured_headers: Optional[list[str]] = None
-    known_methods: Optional[list[str]] = None
+    request_captured_headers = None
+    response_captured_headers = None
+    known_methods = None
 
 
-ExperimentalLanguageSpecificInstrumentation: TypeAlias = Dict[
-    str, Dict[str, Any]
+ExperimentalLanguageSpecificInstrumentation = Dict[
+    str, Dict
 ]
 
 
-@dataclass
 class ExperimentalMeterConfig:
-    enabled: Optional[bool] = None
+    enabled = None
 
 
-@dataclass
 class ExperimentalMeterMatcherAndConfig:
-    name: str
-    config: ExperimentalMeterConfig
+    name
+    config
 
 
-@dataclass
 class ExperimentalOtlpFileExporter:
-    output_stream: Optional[str] = None
+    output_stream = None
 
 
-@dataclass
 class ExperimentalProbabilitySampler:
-    ratio: Optional[float] = None
+    ratio = None
 
 
-ExperimentalProcessResourceDetector: TypeAlias = Optional[Dict[str, Any]]
+ExperimentalProcessResourceDetector = Optional
 
 
 class ExperimentalPrometheusTranslationStrategy(Enum):
@@ -172,14 +156,13 @@ class ExperimentalPrometheusTranslationStrategy(Enum):
     no_translation_development = "no_translation/development"
 
 
-@dataclass
 class ExperimentalSemconvConfig:
-    version: Optional[int] = None
-    experimental: Optional[bool] = None
-    dual_emit: Optional[bool] = None
+    version = None
+    experimental = None
+    dual_emit = None
 
 
-ExperimentalServiceResourceDetector: TypeAlias = Optional[Dict[str, Any]]
+ExperimentalServiceResourceDetector = Optional
 
 
 class ExperimentalSpanParent(Enum):
@@ -188,26 +171,22 @@ class ExperimentalSpanParent(Enum):
     local = "local"
 
 
-@dataclass
 class ExperimentalTracerConfig:
-    enabled: Optional[bool] = None
+    enabled = None
 
 
-@dataclass
 class ExperimentalTracerMatcherAndConfig:
-    name: str
-    config: ExperimentalTracerConfig
+    name
+    config
 
 
-@dataclass
 class ExperimentalUrlSanitization:
-    sensitive_query_parameters: Optional[list[str]] = None
+    sensitive_query_parameters = None
 
 
-@dataclass
 class ExplicitBucketHistogramAggregation:
-    boundaries: Optional[list[float]] = None
-    record_min_max: Optional[bool] = None
+    boundaries = None
+    record_min_max = None
 
 
 class ExporterDefaultHistogramAggregation(Enum):
@@ -221,25 +200,22 @@ class ExporterTemporalityPreference(Enum):
     low_memory = "low_memory"
 
 
-@dataclass
 class GrpcTls:
-    ca_file: Optional[str] = None
-    key_file: Optional[str] = None
-    cert_file: Optional[str] = None
-    insecure: Optional[bool] = None
+    ca_file = None
+    key_file = None
+    cert_file = None
+    insecure = None
 
 
-@dataclass
 class HttpTls:
-    ca_file: Optional[str] = None
-    key_file: Optional[str] = None
-    cert_file: Optional[str] = None
+    ca_file = None
+    key_file = None
+    cert_file = None
 
 
-@dataclass
 class IncludeExclude:
-    included: Optional[list[str]] = None
-    excluded: Optional[list[str]] = None
+    included = None
+    excluded = None
 
 
 class InstrumentType(Enum):
@@ -252,46 +228,40 @@ class InstrumentType(Enum):
     up_down_counter = "up_down_counter"
 
 
-LastValueAggregation: TypeAlias = Optional[Dict[str, Any]]
+LastValueAggregation = Optional
 
 
-@dataclass
 class LogRecordLimits:
-    attribute_value_length_limit: Optional[int] = None
-    attribute_count_limit: Optional[int] = None
+    attribute_value_length_limit = None
+    attribute_count_limit = None
 
 
-@dataclass
 class NameStringValuePair:
-    name: str
-    value: Optional[str]
+    name
+    value
 
 
-OpenCensusMetricProducer: TypeAlias = Optional[Dict[str, Any]]
+OpenCensusMetricProducer = Optional
 
 
-@dataclass
 class OtlpGrpcExporter:
-    endpoint: Optional[str] = None
-    tls: Optional[GrpcTls] = None
-    headers: Optional[list[NameStringValuePair]] = None
-    headers_list: Optional[str] = None
-    compression: Optional[str] = None
-    timeout: Optional[int] = None
+    endpoint = None
+    tls = None
+    headers = None
+    headers_list = None
+    compression = None
+    timeout = None
 
 
-@dataclass
 class OtlpGrpcMetricExporter:
-    endpoint: Optional[str] = None
-    tls: Optional[GrpcTls] = None
-    headers: Optional[list[NameStringValuePair]] = None
-    headers_list: Optional[str] = None
-    compression: Optional[str] = None
-    timeout: Optional[int] = None
-    temporality_preference: Optional[ExporterTemporalityPreference] = None
-    default_histogram_aggregation: Optional[
-        ExporterDefaultHistogramAggregation
-    ] = None
+    endpoint = None
+    tls = None
+    headers = None
+    headers_list = None
+    compression = None
+    timeout = None
+    temporality_preference = None
+    default_histogram_aggregation    = None
 
 
 class OtlpHttpEncoding(Enum):
@@ -299,30 +269,26 @@ class OtlpHttpEncoding(Enum):
     json = "json"
 
 
-@dataclass
 class OtlpHttpExporter:
-    endpoint: Optional[str] = None
-    tls: Optional[HttpTls] = None
-    headers: Optional[list[NameStringValuePair]] = None
-    headers_list: Optional[str] = None
-    compression: Optional[str] = None
-    timeout: Optional[int] = None
-    encoding: Optional[OtlpHttpEncoding] = None
+    endpoint = None
+    tls = None
+    headers = None
+    headers_list = None
+    compression = None
+    timeout = None
+    encoding = None
 
 
-@dataclass
 class OtlpHttpMetricExporter:
-    endpoint: Optional[str] = None
-    tls: Optional[HttpTls] = None
-    headers: Optional[list[NameStringValuePair]] = None
-    headers_list: Optional[str] = None
-    compression: Optional[str] = None
-    timeout: Optional[int] = None
-    encoding: Optional[OtlpHttpEncoding] = None
-    temporality_preference: Optional[ExporterTemporalityPreference] = None
-    default_histogram_aggregation: Optional[
-        ExporterDefaultHistogramAggregation
-    ] = None
+    endpoint = None
+    tls = None
+    headers = None
+    headers_list = None
+    compression = None
+    timeout = None
+    encoding = None
+    temporality_preference = None
+    default_histogram_aggregation    = None
 
 
 class SeverityNumber(Enum):
@@ -352,12 +318,11 @@ class SeverityNumber(Enum):
     fatal4 = "fatal4"
 
 
-@dataclass
 class SpanExporter:
-    otlp_http: Optional[OtlpHttpExporter] = None
-    otlp_grpc: Optional[OtlpGrpcExporter] = None
-    otlp_file_development: Optional[ExperimentalOtlpFileExporter] = None
-    console: Optional[ConsoleExporter] = None
+    otlp_http = None
+    otlp_grpc = None
+    otlp_file_development = None
+    console = None
 
 
 class SpanKind(Enum):
@@ -368,369 +333,311 @@ class SpanKind(Enum):
     consumer = "consumer"
 
 
-@dataclass
 class SpanLimits:
-    attribute_value_length_limit: Optional[int] = None
-    attribute_count_limit: Optional[int] = None
-    event_count_limit: Optional[int] = None
-    link_count_limit: Optional[int] = None
-    event_attribute_count_limit: Optional[int] = None
-    link_attribute_count_limit: Optional[int] = None
+    attribute_value_length_limit = None
+    attribute_count_limit = None
+    event_count_limit = None
+    link_count_limit = None
+    event_attribute_count_limit = None
+    link_attribute_count_limit = None
 
 
-SumAggregation: TypeAlias = Optional[Dict[str, Any]]
+SumAggregation = Optional
 
 
-TraceContextPropagator: TypeAlias = Optional[Dict[str, Any]]
+TraceContextPropagator = Optional
 
 
-@dataclass
 class TraceIdRatioBasedSampler:
-    ratio: Optional[float] = None
+    ratio = None
 
 
-@dataclass
 class ViewSelector:
-    instrument_name: Optional[str] = None
-    instrument_type: Optional[InstrumentType] = None
-    unit: Optional[str] = None
-    meter_name: Optional[str] = None
-    meter_version: Optional[str] = None
-    meter_schema_url: Optional[str] = None
+    instrument_name = None
+    instrument_type = None
+    unit = None
+    meter_name = None
+    meter_version = None
+    meter_schema_url = None
 
 
-@dataclass
 class Aggregation:
-    default: Optional[DefaultAggregation] = None
-    drop: Optional[DropAggregation] = None
-    explicit_bucket_histogram: Optional[ExplicitBucketHistogramAggregation] = (
+    default = None
+    drop = None
+    explicit_bucket_histogram = (
         None
     )
-    base2_exponential_bucket_histogram: Optional[
-        Base2ExponentialBucketHistogramAggregation
-    ] = None
-    last_value: Optional[LastValueAggregation] = None
-    sum: Optional[SumAggregation] = None
+    base2_exponential_bucket_histogram    = None
+    last_value = None
+    sum = None
 
 
-@dataclass
 class AttributeNameValue:
-    name: str
-    value: Optional[Union[str, float, bool, Value, Value1, Value2]]
-    type: Optional[AttributeType] = None
+    name
+    value
+    type = None
 
 
-@dataclass
 class BatchSpanProcessor:
-    exporter: SpanExporter
-    schedule_delay: Optional[int] = None
-    export_timeout: Optional[int] = None
-    max_queue_size: Optional[int] = None
-    max_export_batch_size: Optional[int] = None
+    exporter
+    schedule_delay = None
+    export_timeout = None
+    max_queue_size = None
+    max_export_batch_size = None
 
 
-@dataclass
 class ConsoleMetricExporter:
-    temporality_preference: Optional[ExporterTemporalityPreference] = None
-    default_histogram_aggregation: Optional[
-        ExporterDefaultHistogramAggregation
-    ] = None
+    temporality_preference = None
+    default_histogram_aggregation    = None
 
 
-@dataclass
 class ExperimentalCodeInstrumentation:
-    semconv: Optional[ExperimentalSemconvConfig] = None
+    semconv = None
 
 
-@dataclass
 class ExperimentalDbInstrumentation:
-    semconv: Optional[ExperimentalSemconvConfig] = None
+    semconv = None
 
 
-@dataclass
 class ExperimentalGenAiInstrumentation:
-    semconv: Optional[ExperimentalSemconvConfig] = None
+    semconv = None
 
 
-@dataclass
 class ExperimentalHttpInstrumentation:
-    semconv: Optional[ExperimentalSemconvConfig] = None
-    client: Optional[ExperimentalHttpClientInstrumentation] = None
-    server: Optional[ExperimentalHttpServerInstrumentation] = None
+    semconv = None
+    client = None
+    server = None
 
 
-@dataclass
 class ExperimentalLoggerConfig:
-    enabled: Optional[bool] = None
-    minimum_severity: Optional[SeverityNumber] = None
-    trace_based: Optional[bool] = None
+    enabled = None
+    minimum_severity = None
+    trace_based = None
 
 
-@dataclass
 class ExperimentalLoggerMatcherAndConfig:
-    name: str
-    config: ExperimentalLoggerConfig
+    name
+    config
 
 
-@dataclass
 class ExperimentalMessagingInstrumentation:
-    semconv: Optional[ExperimentalSemconvConfig] = None
+    semconv = None
 
 
-@dataclass
 class ExperimentalMeterConfigurator:
-    default_config: Optional[ExperimentalMeterConfig] = None
-    meters: Optional[list[ExperimentalMeterMatcherAndConfig]] = None
+    default_config = None
+    meters = None
 
 
-@dataclass
 class ExperimentalOtlpFileMetricExporter:
-    output_stream: Optional[str] = None
-    temporality_preference: Optional[ExporterTemporalityPreference] = None
-    default_histogram_aggregation: Optional[
-        ExporterDefaultHistogramAggregation
-    ] = None
+    output_stream = None
+    temporality_preference = None
+    default_histogram_aggregation    = None
 
 
-@dataclass
 class ExperimentalPrometheusMetricExporter:
-    host: Optional[str] = None
-    port: Optional[int] = None
-    without_scope_info: Optional[bool] = None
-    without_target_info_development: Optional[bool] = None
-    with_resource_constant_labels: Optional[IncludeExclude] = None
-    translation_strategy: Optional[
-        ExperimentalPrometheusTranslationStrategy
-    ] = None
+    host = None
+    port = None
+    without_scope_info = None
+    without_target_info_development = None
+    with_resource_constant_labels = None
+    translation_strategy    = None
 
 
-@dataclass
 class ExperimentalResourceDetector:
-    container: Optional[ExperimentalContainerResourceDetector] = None
-    host: Optional[ExperimentalHostResourceDetector] = None
-    process: Optional[ExperimentalProcessResourceDetector] = None
-    service: Optional[ExperimentalServiceResourceDetector] = None
+    container = None
+    host = None
+    process = None
+    service = None
 
 
-@dataclass
 class ExperimentalRpcInstrumentation:
-    semconv: Optional[ExperimentalSemconvConfig] = None
+    semconv = None
 
 
-@dataclass
 class ExperimentalSanitization:
-    url: Optional[ExperimentalUrlSanitization] = None
+    url = None
 
 
-@dataclass
 class ExperimentalTracerConfigurator:
-    default_config: Optional[ExperimentalTracerConfig] = None
-    tracers: Optional[list[ExperimentalTracerMatcherAndConfig]] = None
+    default_config = None
+    tracers = None
 
 
-@dataclass
 class LogRecordExporter:
-    otlp_http: Optional[OtlpHttpExporter] = None
-    otlp_grpc: Optional[OtlpGrpcExporter] = None
-    otlp_file_development: Optional[ExperimentalOtlpFileExporter] = None
-    console: Optional[ConsoleExporter] = None
+    otlp_http = None
+    otlp_grpc = None
+    otlp_file_development = None
+    console = None
 
 
-@dataclass
 class MetricProducer:
-    opencensus: Optional[OpenCensusMetricProducer] = None
+    opencensus = None
 
 
-@dataclass
 class PullMetricExporter:
-    prometheus_development: Optional[ExperimentalPrometheusMetricExporter] = (
+    prometheus_development = (
         None
     )
 
 
-@dataclass
 class PullMetricReader:
-    exporter: PullMetricExporter
-    producers: Optional[list[MetricProducer]] = None
-    cardinality_limits: Optional[CardinalityLimits] = None
+    exporter
+    producers = None
+    cardinality_limits = None
 
 
-@dataclass
 class PushMetricExporter:
-    otlp_http: Optional[OtlpHttpMetricExporter] = None
-    otlp_grpc: Optional[OtlpGrpcMetricExporter] = None
-    otlp_file_development: Optional[ExperimentalOtlpFileMetricExporter] = None
-    console: Optional[ConsoleMetricExporter] = None
+    otlp_http = None
+    otlp_grpc = None
+    otlp_file_development = None
+    console = None
 
 
-@dataclass
 class SimpleLogRecordProcessor:
-    exporter: LogRecordExporter
+    exporter
 
 
-@dataclass
 class SimpleSpanProcessor:
-    exporter: SpanExporter
+    exporter
 
 
-@dataclass
 class SpanProcessor:
-    batch: Optional[BatchSpanProcessor] = None
-    simple: Optional[SimpleSpanProcessor] = None
+    batch = None
+    simple = None
 
 
-@dataclass
 class TextMapPropagator:
-    tracecontext: Optional[TraceContextPropagator] = None
-    baggage: Optional[BaggagePropagator] = None
-    b3: Optional[B3Propagator] = None
-    b3multi: Optional[B3MultiPropagator] = None
+    tracecontext = None
+    baggage = None
+    b3 = None
+    b3multi = None
 
 
-@dataclass
 class ViewStream:
-    name: Optional[str] = None
-    description: Optional[str] = None
-    aggregation: Optional[Aggregation] = None
-    aggregation_cardinality_limit: Optional[int] = None
-    attribute_keys: Optional[IncludeExclude] = None
+    name = None
+    description = None
+    aggregation = None
+    aggregation_cardinality_limit = None
+    attribute_keys = None
 
 
-@dataclass
 class BatchLogRecordProcessor:
-    exporter: LogRecordExporter
-    schedule_delay: Optional[int] = None
-    export_timeout: Optional[int] = None
-    max_queue_size: Optional[int] = None
-    max_export_batch_size: Optional[int] = None
+    exporter
+    schedule_delay = None
+    export_timeout = None
+    max_queue_size = None
+    max_export_batch_size = None
 
 
-@dataclass
 class ExperimentalGeneralInstrumentation:
-    http: Optional[ExperimentalHttpInstrumentation] = None
-    code: Optional[ExperimentalCodeInstrumentation] = None
-    db: Optional[ExperimentalDbInstrumentation] = None
-    gen_ai: Optional[ExperimentalGenAiInstrumentation] = None
-    messaging: Optional[ExperimentalMessagingInstrumentation] = None
-    rpc: Optional[ExperimentalRpcInstrumentation] = None
-    sanitization: Optional[ExperimentalSanitization] = None
-    stability_opt_in_list: Optional[str] = None
+    http = None
+    code = None
+    db = None
+    gen_ai = None
+    messaging = None
+    rpc = None
+    sanitization = None
+    stability_opt_in_list = None
 
 
-@dataclass
 class ExperimentalInstrumentation:
-    general: Optional[ExperimentalGeneralInstrumentation] = None
-    cpp: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    dotnet: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    erlang: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    go: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    java: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    js: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    php: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    python: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    ruby: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    rust: Optional[ExperimentalLanguageSpecificInstrumentation] = None
-    swift: Optional[ExperimentalLanguageSpecificInstrumentation] = None
+    general = None
+    cpp = None
+    dotnet = None
+    erlang = None
+    go = None
+    java = None
+    js = None
+    php = None
+    python = None
+    ruby = None
+    rust = None
+    swift = None
 
 
-@dataclass
 class ExperimentalLoggerConfigurator:
-    default_config: Optional[ExperimentalLoggerConfig] = None
-    loggers: Optional[list[ExperimentalLoggerMatcherAndConfig]] = None
+    default_config = None
+    loggers = None
 
 
-@dataclass
 class ExperimentalResourceDetection:
-    attributes: Optional[IncludeExclude] = None
-    detectors: Optional[list[ExperimentalResourceDetector]] = None
+    attributes = None
+    detectors = None
 
 
-@dataclass
 class LogRecordProcessor:
-    batch: Optional[BatchLogRecordProcessor] = None
-    simple: Optional[SimpleLogRecordProcessor] = None
+    batch = None
+    simple = None
 
 
-@dataclass
 class PeriodicMetricReader:
-    exporter: PushMetricExporter
-    interval: Optional[int] = None
-    timeout: Optional[int] = None
-    producers: Optional[list[MetricProducer]] = None
-    cardinality_limits: Optional[CardinalityLimits] = None
+    exporter
+    interval = None
+    timeout = None
+    producers = None
+    cardinality_limits = None
 
 
-@dataclass
 class Propagator:
-    composite: Optional[list[TextMapPropagator]] = None
-    composite_list: Optional[str] = None
+    composite = None
+    composite_list = None
 
 
-@dataclass
 class Resource:
-    attributes: Optional[list[AttributeNameValue]] = None
-    detection_development: Optional[ExperimentalResourceDetection] = None
-    schema_url: Optional[str] = None
-    attributes_list: Optional[str] = None
+    attributes = None
+    detection_development = None
+    schema_url = None
+    attributes_list = None
 
 
-@dataclass
 class View:
-    selector: ViewSelector
-    stream: ViewStream
+    selector
+    stream
 
 
-@dataclass
 class LoggerProvider:
-    processors: list[LogRecordProcessor]
-    limits: Optional[LogRecordLimits] = None
-    logger_configurator_development: Optional[
-        ExperimentalLoggerConfigurator
-    ] = None
+    processors
+    limits = None
+    logger_configurator_development    = None
 
 
-@dataclass
 class MetricReader:
-    periodic: Optional[PeriodicMetricReader] = None
-    pull: Optional[PullMetricReader] = None
+    periodic = None
+    pull = None
 
 
-@dataclass
 class MeterProvider:
-    readers: list[MetricReader]
-    views: Optional[list[View]] = None
-    exemplar_filter: Optional[ExemplarFilter] = None
-    meter_configurator_development: Optional[ExperimentalMeterConfigurator] = (
+    readers
+    views = None
+    exemplar_filter = None
+    meter_configurator_development = (
         None
     )
 
 
-@dataclass
 class OpenTelemetryConfiguration:
-    file_format: str
-    disabled: Optional[bool] = None
-    log_level: Optional[SeverityNumber] = None
-    attribute_limits: Optional[AttributeLimits] = None
-    logger_provider: Optional[LoggerProvider] = None
-    meter_provider: Optional[MeterProvider] = None
-    propagator: Optional[Propagator] = None
-    tracer_provider: Optional[TracerProvider] = None
-    resource: Optional[Resource] = None
-    instrumentation_development: Optional[ExperimentalInstrumentation] = None
-    distribution: Optional[Distribution] = None
+    file_format
+    disabled = None
+    log_level = None
+    attribute_limits = None
+    logger_provider = None
+    meter_provider = None
+    propagator = None
+    tracer_provider = None
+    resource = None
+    instrumentation_development = None
+    distribution = None
 
 
-@dataclass
 class ExperimentalComposableParentThresholdSampler:
-    root: ExperimentalComposableSampler
+    root
 
 
-@dataclass
 class ExperimentalComposableRuleBasedSampler:
-    rules: Optional[list[ExperimentalComposableRuleBasedSamplerRule]] = None
+    rules = None
 
 
-@dataclass
 class ExperimentalComposableRuleBasedSamplerRule:
     """
     A rule for ExperimentalComposableRuleBasedSampler. A rule can have multiple match conditions - the sampler will be applied if all match.
@@ -738,60 +645,47 @@ class ExperimentalComposableRuleBasedSamplerRule:
 
     """
 
-    sampler: ExperimentalComposableSampler
-    attribute_values: Optional[
-        ExperimentalComposableRuleBasedSamplerRuleAttributeValues
-    ] = None
-    attribute_patterns: Optional[
-        ExperimentalComposableRuleBasedSamplerRuleAttributePatterns
-    ] = None
-    span_kinds: Optional[list[Optional[SpanKind]]] = None
-    parent: Optional[list[Optional[ExperimentalSpanParent]]] = None
+    sampler
+    attribute_values    = None
+    attribute_patterns    = None
+    span_kinds = None
+    parent = None
 
 
-@dataclass
 class ExperimentalComposableSampler:
-    always_off: Optional[ExperimentalComposableAlwaysOffSampler] = None
-    always_on: Optional[ExperimentalComposableAlwaysOnSampler] = None
-    parent_threshold: Optional[
-        ExperimentalComposableParentThresholdSampler
-    ] = None
-    probability: Optional[ExperimentalComposableProbabilitySampler] = None
-    rule_based: Optional[ExperimentalComposableRuleBasedSampler] = None
+    always_off = None
+    always_on = None
+    parent_threshold    = None
+    probability = None
+    rule_based = None
 
 
-@dataclass
 class ExperimentalJaegerRemoteSampler:
-    endpoint: str
-    initial_sampler: Sampler
-    interval: Optional[int] = None
+    endpoint
+    initial_sampler
+    interval = None
 
 
-@dataclass
 class ParentBasedSampler:
-    root: Optional[Sampler] = None
-    remote_parent_sampled: Optional[Sampler] = None
-    remote_parent_not_sampled: Optional[Sampler] = None
-    local_parent_sampled: Optional[Sampler] = None
-    local_parent_not_sampled: Optional[Sampler] = None
+    root = None
+    remote_parent_sampled = None
+    remote_parent_not_sampled = None
+    local_parent_sampled = None
+    local_parent_not_sampled = None
 
 
-@dataclass
 class Sampler:
-    always_off: Optional[AlwaysOffSampler] = None
-    always_on: Optional[AlwaysOnSampler] = None
-    composite_development: Optional[ExperimentalComposableSampler] = None
-    jaeger_remote_development: Optional[ExperimentalJaegerRemoteSampler] = None
-    parent_based: Optional[ParentBasedSampler] = None
-    probability_development: Optional[ExperimentalProbabilitySampler] = None
-    trace_id_ratio_based: Optional[TraceIdRatioBasedSampler] = None
+    always_off = None
+    always_on = None
+    composite_development = None
+    jaeger_remote_development = None
+    parent_based = None
+    probability_development = None
+    trace_id_ratio_based = None
 
 
-@dataclass
 class TracerProvider:
-    processors: list[SpanProcessor]
-    limits: Optional[SpanLimits] = None
-    sampler: Optional[Sampler] = None
-    tracer_configurator_development: Optional[
-        ExperimentalTracerConfigurator
-    ] = None
+    processors
+    limits = None
+    sampler = None
+    tracer_configurator_development    = None

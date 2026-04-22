@@ -17,12 +17,12 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Meter, UpDownCounter
 
-OPENSHIFT_CLUSTERQUOTA_CPU_LIMIT_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_CPU_LIMIT_HARD = (
     "openshift.clusterquota.cpu.limit.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {cpu}
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -32,8 +32,8 @@ of the
 
 
 def create_openshift_clusterquota_cpu_limit_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_CPU_LIMIT_HARD,
@@ -42,12 +42,12 @@ def create_openshift_clusterquota_cpu_limit_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_CPU_LIMIT_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_CPU_LIMIT_USED = (
     "openshift.clusterquota.cpu.limit.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {cpu}
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -57,8 +57,8 @@ of the
 
 
 def create_openshift_clusterquota_cpu_limit_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_CPU_LIMIT_USED,
@@ -67,12 +67,12 @@ def create_openshift_clusterquota_cpu_limit_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_CPU_REQUEST_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_CPU_REQUEST_HARD = (
     "openshift.clusterquota.cpu.request.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {cpu}
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -82,8 +82,8 @@ of the
 
 
 def create_openshift_clusterquota_cpu_request_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_CPU_REQUEST_HARD,
@@ -92,12 +92,12 @@ def create_openshift_clusterquota_cpu_request_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_CPU_REQUEST_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_CPU_REQUEST_USED = (
     "openshift.clusterquota.cpu.request.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {cpu}
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -107,8 +107,8 @@ of the
 
 
 def create_openshift_clusterquota_cpu_request_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_CPU_REQUEST_USED,
@@ -117,13 +117,13 @@ def create_openshift_clusterquota_cpu_request_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_LIMIT_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_LIMIT_HARD = (
     "openshift.clusterquota.ephemeral_storage.limit.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -132,8 +132,8 @@ of the
 
 
 def create_openshift_clusterquota_ephemeral_storage_limit_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_LIMIT_HARD,
@@ -142,13 +142,13 @@ def create_openshift_clusterquota_ephemeral_storage_limit_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_LIMIT_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_LIMIT_USED = (
     "openshift.clusterquota.ephemeral_storage.limit.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -157,8 +157,8 @@ of the
 
 
 def create_openshift_clusterquota_ephemeral_storage_limit_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_LIMIT_USED,
@@ -167,13 +167,13 @@ def create_openshift_clusterquota_ephemeral_storage_limit_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_REQUEST_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_REQUEST_HARD = (
     "openshift.clusterquota.ephemeral_storage.request.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -182,8 +182,8 @@ of the
 
 
 def create_openshift_clusterquota_ephemeral_storage_request_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_REQUEST_HARD,
@@ -192,13 +192,13 @@ def create_openshift_clusterquota_ephemeral_storage_request_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_REQUEST_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_REQUEST_USED = (
     "openshift.clusterquota.ephemeral_storage.request.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -207,8 +207,8 @@ of the
 
 
 def create_openshift_clusterquota_ephemeral_storage_request_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_EPHEMERAL_STORAGE_REQUEST_USED,
@@ -217,12 +217,12 @@ def create_openshift_clusterquota_ephemeral_storage_request_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_HUGEPAGE_COUNT_REQUEST_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_HUGEPAGE_COUNT_REQUEST_HARD = (
     "openshift.clusterquota.hugepage_count.request.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {hugepage}
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -232,8 +232,8 @@ of the
 
 
 def create_openshift_clusterquota_hugepage_count_request_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_HUGEPAGE_COUNT_REQUEST_HARD,
@@ -242,12 +242,12 @@ def create_openshift_clusterquota_hugepage_count_request_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_HUGEPAGE_COUNT_REQUEST_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_HUGEPAGE_COUNT_REQUEST_USED = (
     "openshift.clusterquota.hugepage_count.request.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {hugepage}
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -257,8 +257,8 @@ of the
 
 
 def create_openshift_clusterquota_hugepage_count_request_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_HUGEPAGE_COUNT_REQUEST_USED,
@@ -267,13 +267,13 @@ def create_openshift_clusterquota_hugepage_count_request_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_MEMORY_LIMIT_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_MEMORY_LIMIT_HARD = (
     "openshift.clusterquota.memory.limit.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -282,8 +282,8 @@ of the
 
 
 def create_openshift_clusterquota_memory_limit_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_MEMORY_LIMIT_HARD,
@@ -292,13 +292,13 @@ def create_openshift_clusterquota_memory_limit_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_MEMORY_LIMIT_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_MEMORY_LIMIT_USED = (
     "openshift.clusterquota.memory.limit.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -307,8 +307,8 @@ of the
 
 
 def create_openshift_clusterquota_memory_limit_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_MEMORY_LIMIT_USED,
@@ -317,13 +317,13 @@ def create_openshift_clusterquota_memory_limit_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_MEMORY_REQUEST_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_MEMORY_REQUEST_HARD = (
     "openshift.clusterquota.memory.request.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -332,8 +332,8 @@ of the
 
 
 def create_openshift_clusterquota_memory_request_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_MEMORY_REQUEST_HARD,
@@ -342,13 +342,13 @@ def create_openshift_clusterquota_memory_request_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_MEMORY_REQUEST_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_MEMORY_REQUEST_USED = (
     "openshift.clusterquota.memory.request.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -357,8 +357,8 @@ of the
 
 
 def create_openshift_clusterquota_memory_request_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_MEMORY_REQUEST_USED,
@@ -367,12 +367,12 @@ def create_openshift_clusterquota_memory_request_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_OBJECT_COUNT_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_OBJECT_COUNT_HARD = (
     "openshift.clusterquota.object_count.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {object}
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -382,8 +382,8 @@ of the
 
 
 def create_openshift_clusterquota_object_count_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_OBJECT_COUNT_HARD,
@@ -392,12 +392,12 @@ def create_openshift_clusterquota_object_count_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_OBJECT_COUNT_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_OBJECT_COUNT_USED = (
     "openshift.clusterquota.object_count.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {object}
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -407,8 +407,8 @@ of the
 
 
 def create_openshift_clusterquota_object_count_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_OBJECT_COUNT_USED,
@@ -417,12 +417,12 @@ def create_openshift_clusterquota_object_count_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_PERSISTENTVOLUMECLAIM_COUNT_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_PERSISTENTVOLUMECLAIM_COUNT_HARD = (
     "openshift.clusterquota.persistentvolumeclaim_count.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {persistentvolumeclaim}
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -435,8 +435,8 @@ storage class.
 
 
 def create_openshift_clusterquota_persistentvolumeclaim_count_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_PERSISTENTVOLUMECLAIM_COUNT_HARD,
@@ -445,12 +445,12 @@ def create_openshift_clusterquota_persistentvolumeclaim_count_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_PERSISTENTVOLUMECLAIM_COUNT_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_PERSISTENTVOLUMECLAIM_COUNT_USED = (
     "openshift.clusterquota.persistentvolumeclaim_count.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
+Instrument
 Unit: {persistentvolumeclaim}
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
@@ -463,8 +463,8 @@ storage class.
 
 
 def create_openshift_clusterquota_persistentvolumeclaim_count_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_PERSISTENTVOLUMECLAIM_COUNT_USED,
@@ -473,13 +473,13 @@ def create_openshift_clusterquota_persistentvolumeclaim_count_used(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_STORAGE_REQUEST_HARD: Final = (
+OPENSHIFT_CLUSTERQUOTA_STORAGE_REQUEST_HARD = (
     "openshift.clusterquota.storage.request.hard"
 )
 """
 The enforced hard limit of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Hard` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -491,8 +491,8 @@ storage class.
 
 
 def create_openshift_clusterquota_storage_request_hard(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The enforced hard limit of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_STORAGE_REQUEST_HARD,
@@ -501,13 +501,13 @@ def create_openshift_clusterquota_storage_request_hard(
     )
 
 
-OPENSHIFT_CLUSTERQUOTA_STORAGE_REQUEST_USED: Final = (
+OPENSHIFT_CLUSTERQUOTA_STORAGE_REQUEST_USED = (
     "openshift.clusterquota.storage.request.used"
 )
 """
 The current observed total usage of the resource across all projects
-Instrument: updowncounter
-Unit: By
+Instrument
+Unit
 Note: This metric is retrieved from the `Status.Total.Used` field of the
 [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core)
 of the
@@ -519,8 +519,8 @@ storage class.
 
 
 def create_openshift_clusterquota_storage_request_used(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """The current observed total usage of the resource across all projects"""
     return meter.create_up_down_counter(
         name=OPENSHIFT_CLUSTERQUOTA_STORAGE_REQUEST_USED,

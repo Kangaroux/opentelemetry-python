@@ -14,33 +14,33 @@
 
 from typing_extensions import Final
 
-USER_EMAIL: Final = "user.email"
+USER_EMAIL = "user.email"
 """
 User email address.
 """
 
-USER_FULL_NAME: Final = "user.full_name"
+USER_FULL_NAME = "user.full_name"
 """
 User's full name.
 """
 
-USER_HASH: Final = "user.hash"
+USER_HASH = "user.hash"
 """
 Unique user hash to correlate information for a user in anonymized form.
 Note: Useful if `user.id` or `user.name` contain confidential information and cannot be used.
 """
 
-USER_ID: Final = "user.id"
+USER_ID = "user.id"
 """
 Unique identifier of the user.
 """
 
-USER_NAME: Final = "user.name"
+USER_NAME = "user.name"
 """
 Short name or login/username of the user.
 """
 
-USER_ROLES: Final = "user.roles"
+USER_ROLES = "user.roles"
 """
 Array of user roles at the time of the event.
 """

@@ -28,18 +28,18 @@ _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'opentelemetry.proto.logs.v1.logs_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'\n\036io.opentelemetry.proto.logs.v1B\tLogsProtoP\001Z&go.opentelemetry.io/proto/otlp/logs/v1\252\002\033OpenTelemetry.Proto.Logs.V1'
-  _globals['_SEVERITYNUMBER']._serialized_start=961
-  _globals['_SEVERITYNUMBER']._serialized_end=1668
-  _globals['_LOGRECORDFLAGS']._serialized_start=1670
-  _globals['_LOGRECORDFLAGS']._serialized_end=1759
-  _globals['_LOGSDATA']._serialized_start=163
-  _globals['_LOGSDATA']._serialized_end=239
-  _globals['_RESOURCELOGS']._serialized_start=242
-  _globals['_RESOURCELOGS']._serialized_end=405
-  _globals['_SCOPELOGS']._serialized_start=408
-  _globals['_SCOPELOGS']._serialized_end=568
-  _globals['_LOGRECORD']._serialized_start=571
-  _globals['_LOGRECORD']._serialized_end=958
+  _globals._loaded_options = None
+  _globals._serialized_options = b'\n\036io.opentelemetry.proto.logs.v1B\tLogsProtoP\001Z&go.opentelemetry.io/proto/otlp/logs/v1\252\002\033OpenTelemetry.Proto.Logs.V1'
+  _globals._serialized_start=961
+  _globals._serialized_end=1668
+  _globals._serialized_start=1670
+  _globals._serialized_end=1759
+  _globals._serialized_start=163
+  _globals._serialized_end=239
+  _globals._serialized_start=242
+  _globals._serialized_end=405
+  _globals._serialized_start=408
+  _globals._serialized_end=568
+  _globals._serialized_start=571
+  _globals._serialized_end=958
 # @@protoc_insertion_point(module_scope)

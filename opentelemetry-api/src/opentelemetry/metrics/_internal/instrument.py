@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=too-many-ancestors
+# pylint =too-many-ancestors
 
 
 from abc import ABC, abstractmethod
@@ -31,7 +31,7 @@ from typing import (
     Union,
 )
 
-# pylint: disable=unused-import; needed for typing and sphinx
+# pylint =unused-import; needed for typing and sphinx
 from opentelemetry import metrics
 from opentelemetry.context import Context
 from opentelemetry.metrics._internal.observation import Observation
@@ -63,10 +63,10 @@ class CallbackOptions(object):
 
 
 InstrumentT = TypeVar("InstrumentT", bound="Instrument")
-# pylint: disable=invalid-name
+# pylint =invalid-name
 CallbackT = Union[
-    Callable[[CallbackOptions], Iterable[Observation]],
-    Generator[Iterable[Observation], CallbackOptions, None],
+    Callable,
+    Generator,
 ]
 
 
@@ -78,7 +78,7 @@ class Instrument(ABC):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         pass
 
@@ -99,21 +99,21 @@ class Instrument(ABC):
         result = {}
 
         if _name_regex.fullmatch(name) is not None:
-            result["name"] = name
+            result = name
         else:
-            result["name"] = None
+            result = None
 
         if unit is None:
             unit = ""
         if _unit_regex.fullmatch(unit) is not None:
-            result["unit"] = unit
+            result = unit
         else:
-            result["unit"] = None
+            result = None
 
         if description is None:
-            result["description"] = ""
+            result = ""
         else:
-            result["description"] = description
+            result = description
 
         return result
 
@@ -123,7 +123,7 @@ class _ProxyInstrument(ABC):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         self._name = name
         self._unit = unit
@@ -143,13 +143,13 @@ class _ProxyInstrument(ABC):
         """Create an instance of the real instrument. Implement this."""
 
 
-class _ProxyAsynchronousInstrument(_ProxyInstrument[InstrumentT]):
+class _ProxyAsynchronousInstrument(_ProxyInstrument):
     def __init__(
         self,
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(name, unit, description)
         self._callbacks = callbacks
@@ -168,7 +168,7 @@ class Asynchronous(Instrument):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(name, unit=unit, description=description)
 
@@ -181,7 +181,7 @@ class Counter(Synchronous):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         """Records an increment to the counter.
 
@@ -200,7 +200,7 @@ class NoOpCounter(Counter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(name, unit=unit, description=description)
 
@@ -208,17 +208,17 @@ class NoOpCounter(Counter):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         return super().add(amount, attributes=attributes, context=context)
 
 
-class _ProxyCounter(_ProxyInstrument[Counter], Counter):
+class _ProxyCounter(_ProxyInstrument, Counter):
     def add(
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         if self._real_instrument:
             self._real_instrument.add(amount, attributes, context)
@@ -239,7 +239,7 @@ class UpDownCounter(Synchronous):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         """Records an increment or decrement to the counter.
 
@@ -262,7 +262,7 @@ class NoOpUpDownCounter(UpDownCounter):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(name, unit=unit, description=description)
 
@@ -270,17 +270,17 @@ class NoOpUpDownCounter(UpDownCounter):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         return super().add(amount, attributes=attributes, context=context)
 
 
-class _ProxyUpDownCounter(_ProxyInstrument[UpDownCounter], UpDownCounter):
+class _ProxyUpDownCounter(_ProxyInstrument, UpDownCounter):
     def add(
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         if self._real_instrument:
             self._real_instrument.add(amount, attributes, context)
@@ -307,7 +307,7 @@ class NoOpObservableCounter(ObservableCounter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(
             name,
@@ -318,7 +318,7 @@ class NoOpObservableCounter(ObservableCounter):
 
 
 class _ProxyObservableCounter(
-    _ProxyAsynchronousInstrument[ObservableCounter], ObservableCounter
+    _ProxyAsynchronousInstrument, ObservableCounter
 ):
     def _create_real_instrument(
         self, meter
@@ -346,7 +346,7 @@ class NoOpObservableUpDownCounter(ObservableUpDownCounter):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(
             name,
@@ -357,7 +357,7 @@ class NoOpObservableUpDownCounter(ObservableUpDownCounter):
 
 
 class _ProxyObservableUpDownCounter(
-    _ProxyAsynchronousInstrument[ObservableUpDownCounter],
+    _ProxyAsynchronousInstrument,
     ObservableUpDownCounter,
 ):
     def _create_real_instrument(
@@ -383,7 +383,7 @@ class Histogram(Synchronous):
         name,
         unit = "",
         description = "",
-        explicit_bucket_boundaries_advisory = None,
+        explicit_bucket_boundaries_advisory = None
     ):
         pass
 
@@ -392,7 +392,7 @@ class Histogram(Synchronous):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         """Records a measurement.
 
@@ -418,7 +418,7 @@ class NoOpHistogram(Histogram):
         name,
         unit = "",
         description = "",
-        explicit_bucket_boundaries_advisory = None,
+        explicit_bucket_boundaries_advisory = None
     ):
         super().__init__(
             name,
@@ -431,18 +431,18 @@ class NoOpHistogram(Histogram):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         return super().record(amount, attributes=attributes, context=context)
 
 
-class _ProxyHistogram(_ProxyInstrument[Histogram], Histogram):
+class _ProxyHistogram(_ProxyInstrument, Histogram):
     def __init__(
         self,
         name,
         unit = "",
         description = "",
-        explicit_bucket_boundaries_advisory = None,
+        explicit_bucket_boundaries_advisory = None
     ):
         super().__init__(name, unit=unit, description=description)
         self._explicit_bucket_boundaries_advisory = (
@@ -453,7 +453,7 @@ class _ProxyHistogram(_ProxyInstrument[Histogram], Histogram):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         if self._real_instrument:
             self._real_instrument.record(amount, attributes, context)
@@ -482,7 +482,7 @@ class NoOpObservableGauge(ObservableGauge):
         name,
         callbacks = None,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(
             name,
@@ -493,7 +493,7 @@ class NoOpObservableGauge(ObservableGauge):
 
 
 class _ProxyObservableGauge(
-    _ProxyAsynchronousInstrument[ObservableGauge],
+    _ProxyAsynchronousInstrument,
     ObservableGauge,
 ):
     def _create_real_instrument(
@@ -515,7 +515,7 @@ class Gauge(Synchronous):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         """Records the current value of the gauge.
 
@@ -538,7 +538,7 @@ class NoOpGauge(Gauge):
         self,
         name,
         unit = "",
-        description = "",
+        description = ""
     ):
         super().__init__(name, unit=unit, description=description)
 
@@ -546,20 +546,20 @@ class NoOpGauge(Gauge):
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         return super().set(amount, attributes=attributes, context=context)
 
 
 class _ProxyGauge(
-    _ProxyInstrument[Gauge],
+    _ProxyInstrument,
     Gauge,
 ):
     def set(
         self,
         amount,
         attributes = None,
-        context = None,
+        context = None
     ):
         if self._real_instrument:
             self._real_instrument.set(amount, attributes, context)

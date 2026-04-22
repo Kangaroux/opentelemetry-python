@@ -18,7 +18,7 @@ from unittest.mock import Mock
 
 import opentelemetry.trace as trace_api
 from opentelemetry.context import Context, get_current
-from opentelemetry.propagators.b3 import (  # pylint: disable=no-name-in-module,import-error
+from opentelemetry.propagators.b3 import (  # pylint =no-name-in-module,import-error
     B3MultiFormat,
     B3SingleFormat,
 )
@@ -53,7 +53,7 @@ def get_child_parent_new_carrier(old_carrier, propagator):
 
 
 class AbstractB3FormatTestCase:
-    # pylint: disable=too-many-public-methods,no-member,invalid-name
+    # pylint =too-many-public-methods,no-member,invalid-name
 
     @classmethod
     def setUpClass(cls):
@@ -65,7 +65,7 @@ class AbstractB3FormatTestCase:
             generator.generate_span_id()
         )
 
-    def setUp(self) -> None:
+    def setUp(self):
         tracer_provider = trace.TracerProvider()
         patcher = unittest.mock.patch.object(
             trace_api, "get_tracer_provider", return_value=tracer_provider
@@ -104,12 +104,12 @@ class AbstractB3FormatTestCase:
         child, parent, _ = self.get_child_parent_new_carrier(context)
 
         self.assertEqual(
-            context[propagator.TRACE_ID_KEY],
+            context,
             trace_api.format_trace_id(child.context.trace_id),
         )
 
         self.assertEqual(
-            context[propagator.SPAN_ID_KEY],
+            context,
             trace_api.format_span_id(child.parent.span_id),
         )
         self.assertTrue(parent.context.is_remote)
@@ -120,7 +120,7 @@ class AbstractB3FormatTestCase:
         propagator = self.get_propagator()
         child, parent, _ = self.get_child_parent_new_carrier(
             {
-                propagator.SINGLE_HEADER_KEY: f"{self.serialized_trace_id}-{self.serialized_span_id}"
+                propagator.SINGLE_HEADER_KEY: "{}-{}".format(self.serialized_trace_id, self.serialized_span_id)
             }
         )
 
@@ -137,7 +137,7 @@ class AbstractB3FormatTestCase:
 
         child, parent, _ = self.get_child_parent_new_carrier(
             {
-                propagator.SINGLE_HEADER_KEY: f"{self.serialized_trace_id}-{self.serialized_span_id}-1"
+                propagator.SINGLE_HEADER_KEY: "{}-{}-1".format(self.serialized_trace_id, self.serialized_span_id)
             }
         )
 
@@ -158,11 +158,11 @@ class AbstractB3FormatTestCase:
         headers.
         """
         propagator = self.get_propagator()
-        single_header_trace_id = self.serialized_trace_id[:-3] + "123"
+        single_header_trace_id = self.serialized_trace_id + "123"
 
         _, _, new_carrier = self.get_child_parent_new_carrier(
             {
-                propagator.SINGLE_HEADER_KEY: f"{single_header_trace_id}-{self.serialized_span_id}",
+                propagator.SINGLE_HEADER_KEY: "{}-{}".format(single_header_trace_id, self.serialized_span_id),
                 propagator.TRACE_ID_KEY: self.serialized_trace_id,
                 propagator.SPAN_ID_KEY: self.serialized_span_id,
                 propagator.SAMPLED_KEY: "1",
@@ -238,25 +238,25 @@ class AbstractB3FormatTestCase:
             old_ctx,
         )
         self.assertIn(_SPAN_KEY, new_ctx)
-        for key, value in old_ctx.items():  # pylint:disable=no-member
+        for key, value in old_ctx.items():  # pylint =no-member
             self.assertIn(key, new_ctx)
-            # pylint:disable=unsubscriptable-object
-            self.assertEqual(new_ctx[key], value)
+            # pylint =unsubscriptable-object
+            self.assertEqual(new_ctx, value)
 
     def test_derived_ctx_is_returned_for_failure(self):
         """Ensure returned context is derived from the given context."""
         old_ctx = Context({"k2": "v2"})
         new_ctx = self.get_propagator().extract({}, old_ctx)
         self.assertNotIn(_SPAN_KEY, new_ctx)
-        for key, value in old_ctx.items():  # pylint:disable=no-member
+        for key, value in old_ctx.items():  # pylint =no-member
             self.assertIn(key, new_ctx)
-            # pylint:disable=unsubscriptable-object
-            self.assertEqual(new_ctx[key], value)
+            # pylint =unsubscriptable-object
+            self.assertEqual(new_ctx, value)
 
     def test_64bit_trace_id(self):
         """64 bit trace ids should be padded to 128 bit trace ids."""
         propagator = self.get_propagator()
-        trace_id_64_bit = self.serialized_trace_id[:16]
+        trace_id_64_bit = self.serialized_trace_id
 
         _, _, new_carrier = self.get_child_parent_new_carrier(
             {
@@ -316,7 +316,7 @@ class AbstractB3FormatTestCase:
         propagator = self.get_propagator()
 
         carrier = {
-            propagator.TRACE_ID_KEY: "abc123",
+            propagator.TRACE_ID_KEY,
             propagator.SPAN_ID_KEY: self.serialized_span_id,
             propagator.FLAGS_KEY: "1",
         }
@@ -327,7 +327,7 @@ class AbstractB3FormatTestCase:
     def test_extract_invalid_trace_id_to_implicit_ctx(self):
         propagator = self.get_propagator()
         carrier = {
-            propagator.TRACE_ID_KEY: "abc123",
+            propagator.TRACE_ID_KEY,
             propagator.SPAN_ID_KEY: self.serialized_span_id,
             propagator.FLAGS_KEY: "1",
         }
@@ -342,7 +342,7 @@ class AbstractB3FormatTestCase:
 
         carrier = {
             propagator.TRACE_ID_KEY: self.serialized_trace_id,
-            propagator.SPAN_ID_KEY: "abc123",
+            propagator.SPAN_ID_KEY,
             propagator.FLAGS_KEY: "1",
         }
         new_ctx = propagator.extract(carrier, old_ctx)
@@ -353,7 +353,7 @@ class AbstractB3FormatTestCase:
         propagator = self.get_propagator()
         carrier = {
             propagator.TRACE_ID_KEY: self.serialized_trace_id,
-            propagator.SPAN_ID_KEY: "abc123",
+            propagator.SPAN_ID_KEY,
             propagator.FLAGS_KEY: "1",
         }
         new_ctx = propagator.extract(carrier)
@@ -428,7 +428,7 @@ class AbstractB3FormatTestCase:
         inject_fields = set()
 
         for call in mock_setter.mock_calls:
-            inject_fields.add(call[1][1])
+            inject_fields.add(call)
 
         self.assertEqual(propagator.fields, inject_fields)
 

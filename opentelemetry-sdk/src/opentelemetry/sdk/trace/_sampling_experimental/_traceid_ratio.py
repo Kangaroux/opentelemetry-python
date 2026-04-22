@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 from typing import Sequence
 
 from opentelemetry.context import Context
@@ -26,10 +24,10 @@ from ._util import INVALID_THRESHOLD, MAX_THRESHOLD, calculate_threshold
 
 
 class ComposableTraceIDRatioBased(ComposableSampler):
-    _threshold: int
-    _description: str
+    _threshold
+    _description
 
-    def __init__(self, ratio: float):
+    def __init__(self, ratio):
         threshold = calculate_threshold(ratio)
         if threshold == MAX_THRESHOLD:
             threshold_str = "max"
@@ -42,26 +40,26 @@ class ComposableTraceIDRatioBased(ComposableSampler):
                 threshold=INVALID_THRESHOLD, threshold_reliable=False
             )
         self._intent = intent
-        self._description = f"ComposableTraceIDRatioBased{{threshold={threshold_str}, ratio={ratio}}}"
+        self._description = "ComposableTraceIDRatioBased{{threshold={}, ratio={}}}".format(threshold_str, ratio)
 
     def sampling_intent(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None,
-    ) -> SamplingIntent:
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state
+    ):
         return self._intent
 
-    def get_description(self) -> str:
+    def get_description(self):
         return self._description
 
 
 def composable_traceid_ratio_based(
-    ratio: float,
-) -> ComposableSampler:
+    ratio
+):
     """Returns a composable sampler that samples each span with a fixed ratio.
 
     - Returns a SamplingIntent with threshold determined by the configured sampling ratio

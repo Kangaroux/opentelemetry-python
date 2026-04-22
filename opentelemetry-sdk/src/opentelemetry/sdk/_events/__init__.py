@@ -63,7 +63,7 @@ class EventLogger(APIEventLogger):
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         super().__init__(
             name=name,
@@ -108,7 +108,7 @@ class EventLoggerProvider(APIEventLoggerProvider):
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         if not name:
             _logger.warning("EventLogger created with invalid name: %s", name)
@@ -119,5 +119,5 @@ class EventLoggerProvider(APIEventLoggerProvider):
     def shutdown(self):
         self._logger_provider.shutdown()
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         self._logger_provider.force_flush(timeout_millis)

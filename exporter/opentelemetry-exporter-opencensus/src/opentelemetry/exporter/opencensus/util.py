@@ -24,8 +24,8 @@ from os import getpid
 from socket import gethostname
 from time import time
 
-# pylint: disable=wrong-import-position
-from google.protobuf.timestamp_pb2 import (  # pylint: disable=no-name-in-module
+# pylint =wrong-import-position
+from google.protobuf.timestamp_pb2 import (  # pylint =no-name-in-module
     Timestamp,
 )
 from opencensus.proto.agent.common.v1 import common_pb2
@@ -51,12 +51,12 @@ def proto_timestamp_from_time_ns(time_ns):
     """
     ts = Timestamp()
     if time_ns is not None:
-        # pylint: disable=no-member
+        # pylint =no-member
         ts.FromNanoseconds(time_ns)
     return ts
 
 
-# pylint: disable=no-member
+# pylint =no-member
 def get_collector_span_kind(kind):
     if kind is SpanKind.SERVER:
         return trace_pb2.Span.SpanKind.SERVER
@@ -76,18 +76,18 @@ def add_proto_attribute_value(pb_attributes, key, value):
     """
 
     if isinstance(value, bool):
-        pb_attributes.attribute_map[key].bool_value = value
+        pb_attributes.attribute_map.bool_value = value
     elif isinstance(value, int):
-        pb_attributes.attribute_map[key].int_value = value
+        pb_attributes.attribute_map.int_value = value
     elif isinstance(value, str):
-        pb_attributes.attribute_map[key].string_value.value = value
+        pb_attributes.attribute_map.string_value.value = value
     elif isinstance(value, float):
-        pb_attributes.attribute_map[key].double_value = value
+        pb_attributes.attribute_map.double_value = value
     else:
-        pb_attributes.attribute_map[key].string_value.value = str(value)
+        pb_attributes.attribute_map.string_value.value = str(value)
 
 
-# pylint: disable=no-member
+# pylint =no-member
 def get_node(service_name, host_name):
     """Generates Node message from params and system information.
 

@@ -15,12 +15,12 @@
 from enum import Enum
 from typing_extensions import Final
 
-CPU_LOGICAL_NUMBER: Final = "cpu.logical_number"
+CPU_LOGICAL_NUMBER = "cpu.logical_number"
 """
 The logical CPU number [0..n-1].
 """
 
-CPU_MODE: Final = "cpu.mode"
+CPU_MODE = "cpu.mode"
 """
 The mode of the CPU.
 """

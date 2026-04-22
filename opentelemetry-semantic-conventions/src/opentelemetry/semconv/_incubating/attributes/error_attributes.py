@@ -17,12 +17,12 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-ERROR_MESSAGE: Final = "error.message"
+ERROR_MESSAGE = "error.message"
 """
 Deprecated: Use domain-specific error message attribute. For example, use `feature_flag.error.message` for feature flag errors.
 """
 
-ERROR_TYPE: Final = "error.type"
+ERROR_TYPE = "error.type"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.error_attributes.ERROR_TYPE`.
 """

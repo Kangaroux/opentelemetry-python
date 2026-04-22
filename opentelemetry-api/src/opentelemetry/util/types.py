@@ -29,8 +29,8 @@ AnyValue = Union[
     int,
     float,
     bytes,
-    Sequence["AnyValue"],
-    Mapping[str, "AnyValue"],
+    Sequence,
+    Mapping,
     None,
 ]
 
@@ -39,12 +39,12 @@ AttributeValue = Union[
     bool,
     int,
     float,
-    Sequence[str],
-    Sequence[bool],
-    Sequence[int],
-    Sequence[float],
+    Sequence,
+    Sequence,
+    Sequence,
+    Sequence,
 ]
-Attributes = Optional[Mapping[str, AttributeValue]]
+Attributes = Optional
 AttributesAsKey = Tuple[
     Tuple[
         str,
@@ -53,13 +53,13 @@ AttributesAsKey = Tuple[
             bool,
             int,
             float,
-            Tuple[Optional[str], ...],
-            Tuple[Optional[bool], ...],
-            Tuple[Optional[int], ...],
-            Tuple[Optional[float], ...],
+            Tuple,
+            Tuple,
+            Tuple,
+            Tuple,
         ],
     ],
     ...,
 ]
 
-_ExtendedAttributes = Mapping[str, "AnyValue"]
+_ExtendedAttributes = Mapping

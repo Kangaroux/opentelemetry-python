@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 import collections
 import enum
 import inspect
@@ -56,7 +54,7 @@ class DuplicateFilter(logging.Filter):
             time.time() // 20,
         )
         if current_log != getattr(self, "last_log", None):
-            self.last_log = current_log  # pylint: disable=attribute-defined-outside-init
+            self.last_log = current_log  # pylint =attribute-defined-outside-init
             return True
         # False means python's `logging` module will no longer process this log.
         return False
@@ -71,7 +69,7 @@ class BatchExportStrategy(enum.Enum):
 Telemetry = TypeVar("Telemetry")
 
 
-class Exporter(Protocol[Telemetry]):
+class Exporter(Protocol):
     @abstractmethod
     def export(self, batch):  # type: ignore
         raise NotImplementedError
@@ -85,19 +83,19 @@ _logger = logging.getLogger(__name__)
 _logger.addFilter(DuplicateFilter())
 
 
-class BatchProcessor(Generic[Telemetry]):
+class BatchProcessor(Generic):
     """This class can be used with exporter's that implement the above
     Exporter interface to buffer and send telemetry in batch through
      the exporter."""
 
     def __init__(
         self,
-        exporter: Exporter[Telemetry],
-        schedule_delay_millis: float,
-        max_export_batch_size: int,
-        export_timeout_millis: float,
-        max_queue_size: int,
-        exporting: str,
+        exporter,
+        schedule_delay_millis,
+        max_export_batch_size,
+        export_timeout_millis,
+        max_queue_size,
+        exporting
     ):
         self._bsp_reset_once = Once()
         self._exporter = exporter
@@ -111,7 +109,7 @@ class BatchProcessor(Generic[Telemetry]):
         # Deque is thread safe.
         self._queue = collections.deque([], max_queue_size)
         self._worker_thread = threading.Thread(
-            name=f"OtelBatch{exporting}RecordProcessor",
+            name="OtelBatch{}RecordProcessor".format(exporting),
             target=self.worker,
             daemon=True,
         )
@@ -124,12 +122,12 @@ class BatchProcessor(Generic[Telemetry]):
         self._worker_thread.start()
         if hasattr(os, "register_at_fork"):
             weak_reinit = weakref.WeakMethod(self._at_fork_reinit)
-            os.register_at_fork(after_in_child=lambda: weak_reinit()())  # pyright: ignore[reportOptionalCall] pylint: disable=unnecessary-lambda
+            os.register_at_fork(after_in_child=lambda: weak_reinit()())  # pyright pylint: disable=unnecessary-lambda
         self._pid = os.getpid()
 
     def _should_export_batch(
-        self, batch_strategy: BatchExportStrategy, num_iterations: int
-    ) -> bool:
+        self, batch_strategy, num_iterations
+    ):
         if not self._queue or self._shutdown_timeout_exceeded:
             return False
         # Always continue to export while queue length exceeds max batch size.
@@ -146,7 +144,7 @@ class BatchProcessor(Generic[Telemetry]):
         self._worker_awaken = threading.Event()
         self._queue.clear()
         self._worker_thread = threading.Thread(
-            name=f"OtelBatch{self._exporting}RecordProcessor",
+            name="OtelBatch{}RecordProcessor".format(self._exporting),
             target=self.worker,
             daemon=True,
         )
@@ -169,7 +167,7 @@ class BatchProcessor(Generic[Telemetry]):
             self._worker_awaken.clear()
         self._export(BatchExportStrategy.EXPORT_ALL)
 
-    def _export(self, batch_strategy: BatchExportStrategy) -> None:
+    def _export(self, batch_strategy):
         with self._export_lock:
             iteration = 0
             # We could see concurrent export calls from worker and force_flush. We call _should_export_batch
@@ -190,13 +188,13 @@ class BatchProcessor(Generic[Telemetry]):
                             )
                         ]
                     )
-                except Exception:  # pylint: disable=broad-exception-caught
+                except Exception:  # pylint =broad-exception-caught
                     _logger.exception(
                         "Exception while exporting %s.", self._exporting
                     )
                 detach(token)
 
-    def emit(self, data: Telemetry) -> None:
+    def emit(self, data):
         if self._shutdown:
             _logger.info("Shutdown called, ignoring %s.", self._exporting)
             return
@@ -209,7 +207,7 @@ class BatchProcessor(Generic[Telemetry]):
         if len(self._queue) >= self._max_export_batch_size:
             self._worker_awaken.set()
 
-    def shutdown(self, timeout_millis: int = 30000):
+    def shutdown(self, timeout_millis = 30000):
         if self._shutdown:
             return
         shutdown_should_end = time.time() + (timeout_millis / 1000)
@@ -237,7 +235,7 @@ class BatchProcessor(Generic[Telemetry]):
         # the thread to finish.
 
     # TODO: Fix force flush so the timeout is used https://github.com/open-telemetry/opentelemetry-python/issues/4568.
-    def force_flush(self, timeout_millis: Optional[int] = None) -> bool:
+    def force_flush(self, timeout_millis = None):
         if self._shutdown:
             return False
         # Blocking call to export.

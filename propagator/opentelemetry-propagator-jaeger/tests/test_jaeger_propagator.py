@@ -25,7 +25,7 @@ import opentelemetry.trace as trace_api
 from opentelemetry import baggage
 from opentelemetry.baggage import _BAGGAGE_KEY
 from opentelemetry.context import Context
-from opentelemetry.propagators import (  # pylint: disable=no-name-in-module
+from opentelemetry.propagators import (  # pylint =no-name-in-module
     jaeger,
 )
 from opentelemetry.sdk import trace
@@ -70,7 +70,7 @@ class TestJaegerPropagator(TestCase):
         cls.trace_id = generator.generate_trace_id()
         cls.span_id = generator.generate_span_id()
         cls.parent_span_id = generator.generate_span_id()
-        cls.serialized_uber_trace_id = jaeger._format_uber_trace_id(  # pylint: disable=protected-access
+        cls.serialized_uber_trace_id = jaeger._format_uber_trace_id(  # pylint =protected-access
             cls.trace_id, cls.span_id, cls.parent_span_id, 11
         )
 
@@ -93,21 +93,21 @@ class TestJaegerPropagator(TestCase):
         _, new_carrier = get_context_new_carrier(old_carrier)
         self.assertEqual(
             self.serialized_uber_trace_id.split(":", maxsplit=1)[0],
-            new_carrier[FORMAT.TRACE_ID_KEY].split(":")[0],
+            new_carrier.split(":")[0],
         )
 
     def test_parent_span_id(self):
         old_carrier = {FORMAT.TRACE_ID_KEY: self.serialized_uber_trace_id}
         _, new_carrier = get_context_new_carrier(old_carrier)
         span_id = self.serialized_uber_trace_id.split(":")[1]
-        parent_span_id = new_carrier[FORMAT.TRACE_ID_KEY].split(":")[2]
+        parent_span_id = new_carrier.split(":")[2]
         self.assertEqual(span_id, parent_span_id)
 
     def test_sampled_flag_set(self):
         old_carrier = {FORMAT.TRACE_ID_KEY: self.serialized_uber_trace_id}
         _, new_carrier = get_context_new_carrier(old_carrier)
         sample_flag_value = (
-            int(new_carrier[FORMAT.TRACE_ID_KEY].split(":")[3]) & 0x01
+            int(new_carrier.split(":")[3]) & 0x01
         )
         self.assertEqual(1, sample_flag_value)
 
@@ -115,18 +115,18 @@ class TestJaegerPropagator(TestCase):
         old_carrier = {FORMAT.TRACE_ID_KEY: self.serialized_uber_trace_id}
         _, new_carrier = get_context_new_carrier(old_carrier)
         debug_flag_value = (
-            int(new_carrier[FORMAT.TRACE_ID_KEY].split(":")[3])
+            int(new_carrier.split(":")[3])
             & FORMAT.DEBUG_FLAG
         )
         self.assertEqual(FORMAT.DEBUG_FLAG, debug_flag_value)
 
     def test_sample_debug_flags_unset(self):
-        uber_trace_id = jaeger._format_uber_trace_id(  # pylint: disable=protected-access
+        uber_trace_id = jaeger._format_uber_trace_id(  # pylint =protected-access
             self.trace_id, self.span_id, self.parent_span_id, 0
         )
         old_carrier = {FORMAT.TRACE_ID_KEY: uber_trace_id}
         _, new_carrier = get_context_new_carrier(old_carrier)
-        flags = int(new_carrier[FORMAT.TRACE_ID_KEY].split(":")[3])
+        flags = int(new_carrier.split(":")[3])
         sample_flag_value = flags & 0x01
         debug_flag_value = flags & FORMAT.DEBUG_FLAG
         self.assertEqual(0, sample_flag_value)
@@ -137,7 +137,7 @@ class TestJaegerPropagator(TestCase):
         input_baggage = {"key1": "value1"}
         _, new_carrier = get_context_new_carrier(old_carrier, input_baggage)
         ctx = FORMAT.extract(new_carrier)
-        self.assertDictEqual(input_baggage, ctx[_BAGGAGE_KEY])
+        self.assertDictEqual(input_baggage, ctx)
 
     def test_non_string_baggage(self):
         old_carrier = {FORMAT.TRACE_ID_KEY: self.serialized_uber_trace_id}
@@ -145,7 +145,7 @@ class TestJaegerPropagator(TestCase):
         formatted_baggage = {"key1": "1", "key2": "True"}
         _, new_carrier = get_context_new_carrier(old_carrier, input_baggage)
         ctx = FORMAT.extract(new_carrier)
-        self.assertDictEqual(formatted_baggage, ctx[_BAGGAGE_KEY])
+        self.assertDictEqual(formatted_baggage, ctx)
 
     def test_extract_invalid_uber_trace_id(self):
         old_carrier = {
@@ -156,7 +156,7 @@ class TestJaegerPropagator(TestCase):
         context = FORMAT.extract(old_carrier)
         span_context = trace_api.get_current_span(context).get_span_context()
         self.assertEqual(span_context.span_id, trace_api.INVALID_SPAN_ID)
-        self.assertDictEqual(formatted_baggage, context[_BAGGAGE_KEY])
+        self.assertDictEqual(formatted_baggage, context)
 
     def test_extract_invalid_trace_id(self):
         old_carrier = {
@@ -167,7 +167,7 @@ class TestJaegerPropagator(TestCase):
         context = FORMAT.extract(old_carrier)
         span_context = trace_api.get_current_span(context).get_span_context()
         self.assertEqual(span_context.trace_id, trace_api.INVALID_TRACE_ID)
-        self.assertDictEqual(formatted_baggage, context[_BAGGAGE_KEY])
+        self.assertDictEqual(formatted_baggage, context)
 
     def test_extract_invalid_span_id(self):
         old_carrier = {
@@ -178,7 +178,7 @@ class TestJaegerPropagator(TestCase):
         context = FORMAT.extract(old_carrier)
         span_context = trace_api.get_current_span(context).get_span_context()
         self.assertEqual(span_context.span_id, trace_api.INVALID_SPAN_ID)
-        self.assertDictEqual(formatted_baggage, context[_BAGGAGE_KEY])
+        self.assertDictEqual(formatted_baggage, context)
 
     def test_fields(self):
         tracer = trace.TracerProvider().get_tracer("sdk_tracer_provider")
@@ -188,7 +188,7 @@ class TestJaegerPropagator(TestCase):
                 FORMAT.inject({}, setter=mock_setter)
         inject_fields = set()
         for call in mock_setter.mock_calls:
-            inject_fields.add(call[1][1])
+            inject_fields.add(call)
         self.assertEqual(FORMAT.fields, inject_fields)
 
     def test_extract_no_trace_id_to_explicit_ctx(self):

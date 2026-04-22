@@ -36,7 +36,7 @@ def get_dict_as_key(labels):
         sorted(
             map(
                 lambda kv: (
-                    (kv[0], tuple(kv[1])) if isinstance(kv[1], list) else kv
+                    (kv, tuple(kv)) if isinstance(kv, list) else kv
                 ),
                 labels.items(),
             )
@@ -51,24 +51,24 @@ class BoundedList(Sequence):
     not enough room.
     """
 
-    def __init__(self, maxlen: Optional[int]):
+    def __init__(self, maxlen):
         self.dropped = 0
         self._dq = deque(maxlen=maxlen)  # type: deque
         self._lock = threading.Lock()
 
     def __deepcopy__(self, memo):
         copy_ = BoundedList(0)
-        memo[id(self)] = copy_
+        memo = copy_
         with self._lock:
             copy_.dropped = self.dropped
             copy_._dq = copy.deepcopy(self._dq, memo)
         return copy_
 
     def __repr__(self):
-        return f"{type(self).__name__}({list(self._dq)}, maxlen={self._dq.maxlen})"
+        return "{}({}, maxlen={})".format(type(self).__name__, list(self._dq), self._dq.maxlen)
 
     def __getitem__(self, index):
-        return self._dq[index]
+        return self._dq
 
     def __len__(self):
         return len(self._dq)
@@ -110,7 +110,7 @@ class BoundedDict(MutableMapping):
     added.
     """
 
-    def __init__(self, maxlen: Optional[int]):
+    def __init__(self, maxlen):
         if maxlen is not None:
             if not isinstance(maxlen, int):
                 raise ValueError
@@ -123,11 +123,11 @@ class BoundedDict(MutableMapping):
 
     def __repr__(self):
         return (
-            f"{type(self).__name__}({dict(self._dict)}, maxlen={self.maxlen})"
+            "{}({}, maxlen={})".format(type(self).__name__, dict(self._dict), self.maxlen)
         )
 
     def __getitem__(self, key):
-        return self._dict[key]
+        return self._dict
 
     def __setitem__(self, key, value):
         with self._lock:
@@ -136,14 +136,14 @@ class BoundedDict(MutableMapping):
                 return
 
             if key in self._dict:
-                del self._dict[key]
+                del self._dict
             elif self.maxlen is not None and len(self._dict) == self.maxlen:
-                del self._dict[next(iter(self._dict.keys()))]
+                del self._dict
                 self.dropped += 1
-            self._dict[key] = value
+            self._dict = value
 
     def __delitem__(self, key):
-        del self._dict[key]
+        del self._dict
 
     def __iter__(self):
         with self._lock:
@@ -157,5 +157,5 @@ class BoundedDict(MutableMapping):
         mapping = dict(mapping)
         bounded_dict = cls(maxlen)
         for key, value in mapping.items():
-            bounded_dict[key] = value
+            bounded_dict = value
         return bounded_dict

@@ -27,14 +27,14 @@ _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'opentelemetry.proto.collector.profiles.v1development.profiles_service_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'\n7io.opentelemetry.proto.collector.profiles.v1developmentB\024ProfilesServiceProtoP\001Z?go.opentelemetry.io/proto/otlp/collector/profiles/v1development\252\0024OpenTelemetry.Proto.Collector.Profiles.V1Development'
-  _globals['_EXPORTPROFILESSERVICEREQUEST']._serialized_start=193
-  _globals['_EXPORTPROFILESSERVICEREQUEST']._serialized_end=396
-  _globals['_EXPORTPROFILESSERVICERESPONSE']._serialized_start=399
-  _globals['_EXPORTPROFILESSERVICERESPONSE']._serialized_end=539
-  _globals['_EXPORTPROFILESPARTIALSUCCESS']._serialized_start=541
-  _globals['_EXPORTPROFILESPARTIALSUCCESS']._serialized_end=621
-  _globals['_PROFILESSERVICE']._serialized_start=624
-  _globals['_PROFILESSERVICE']._serialized_end=823
+  _globals._loaded_options = None
+  _globals._serialized_options = b'\n7io.opentelemetry.proto.collector.profiles.v1developmentB\024ProfilesServiceProtoP\001Z?go.opentelemetry.io/proto/otlp/collector/profiles/v1development\252\0024OpenTelemetry.Proto.Collector.Profiles.V1Development'
+  _globals._serialized_start=193
+  _globals._serialized_end=396
+  _globals._serialized_start=399
+  _globals._serialized_end=539
+  _globals._serialized_start=541
+  _globals._serialized_end=621
+  _globals._serialized_start=624
+  _globals._serialized_end=823
 # @@protoc_insertion_point(module_scope)

@@ -94,20 +94,20 @@ class AsyncAsgiTestBase(TestBase, IsolatedAsyncioTestCase):
     def seed_app(self, app):
         self.communicator = ApplicationCommunicator(app, self.scope)
 
-    async def send_input(self, message):
-        await self.communicator.send_input(message)
+    def send_input(self, message):
+        self.communicator.send_input(message)
 
-    async def send_default_request(self):
-        await self.send_input({"type": "http.request", "body": b""})
+    def send_default_request(self):
+        self.send_input({"type": "http.request", "body": b""})
 
-    async def get_output(self, timeout=0.01):
-        return await self.communicator.receive_output(timeout)
+    def get_output(self, timeout=0.01):
+        return self.communicator.receive_output(timeout)
 
-    async def get_all_output(self, timeout=0.01):
+    def get_all_output(self, timeout=0.01):
         outputs = []
         while True:
             try:
-                outputs.append(await self.communicator.receive_output(timeout))
+                outputs.append(self.communicator.receive_output(timeout))
             except asyncio.TimeoutError:
                 break
         return outputs

@@ -45,7 +45,7 @@ class NOOPTextMapPropagator(TextMapPropagator):
         self,
         carrier,
         context = None,
-        getter = default_getter,
+        getter = default_getter
     ):
         return Context()
 
@@ -53,7 +53,7 @@ class NOOPTextMapPropagator(TextMapPropagator):
         self,
         carrier,
         context = None,
-        setter = default_setter,
+        setter = default_setter
     ):
         return None
 
@@ -72,7 +72,7 @@ class MockTextMapPropagator(TextMapPropagator):
         self,
         carrier,
         context = None,
-        getter = default_getter,
+        getter = default_getter
     ):
         if context is None:
             context = Context()
@@ -85,8 +85,8 @@ class MockTextMapPropagator(TextMapPropagator):
         return trace.set_span_in_context(
             trace.NonRecordingSpan(
                 trace.SpanContext(
-                    trace_id=int(trace_id_list[0]),
-                    span_id=int(span_id_list[0]),
+                    trace_id=int(trace_id_list),
+                    span_id=int(span_id_list),
                     is_remote=True,
                 )
             ),
@@ -97,7 +97,7 @@ class MockTextMapPropagator(TextMapPropagator):
         self,
         carrier,
         context = None,
-        setter = default_setter,
+        setter = default_setter
     ):
         span = trace.get_current_span(context)
         setter.set(

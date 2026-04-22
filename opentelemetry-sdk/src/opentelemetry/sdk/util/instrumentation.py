@@ -34,9 +34,9 @@ class InstrumentationInfo:
     )
     def __init__(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
+        name,
+        version = None,
+        schema_url = None
     ):
         self._name = name
         self._version = version
@@ -45,7 +45,7 @@ class InstrumentationInfo:
         self._schema_url = schema_url
 
     def __repr__(self):
-        return f"{type(self).__name__}({self._name}, {self._version}, {self._schema_url})"
+        return "{}({}, {}, {})".format(type(self).__name__, self._name, self._version, self._schema_url)
 
     def __hash__(self):
         return hash((self._name, self._version, self._schema_url))
@@ -67,15 +67,15 @@ class InstrumentationInfo:
         )
 
     @property
-    def schema_url(self) -> Optional[str]:
+    def schema_url(self):
         return self._schema_url
 
     @property
-    def version(self) -> Optional[str]:
+    def version(self):
         return self._version
 
     @property
-    def name(self) -> str:
+    def name(self):
         return self._name
 
 
@@ -91,11 +91,11 @@ class InstrumentationScope:
 
     def __init__(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> None:
+        name,
+        version = None,
+        schema_url = None,
+        attributes = None
+    ):
         self._name = name
         self._version = version
         if schema_url is None:
@@ -103,13 +103,13 @@ class InstrumentationScope:
         self._schema_url = schema_url
         self._attributes = BoundedAttributes(attributes=attributes)
 
-    def __repr__(self) -> str:
-        return f"{type(self).__name__}({self._name}, {self._version}, {self._schema_url}, {self._attributes})"
+    def __repr__(self):
+        return "{}({}, {}, {}, {})".format(type(self).__name__, self._name, self._version, self._schema_url, self._attributes)
 
-    def __hash__(self) -> int:
+    def __hash__(self):
         return hash((self._name, self._version, self._schema_url))
 
-    def __eq__(self, value: object) -> bool:
+    def __eq__(self, value):
         if not isinstance(value, InstrumentationScope):
             return NotImplemented
         return (
@@ -124,7 +124,7 @@ class InstrumentationScope:
             value._attributes,
         )
 
-    def __lt__(self, value: object) -> bool:
+    def __lt__(self, value):
         if not isinstance(value, InstrumentationScope):
             return NotImplemented
         return (
@@ -140,22 +140,22 @@ class InstrumentationScope:
         )
 
     @property
-    def schema_url(self) -> Optional[str]:
+    def schema_url(self):
         return self._schema_url
 
     @property
-    def version(self) -> Optional[str]:
+    def version(self):
         return self._version
 
     @property
-    def name(self) -> str:
+    def name(self):
         return self._name
 
     @property
-    def attributes(self) -> Attributes:
+    def attributes(self):
         return self._attributes
 
-    def to_json(self, indent: Optional[int] = 4) -> str:
+    def to_json(self, indent = 4):
         return dumps(
             {
                 "name": self._name,

@@ -20,7 +20,7 @@ from typing import Optional, Union
 from opentelemetry import trace
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 
-IpInput = Union[str, int, None]
+IpInput = Union
 
 
 class NodeEndpoint:
@@ -35,9 +35,9 @@ class NodeEndpoint:
 
     def __init__(
         self,
-        ipv4: IpInput = None,
-        ipv6: IpInput = None,
-        port: Optional[int] = None,
+        ipv4 = None,
+        ipv6 = None,
+        port = None
     ):
         self.ipv4 = ipv4
         self.ipv6 = ipv6
@@ -50,36 +50,36 @@ class NodeEndpoint:
         else:
             resource = Resource.create()
 
-        self.service_name = resource.attributes[SERVICE_NAME]
+        self.service_name = resource.attributes
 
     @property
-    def ipv4(self) -> Optional[ipaddress.IPv4Address]:
+    def ipv4(self):
         return self._ipv4
 
     @ipv4.setter
-    def ipv4(self, address: IpInput) -> None:
+    def ipv4(self, address):
         if address is None:
             self._ipv4 = None
         else:
             ipv4_address = ipaddress.ip_address(address)
             if not isinstance(ipv4_address, ipaddress.IPv4Address):
                 raise ValueError(
-                    f"{address!r} does not appear to be an IPv4 address"
+                    "{} does not appear to be an IPv4 address".format(address)
                 )
             self._ipv4 = ipv4_address
 
     @property
-    def ipv6(self) -> Optional[ipaddress.IPv6Address]:
+    def ipv6(self):
         return self._ipv6
 
     @ipv6.setter
-    def ipv6(self, address: IpInput) -> None:
+    def ipv6(self, address):
         if address is None:
             self._ipv6 = None
         else:
             ipv6_address = ipaddress.ip_address(address)
             if not isinstance(ipv6_address, ipaddress.IPv6Address):
                 raise ValueError(
-                    f"{address!r} does not appear to be an IPv6 address"
+                    "{} does not appear to be an IPv6 address".format(address)
                 )
             self._ipv6 = ipv6_address

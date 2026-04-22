@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
-
 import logging
 from os import environ
 from typing import Dict, List
@@ -68,10 +66,9 @@ _logger = logging.getLogger(__name__)
 class OTLPMetricExporterMixin:
     def _common_configuration(
         self,
-        preferred_temporality: dict[type, AggregationTemporality]
-        | None = None,
-        preferred_aggregation: dict[type, Aggregation] | None = None,
-    ) -> None:
+        preferred_temporality = None,
+        preferred_aggregation = None
+    ):
         MetricExporter.__init__(
             self,
             preferred_temporality=self._get_temporality(preferred_temporality),
@@ -79,8 +76,8 @@ class OTLPMetricExporterMixin:
         )
 
     def _get_temporality(
-        self, preferred_temporality: Dict[type, AggregationTemporality]
-    ) -> Dict[type, AggregationTemporality]:
+        self, preferred_temporality
+    ):
         otel_exporter_otlp_metrics_temporality_preference = (
             environ.get(
                 OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE,
@@ -136,8 +133,8 @@ class OTLPMetricExporterMixin:
 
     def _get_aggregation(
         self,
-        preferred_aggregation: Dict[type, Aggregation],
-    ) -> Dict[type, Aggregation]:
+        preferred_aggregation
+    ):
         otel_exporter_otlp_metrics_default_histogram_aggregation = environ.get(
             OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION,
             "explicit_bucket_histogram",
@@ -184,10 +181,10 @@ class EncodingException(Exception):
         self.metric = metric
 
     def __str__(self):
-        return f"{self.metric}\n{self.original_exception}"
+        return "{}\n{}".format(self.metric, self.original_exception)
 
 
-def encode_metrics(data: MetricsData) -> ExportMetricsServiceRequest:
+def encode_metrics(data):
     resource_metrics_dict = {}
 
     for resource_metrics in data.resource_metrics:
@@ -215,7 +212,7 @@ def _encode_resource_metrics(resource_metrics, resource_metrics_dict):
     # It is safe to assume that each entry in data.resource_metrics is
     # associated with an unique resource.
     scope_metrics_dict = {}
-    resource_metrics_dict[resource] = scope_metrics_dict
+    resource_metrics_dict = scope_metrics_dict
     for scope_metrics in resource_metrics.scope_metrics:
         instrumentation_scope = scope_metrics.scope
 
@@ -227,7 +224,7 @@ def _encode_resource_metrics(resource_metrics, resource_metrics_dict):
             schema_url=instrumentation_scope.schema_url,
         )
 
-        scope_metrics_dict[instrumentation_scope] = pb2_scope_metrics
+        scope_metrics_dict = pb2_scope_metrics
 
         for metric in scope_metrics.metrics:
             pb2_metric = pb2.Metric(
@@ -240,7 +237,7 @@ def _encode_resource_metrics(resource_metrics, resource_metrics_dict):
                 _encode_metric(metric, pb2_metric)
             except Exception as ex:
                 # `from None` so we don't get "During handling of the above exception, another exception occurred:"
-                raise EncodingException(ex, metric) from None
+                raise EncodingException(ex, metric)
 
             pb2_scope_metrics.metrics.append(pb2_metric)
 
@@ -344,7 +341,7 @@ def _encode_metric(metric, pb2_metric):
         )
 
 
-def _encode_exemplars(sdk_exemplars: List[Exemplar]) -> List[pb2.Exemplar]:
+def _encode_exemplars(sdk_exemplars):
     """
     Converts a list of SDK Exemplars into a list of protobuf Exemplars.
 

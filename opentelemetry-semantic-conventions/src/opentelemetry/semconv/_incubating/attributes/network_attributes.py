@@ -17,88 +17,88 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-NETWORK_CARRIER_ICC: Final = "network.carrier.icc"
+NETWORK_CARRIER_ICC = "network.carrier.icc"
 """
 The ISO 3166-1 alpha-2 2-character country code associated with the mobile carrier network.
 """
 
-NETWORK_CARRIER_MCC: Final = "network.carrier.mcc"
+NETWORK_CARRIER_MCC = "network.carrier.mcc"
 """
 The mobile carrier country code.
 """
 
-NETWORK_CARRIER_MNC: Final = "network.carrier.mnc"
+NETWORK_CARRIER_MNC = "network.carrier.mnc"
 """
 The mobile carrier network code.
 """
 
-NETWORK_CARRIER_NAME: Final = "network.carrier.name"
+NETWORK_CARRIER_NAME = "network.carrier.name"
 """
 The name of the mobile carrier.
 """
 
-NETWORK_CONNECTION_STATE: Final = "network.connection.state"
+NETWORK_CONNECTION_STATE = "network.connection.state"
 """
 The state of network connection.
 Note: Connection states are defined as part of the [rfc9293](https://datatracker.ietf.org/doc/html/rfc9293#section-3.3.2).
 """
 
-NETWORK_CONNECTION_SUBTYPE: Final = "network.connection.subtype"
+NETWORK_CONNECTION_SUBTYPE = "network.connection.subtype"
 """
 This describes more details regarding the connection.type. It may be the type of cell technology connection, but it could be used for describing details about a wifi connection.
 """
 
-NETWORK_CONNECTION_TYPE: Final = "network.connection.type"
+NETWORK_CONNECTION_TYPE = "network.connection.type"
 """
 The internet connection type.
 """
 
-NETWORK_INTERFACE_NAME: Final = "network.interface.name"
+NETWORK_INTERFACE_NAME = "network.interface.name"
 """
 The network interface name.
 """
 
-NETWORK_IO_DIRECTION: Final = "network.io.direction"
+NETWORK_IO_DIRECTION = "network.io.direction"
 """
 The network IO operation direction.
 """
 
-NETWORK_LOCAL_ADDRESS: Final = "network.local.address"
+NETWORK_LOCAL_ADDRESS = "network.local.address"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_LOCAL_ADDRESS`.
 """
 
-NETWORK_LOCAL_PORT: Final = "network.local.port"
+NETWORK_LOCAL_PORT = "network.local.port"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_LOCAL_PORT`.
 """
 
-NETWORK_PEER_ADDRESS: Final = "network.peer.address"
+NETWORK_PEER_ADDRESS = "network.peer.address"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_PEER_ADDRESS`.
 """
 
-NETWORK_PEER_PORT: Final = "network.peer.port"
+NETWORK_PEER_PORT = "network.peer.port"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_PEER_PORT`.
 """
 
-NETWORK_PROTOCOL_NAME: Final = "network.protocol.name"
+NETWORK_PROTOCOL_NAME = "network.protocol.name"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_PROTOCOL_NAME`.
 """
 
-NETWORK_PROTOCOL_VERSION: Final = "network.protocol.version"
+NETWORK_PROTOCOL_VERSION = "network.protocol.version"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_PROTOCOL_VERSION`.
 """
 
-NETWORK_TRANSPORT: Final = "network.transport"
+NETWORK_TRANSPORT = "network.transport"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_TRANSPORT`.
 """
 
-NETWORK_TYPE: Final = "network.type"
+NETWORK_TYPE = "network.type"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.network_attributes.NETWORK_TYPE`.
 """

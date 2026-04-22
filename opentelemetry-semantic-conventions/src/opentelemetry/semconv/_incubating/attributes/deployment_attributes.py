@@ -15,12 +15,12 @@
 from enum import Enum
 from typing_extensions import Final
 
-DEPLOYMENT_ENVIRONMENT: Final = "deployment.environment"
+DEPLOYMENT_ENVIRONMENT = "deployment.environment"
 """
 Deprecated: Replaced by `deployment.environment.name`.
 """
 
-DEPLOYMENT_ENVIRONMENT_NAME: Final = "deployment.environment.name"
+DEPLOYMENT_ENVIRONMENT_NAME = "deployment.environment.name"
 """
 Name of the [deployment environment](https://wikipedia.org/wiki/Deployment_environment) (aka deployment tier).
 Note: `deployment.environment.name` does not affect the uniqueness constraints defined through
@@ -32,17 +32,17 @@ considered to be identifying the same service:
 - `service.name=frontend`, `deployment.environment.name=staging`.
 """
 
-DEPLOYMENT_ID: Final = "deployment.id"
+DEPLOYMENT_ID = "deployment.id"
 """
 The id of the deployment.
 """
 
-DEPLOYMENT_NAME: Final = "deployment.name"
+DEPLOYMENT_NAME = "deployment.name"
 """
 The name of the deployment.
 """
 
-DEPLOYMENT_STATUS: Final = "deployment.status"
+DEPLOYMENT_STATUS = "deployment.status"
 """
 The status of the deployment.
 """

@@ -49,7 +49,7 @@ from opentelemetry.sdk.environment_variables import (
 class OTLPLogExporter(
     LogRecordExporter,
     OTLPExporterMixin[
-        Sequence[ReadableLogRecord],
+        Sequence,
         ExportLogsServiceRequest,
         LogRecordExportResult,
         LogsServiceStub,
@@ -57,15 +57,13 @@ class OTLPLogExporter(
 ):
     def __init__(
         self,
-        endpoint: Optional[str] = None,
-        insecure: Optional[bool] = None,
-        credentials: Optional[ChannelCredentials] = None,
-        headers: Optional[
-            Union[TypingSequence[Tuple[str, str]], Dict[str, str], str]
-        ] = None,
-        timeout: Optional[float] = None,
-        compression: Optional[Compression] = None,
-        channel_options: Optional[Tuple[Tuple[str, str]]] = None,
+        endpoint = None,
+        insecure = None,
+        credentials = None,
+        headers = None,
+        timeout = None,
+        compression = None,
+        channel_options = None
     ):
         insecure_logs = environ.get(OTEL_EXPORTER_OTLP_LOGS_INSECURE)
         if insecure is None and insecure_logs is not None:
@@ -108,23 +106,23 @@ class OTLPLogExporter(
         )
 
     def _translate_data(
-        self, data: Sequence[ReadableLogRecord]
-    ) -> ExportLogsServiceRequest:
+        self, data
+    ):
         return encode_logs(data)
 
     def export(  # type: ignore [reportIncompatibleMethodOverride]
         self,
-        batch: Sequence[ReadableLogRecord],
-    ) -> Literal[LogRecordExportResult.SUCCESS, LogRecordExportResult.FAILURE]:
+        batch
+    ):
         return OTLPExporterMixin._export(self, batch)
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis = 30000, **kwargs):
         OTLPExporterMixin.shutdown(self, timeout_millis=timeout_millis)
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis = 10000):
         """Nothing is buffered in this exporter, so this method does nothing."""
         return True
 
     @property
-    def _exporting(self) -> str:
+    def _exporting(self):
         return "logs"

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=unused-import
+# pylint =unused-import
 
 from dataclasses import dataclass
 from typing import Sequence
@@ -22,9 +22,8 @@ import opentelemetry.sdk.metrics
 import opentelemetry.sdk.resources
 
 
-@dataclass
 class SdkConfiguration:
-    exemplar_filter: "opentelemetry.sdk.metrics.ExemplarFilter"
-    resource: "opentelemetry.sdk.resources.Resource"
-    metric_readers: Sequence["opentelemetry.sdk.metrics.MetricReader"]
-    views: Sequence["opentelemetry.sdk.metrics.View"]
+    exemplar_filter
+    resource
+    metric_readers
+    views

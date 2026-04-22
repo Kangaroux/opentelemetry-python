@@ -41,7 +41,7 @@ _PROPERT_PATTERN = compile(_BAGGAGE_PROPERTY_FORMAT)
 
 
 def get_all(
-    context = None,
+    context = None
 ):
     """Returns the name/value pairs in the Baggage
 
@@ -85,7 +85,7 @@ def set_baggage(
         A Context with the value updated
     """
     baggage = _get_baggage_value(context=context).copy()
-    baggage[name] = value
+    baggage = value
     return set_value(_BAGGAGE_KEY, baggage, context=context)
 
 
@@ -130,9 +130,9 @@ def _is_valid_key(name):
 
 def _is_valid_value(value):
     parts = str(value).split(";")
-    is_valid_value = _VALUE_PATTERN.fullmatch(parts[0]) is not None
+    is_valid_value = _VALUE_PATTERN.fullmatch(parts) is not None
     if len(parts) > 1:  # one or more properties metadata
-        for property in parts[1:]:
+        for property in parts:
             if _PROPERT_PATTERN.fullmatch(property) is None:
                 is_valid_value = False
                 break

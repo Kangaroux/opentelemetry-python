@@ -28,12 +28,12 @@ logger = getLogger(__name__)
 
 
 def _load_provider(
-    provider_environment_variable: str, provider: str
-) -> Provider:  # type: ignore[type-var]
+    provider_environment_variable, provider
+):  # type: ignore
     try:
         provider_name = cast(
             str,
-            environ.get(provider_environment_variable, f"default_{provider}"),
+            environ.get(provider_environment_variable, "default_{}".format(provider)),
         )
 
         return cast(
@@ -41,12 +41,12 @@ def _load_provider(
             next(  # type: ignore
                 iter(  # type: ignore
                     entry_points(  # type: ignore
-                        group=f"opentelemetry_{provider}",
+                        group="opentelemetry_{}".format(provider),
                         name=provider_name,
                     )
                 )
             ).load()(),
         )
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint =broad-exception-caught
         logger.exception("Failed to load configured provider %s", provider)
         raise

@@ -42,7 +42,7 @@ from opentelemetry.test.globals_test import (
 
 
 class TestBase(unittest.TestCase):
-    # pylint: disable=C0103
+    # pylint =C0103
 
     def setUp(self):
         super().setUp()
@@ -82,9 +82,9 @@ class TestBase(unittest.TestCase):
     def assertSpanHasAttributes(self, span, attributes):
         for key, val in attributes.items():
             self.assertIn(key, span.attributes)
-            self.assertEqual(val, span.attributes[key])
+            self.assertEqual(val, span.attributes)
 
-    def sorted_spans(self, spans):  # pylint: disable=R0201
+    def sorted_spans(self, spans):  # pylint =R0201
         """
         Sorts spans by span creation time.
 
@@ -93,7 +93,7 @@ class TestBase(unittest.TestCase):
         """
         return sorted(
             spans,
-            key=lambda s: s._start_time,  # pylint: disable=W0212
+            key=lambda s: s._start_time,  # pylint =W0212
             reverse=True,
         )
 
@@ -118,7 +118,7 @@ class TestBase(unittest.TestCase):
         return tracer_provider, memory_exporter
 
     @staticmethod
-    def create_meter_provider(**kwargs) -> Tuple[MeterProvider, MetricReader]:
+    def create_meter_provider(**kwargs):
         """Helper to create a configured meter provider
         Creates a `MeterProvider` and an `InMemoryMetricReader`.
         Returns:
@@ -128,7 +128,7 @@ class TestBase(unittest.TestCase):
         memory_reader = InMemoryMetricReader()
         metric_readers = kwargs.get("metric_readers", [])
         metric_readers.append(memory_reader)
-        kwargs["metric_readers"] = metric_readers
+        kwargs = metric_readers
         meter_provider = MeterProvider(**kwargs)
         return meter_provider, memory_reader
 
@@ -142,7 +142,7 @@ class TestBase(unittest.TestCase):
         finally:
             logging.disable(logging.NOTSET)
 
-    def get_sorted_metrics(self, scope: Optional[str] = None):
+    def get_sorted_metrics(self, scope = None):
         """Returns recorded metrics sorted by name.
 
         Args:
@@ -175,9 +175,9 @@ class TestBase(unittest.TestCase):
 
     def assert_metric_expected(
         self,
-        metric: Metric,
-        expected_data_points: Sequence[DataPointT],
-        est_value_delta: Optional[float] = 0,
+        metric,
+        expected_data_points,
+        est_value_delta = 0
     ):
         self.assertEqual(
             len(expected_data_points), len(metric.data.data_points)
@@ -187,12 +187,12 @@ class TestBase(unittest.TestCase):
                 expected_data_point, metric.data.data_points, est_value_delta
             )
 
-    # pylint: disable=unidiomatic-typecheck
+    # pylint =unidiomatic-typecheck
     @staticmethod
     def is_data_points_equal(
-        expected_data_point: DataPointT,
-        data_point: DataPointT,
-        est_value_delta: Optional[float] = 0,
+        expected_data_point,
+        data_point,
+        est_value_delta = 0
     ):
         if type(expected_data_point) != type(  # noqa: E721
             data_point
@@ -228,9 +228,9 @@ class TestBase(unittest.TestCase):
 
     def assert_data_point_expected(
         self,
-        expected_data_point: DataPointT,
-        data_points: Sequence[DataPointT],
-        est_value_delta: Optional[float] = 0,
+        expected_data_point,
+        data_points,
+        est_value_delta = 0
     ):
         is_data_point_exist = False
         for data_point in data_points:
@@ -242,7 +242,7 @@ class TestBase(unittest.TestCase):
 
         self.assertTrue(
             is_data_point_exist,
-            msg=f"Data point {expected_data_point} does not exist",
+            msg="Data point {} does not exist".format(expected_data_point),
         )
 
     @staticmethod
@@ -261,7 +261,7 @@ class TestBase(unittest.TestCase):
         max_data_point,
         min_data_point,
         attributes,
-        explicit_bounds=None,
+        explicit_bounds=None
     ):
         return HistogramDataPoint(
             count=count,
@@ -287,12 +287,12 @@ class FinishedTestSpans(list):
         for span in self:
             if span.name == name:
                 return span
-        self.test.fail(f"Did not find span with name {name}")
+        self.test.fail("Did not find span with name {}".format(name))
         return None
 
     def by_attr(self, key, value):
         for span in self:
             if span.attributes.get(key) == value:
                 return span
-        self.test.fail(f"Did not find span with attrs {key}={value}")
+        self.test.fail("Did not find span with attrs {}={}".format(key, value))
         return None

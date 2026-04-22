@@ -17,43 +17,43 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-PROCESS_ARGS_COUNT: Final = "process.args_count"
+PROCESS_ARGS_COUNT = "process.args_count"
 """
 Length of the process.command_args array.
 Note: This field can be useful for querying or performing bucket analysis on how many arguments were provided to start a process. More arguments may be an indication of suspicious activity.
 """
 
-PROCESS_COMMAND: Final = "process.command"
+PROCESS_COMMAND = "process.command"
 """
 The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in `proc/[pid]/cmdline`. On Windows, can be set to the first parameter extracted from `GetCommandLineW`.
 """
 
-PROCESS_COMMAND_ARGS: Final = "process.command_args"
+PROCESS_COMMAND_ARGS = "process.command_args"
 """
 All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`. SHOULD NOT be collected by default unless there is sanitization that excludes sensitive data.
 """
 
-PROCESS_COMMAND_LINE: Final = "process.command_line"
+PROCESS_COMMAND_LINE = "process.command_line"
 """
 The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of `GetCommandLineW`. Do not set this if you have to assemble it just for monitoring; use `process.command_args` instead. SHOULD NOT be collected by default unless there is sanitization that excludes sensitive data.
 """
 
-PROCESS_CONTEXT_SWITCH_TYPE: Final = "process.context_switch.type"
+PROCESS_CONTEXT_SWITCH_TYPE = "process.context_switch.type"
 """
 Specifies whether the context switches for this data point were voluntary or involuntary.
 """
 
-PROCESS_CPU_STATE: Final = "process.cpu.state"
+PROCESS_CPU_STATE = "process.cpu.state"
 """
 Deprecated: Replaced by `cpu.mode`.
 """
 
-PROCESS_CREATION_TIME: Final = "process.creation.time"
+PROCESS_CREATION_TIME = "process.creation.time"
 """
 The date and time the process was created, in ISO 8601 format.
 """
 
-PROCESS_ENVIRONMENT_VARIABLE_TEMPLATE: Final = "process.environment_variable"
+PROCESS_ENVIRONMENT_VARIABLE_TEMPLATE = "process.environment_variable"
 """
 Process environment variables, `<key>` being the environment variable name, the value being the environment variable value.
 Note: Examples:
@@ -66,154 +66,154 @@ SHOULD be recorded as the `process.environment_variable.PATH` attribute
 with value `"/usr/local/bin:/usr/bin"`.
 """
 
-PROCESS_EXECUTABLE_BUILD_ID_GNU: Final = "process.executable.build_id.gnu"
+PROCESS_EXECUTABLE_BUILD_ID_GNU = "process.executable.build_id.gnu"
 """
 The GNU build ID as found in the `.note.gnu.build-id` ELF section (hex string).
 """
 
-PROCESS_EXECUTABLE_BUILD_ID_GO: Final = "process.executable.build_id.go"
+PROCESS_EXECUTABLE_BUILD_ID_GO = "process.executable.build_id.go"
 """
 The Go build ID as retrieved by `go tool buildid <go executable>`.
 """
 
-PROCESS_EXECUTABLE_BUILD_ID_HTLHASH: Final = (
+PROCESS_EXECUTABLE_BUILD_ID_HTLHASH = (
     "process.executable.build_id.htlhash"
 )
 """
 Profiling specific build ID for executables. See the OTel specification for Profiles for more information.
 """
 
-PROCESS_EXECUTABLE_BUILD_ID_PROFILING: Final = (
+PROCESS_EXECUTABLE_BUILD_ID_PROFILING = (
     "process.executable.build_id.profiling"
 )
 """
 Deprecated: Replaced by `process.executable.build_id.htlhash`.
 """
 
-PROCESS_EXECUTABLE_NAME: Final = "process.executable.name"
+PROCESS_EXECUTABLE_NAME = "process.executable.name"
 """
 The name of the process executable. On Linux based systems, this SHOULD be set to the base name of the target of `/proc/[pid]/exe`. On Windows, this SHOULD be set to the base name of `GetProcessImageFileNameW`.
 """
 
-PROCESS_EXECUTABLE_PATH: Final = "process.executable.path"
+PROCESS_EXECUTABLE_PATH = "process.executable.path"
 """
 The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
 """
 
-PROCESS_EXIT_CODE: Final = "process.exit.code"
+PROCESS_EXIT_CODE = "process.exit.code"
 """
 The exit code of the process.
 """
 
-PROCESS_EXIT_TIME: Final = "process.exit.time"
+PROCESS_EXIT_TIME = "process.exit.time"
 """
 The date and time the process exited, in ISO 8601 format.
 """
 
-PROCESS_GROUP_LEADER_PID: Final = "process.group_leader.pid"
+PROCESS_GROUP_LEADER_PID = "process.group_leader.pid"
 """
 The PID of the process's group leader. This is also the process group ID (PGID) of the process.
 """
 
-PROCESS_INTERACTIVE: Final = "process.interactive"
+PROCESS_INTERACTIVE = "process.interactive"
 """
 Whether the process is connected to an interactive shell.
 """
 
-PROCESS_LINUX_CGROUP: Final = "process.linux.cgroup"
+PROCESS_LINUX_CGROUP = "process.linux.cgroup"
 """
 The control group associated with the process.
 Note: Control groups (cgroups) are a kernel feature used to organize and manage process resources. This attribute provides the path(s) to the cgroup(s) associated with the process, which should match the contents of the [/proc/\\[PID\\]/cgroup](https://man7.org/linux/man-pages/man7/cgroups.7.html) file.
 """
 
-PROCESS_OWNER: Final = "process.owner"
+PROCESS_OWNER = "process.owner"
 """
 The username of the user that owns the process.
 """
 
-PROCESS_PAGING_FAULT_TYPE: Final = "process.paging.fault_type"
+PROCESS_PAGING_FAULT_TYPE = "process.paging.fault_type"
 """
 Deprecated: Replaced by `system.paging.fault.type`.
 """
 
-PROCESS_PARENT_PID: Final = "process.parent_pid"
+PROCESS_PARENT_PID = "process.parent_pid"
 """
 Parent Process identifier (PPID).
 """
 
-PROCESS_PID: Final = "process.pid"
+PROCESS_PID = "process.pid"
 """
 Process identifier (PID).
 """
 
-PROCESS_REAL_USER_ID: Final = "process.real_user.id"
+PROCESS_REAL_USER_ID = "process.real_user.id"
 """
 The real user ID (RUID) of the process.
 """
 
-PROCESS_REAL_USER_NAME: Final = "process.real_user.name"
+PROCESS_REAL_USER_NAME = "process.real_user.name"
 """
 The username of the real user of the process.
 """
 
-PROCESS_RUNTIME_DESCRIPTION: Final = "process.runtime.description"
+PROCESS_RUNTIME_DESCRIPTION = "process.runtime.description"
 """
 An additional description about the runtime of the process, for example a specific vendor customization of the runtime environment.
 """
 
-PROCESS_RUNTIME_NAME: Final = "process.runtime.name"
+PROCESS_RUNTIME_NAME = "process.runtime.name"
 """
 The name of the runtime of this process.
 """
 
-PROCESS_RUNTIME_VERSION: Final = "process.runtime.version"
+PROCESS_RUNTIME_VERSION = "process.runtime.version"
 """
 The version of the runtime of this process, as returned by the runtime without modification.
 """
 
-PROCESS_SAVED_USER_ID: Final = "process.saved_user.id"
+PROCESS_SAVED_USER_ID = "process.saved_user.id"
 """
 The saved user ID (SUID) of the process.
 """
 
-PROCESS_SAVED_USER_NAME: Final = "process.saved_user.name"
+PROCESS_SAVED_USER_NAME = "process.saved_user.name"
 """
 The username of the saved user.
 """
 
-PROCESS_SESSION_LEADER_PID: Final = "process.session_leader.pid"
+PROCESS_SESSION_LEADER_PID = "process.session_leader.pid"
 """
 The PID of the process's session leader. This is also the session ID (SID) of the process.
 """
 
-PROCESS_STATE: Final = "process.state"
+PROCESS_STATE = "process.state"
 """
 The process state, e.g., [Linux Process State Codes](https://man7.org/linux/man-pages/man1/ps.1.html#PROCESS_STATE_CODES).
 """
 
-PROCESS_TITLE: Final = "process.title"
+PROCESS_TITLE = "process.title"
 """
 Process title (proctitle).
 Note: In many Unix-like systems, process title (proctitle), is the string that represents the name or command line of a running process, displayed by system monitoring tools like ps, top, and htop.
 """
 
-PROCESS_USER_ID: Final = "process.user.id"
+PROCESS_USER_ID = "process.user.id"
 """
 The effective user ID (EUID) of the process.
 """
 
-PROCESS_USER_NAME: Final = "process.user.name"
+PROCESS_USER_NAME = "process.user.name"
 """
 The username of the effective user of the process.
 """
 
-PROCESS_VPID: Final = "process.vpid"
+PROCESS_VPID = "process.vpid"
 """
 Virtual process identifier.
 Note: The process ID within a PID namespace. This is not necessarily unique across all processes on the host but it is unique within the process namespace that the process exists within.
 """
 
-PROCESS_WORKING_DIRECTORY: Final = "process.working_directory"
+PROCESS_WORKING_DIRECTORY = "process.working_directory"
 """
 The working directory of the process.
 """

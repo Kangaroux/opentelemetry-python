@@ -63,8 +63,8 @@ def verify_tracecontext():
     """
     for action in flask.request.json:
         requests.post(
-            url=action["url"],
-            data=json.dumps(action["arguments"]),
+            url=action,
+            data=json.dumps(action),
             headers={
                 "Accept": "application/json",
                 "Content-Type": "application/json; charset=utf-8",

@@ -17,15 +17,15 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Histogram, Meter
 
-GEN_AI_CLIENT_OPERATION_DURATION: Final = "gen_ai.client.operation.duration"
+GEN_AI_CLIENT_OPERATION_DURATION = "gen_ai.client.operation.duration"
 """
 GenAI operation duration
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_gen_ai_client_operation_duration(meter: Meter) -> Histogram:
+def create_gen_ai_client_operation_duration(meter):
     """GenAI operation duration"""
     return meter.create_histogram(
         name=GEN_AI_CLIENT_OPERATION_DURATION,
@@ -34,15 +34,15 @@ def create_gen_ai_client_operation_duration(meter: Meter) -> Histogram:
     )
 
 
-GEN_AI_CLIENT_TOKEN_USAGE: Final = "gen_ai.client.token.usage"
+GEN_AI_CLIENT_TOKEN_USAGE = "gen_ai.client.token.usage"
 """
 Number of input and output tokens used
-Instrument: histogram
+Instrument
 Unit: {token}
 """
 
 
-def create_gen_ai_client_token_usage(meter: Meter) -> Histogram:
+def create_gen_ai_client_token_usage(meter):
     """Number of input and output tokens used"""
     return meter.create_histogram(
         name=GEN_AI_CLIENT_TOKEN_USAGE,
@@ -51,15 +51,15 @@ def create_gen_ai_client_token_usage(meter: Meter) -> Histogram:
     )
 
 
-GEN_AI_SERVER_REQUEST_DURATION: Final = "gen_ai.server.request.duration"
+GEN_AI_SERVER_REQUEST_DURATION = "gen_ai.server.request.duration"
 """
 Generative AI server request duration such as time-to-last byte or last output token
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_gen_ai_server_request_duration(meter: Meter) -> Histogram:
+def create_gen_ai_server_request_duration(meter):
     """Generative AI server request duration such as time-to-last byte or last output token"""
     return meter.create_histogram(
         name=GEN_AI_SERVER_REQUEST_DURATION,
@@ -68,17 +68,17 @@ def create_gen_ai_server_request_duration(meter: Meter) -> Histogram:
     )
 
 
-GEN_AI_SERVER_TIME_PER_OUTPUT_TOKEN: Final = (
+GEN_AI_SERVER_TIME_PER_OUTPUT_TOKEN = (
     "gen_ai.server.time_per_output_token"
 )
 """
 Time per output token generated after the first token for successful responses
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_gen_ai_server_time_per_output_token(meter: Meter) -> Histogram:
+def create_gen_ai_server_time_per_output_token(meter):
     """Time per output token generated after the first token for successful responses"""
     return meter.create_histogram(
         name=GEN_AI_SERVER_TIME_PER_OUTPUT_TOKEN,
@@ -87,15 +87,15 @@ def create_gen_ai_server_time_per_output_token(meter: Meter) -> Histogram:
     )
 
 
-GEN_AI_SERVER_TIME_TO_FIRST_TOKEN: Final = "gen_ai.server.time_to_first_token"
+GEN_AI_SERVER_TIME_TO_FIRST_TOKEN = "gen_ai.server.time_to_first_token"
 """
 Time to generate first token for successful responses
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_gen_ai_server_time_to_first_token(meter: Meter) -> Histogram:
+def create_gen_ai_server_time_to_first_token(meter):
     """Time to generate first token for successful responses"""
     return meter.create_histogram(
         name=GEN_AI_SERVER_TIME_TO_FIRST_TOKEN,

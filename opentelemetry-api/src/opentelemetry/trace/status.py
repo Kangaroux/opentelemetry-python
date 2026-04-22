@@ -51,7 +51,7 @@ class Status(object):
     def __init__(
         self,
         status_code = StatusCode.UNSET,
-        description = None,
+        description = None
     ):
         self._status_code = status_code
         self._description = None

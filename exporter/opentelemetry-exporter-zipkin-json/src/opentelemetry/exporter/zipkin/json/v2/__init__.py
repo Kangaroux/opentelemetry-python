@@ -34,10 +34,10 @@ class JsonV2Encoder(JsonEncoder):
 
     SPAN_KIND_MAP = {
         SpanKind.INTERNAL: None,
-        SpanKind.SERVER: "SERVER",
-        SpanKind.CLIENT: "CLIENT",
-        SpanKind.PRODUCER: "PRODUCER",
-        SpanKind.CONSUMER: "CONSUMER",
+        SpanKind.SERVER,
+        SpanKind.CLIENT,
+        SpanKind.PRODUCER,
+        SpanKind.CONSUMER,
     }
 
     def _encode_span(self, span, encoded_local_endpoint):
@@ -51,23 +51,23 @@ class JsonV2Encoder(JsonEncoder):
                 span.end_time - span.start_time
             ),
             "localEndpoint": encoded_local_endpoint,
-            "kind": self.SPAN_KIND_MAP[span.kind],
+            "kind": self.SPAN_KIND_MAP,
         }
 
         tags = self._extract_tags_from_span(span)
         if tags:
-            encoded_span["tags"] = tags
+            encoded_span = tags
 
         annotations = self._extract_annotations_from_events(span.events)
         if annotations:
-            encoded_span["annotations"] = annotations
+            encoded_span = annotations
 
         debug = self._encode_debug(context)
         if debug:
-            encoded_span["debug"] = debug
+            encoded_span = debug
 
         parent_id = self._get_parent_id(span.parent)
         if parent_id is not None:
-            encoded_span["parentId"] = self._encode_span_id(parent_id)
+            encoded_span = self._encode_span_id(parent_id)
 
         return encoded_span

@@ -17,19 +17,19 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Counter, Histogram, Meter
 
-MESSAGING_CLIENT_CONSUMED_MESSAGES: Final = (
+MESSAGING_CLIENT_CONSUMED_MESSAGES = (
     "messaging.client.consumed.messages"
 )
 """
 Number of messages that were delivered to the application
-Instrument: counter
+Instrument
 Unit: {message}
 Note: Records the number of messages pulled from the broker or number of messages dispatched to the application in push-based scenarios.
 The metric SHOULD be reported once per message delivery. For example, if receiving and processing operations are both instrumented for a single message delivery, this counter is incremented when the message is received and not reported when it is processed.
 """
 
 
-def create_messaging_client_consumed_messages(meter: Meter) -> Counter:
+def create_messaging_client_consumed_messages(meter):
     """Number of messages that were delivered to the application"""
     return meter.create_counter(
         name=MESSAGING_CLIENT_CONSUMED_MESSAGES,
@@ -38,18 +38,18 @@ def create_messaging_client_consumed_messages(meter: Meter) -> Counter:
     )
 
 
-MESSAGING_CLIENT_OPERATION_DURATION: Final = (
+MESSAGING_CLIENT_OPERATION_DURATION = (
     "messaging.client.operation.duration"
 )
 """
 Duration of messaging operation initiated by a producer or consumer client
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 Note: This metric SHOULD NOT be used to report processing duration - processing duration is reported in `messaging.process.duration` metric.
 """
 
 
-def create_messaging_client_operation_duration(meter: Meter) -> Histogram:
+def create_messaging_client_operation_duration(meter):
     """Duration of messaging operation initiated by a producer or consumer client"""
     return meter.create_histogram(
         name=MESSAGING_CLIENT_OPERATION_DURATION,
@@ -58,7 +58,7 @@ def create_messaging_client_operation_duration(meter: Meter) -> Histogram:
     )
 
 
-MESSAGING_CLIENT_PUBLISHED_MESSAGES: Final = (
+MESSAGING_CLIENT_PUBLISHED_MESSAGES = (
     "messaging.client.published.messages"
 )
 """
@@ -66,7 +66,7 @@ Deprecated: Replaced by `messaging.client.sent.messages`.
 """
 
 
-def create_messaging_client_published_messages(meter: Meter) -> Counter:
+def create_messaging_client_published_messages(meter):
     """Deprecated. Use `messaging.client.sent.messages` instead"""
     return meter.create_counter(
         name=MESSAGING_CLIENT_PUBLISHED_MESSAGES,
@@ -75,16 +75,16 @@ def create_messaging_client_published_messages(meter: Meter) -> Counter:
     )
 
 
-MESSAGING_CLIENT_SENT_MESSAGES: Final = "messaging.client.sent.messages"
+MESSAGING_CLIENT_SENT_MESSAGES = "messaging.client.sent.messages"
 """
 Number of messages producer attempted to send to the broker
-Instrument: counter
+Instrument
 Unit: {message}
 Note: This metric MUST NOT count messages that were created but haven't yet been sent.
 """
 
 
-def create_messaging_client_sent_messages(meter: Meter) -> Counter:
+def create_messaging_client_sent_messages(meter):
     """Number of messages producer attempted to send to the broker"""
     return meter.create_counter(
         name=MESSAGING_CLIENT_SENT_MESSAGES,
@@ -93,16 +93,16 @@ def create_messaging_client_sent_messages(meter: Meter) -> Counter:
     )
 
 
-MESSAGING_PROCESS_DURATION: Final = "messaging.process.duration"
+MESSAGING_PROCESS_DURATION = "messaging.process.duration"
 """
 Duration of processing operation
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 Note: This metric MUST be reported for operations with `messaging.operation.type` that matches `process`.
 """
 
 
-def create_messaging_process_duration(meter: Meter) -> Histogram:
+def create_messaging_process_duration(meter):
     """Duration of processing operation"""
     return meter.create_histogram(
         name=MESSAGING_PROCESS_DURATION,
@@ -111,13 +111,13 @@ def create_messaging_process_duration(meter: Meter) -> Histogram:
     )
 
 
-MESSAGING_PROCESS_MESSAGES: Final = "messaging.process.messages"
+MESSAGING_PROCESS_MESSAGES = "messaging.process.messages"
 """
 Deprecated: Replaced by `messaging.client.consumed.messages`.
 """
 
 
-def create_messaging_process_messages(meter: Meter) -> Counter:
+def create_messaging_process_messages(meter):
     """Deprecated. Use `messaging.client.consumed.messages` instead"""
     return meter.create_counter(
         name=MESSAGING_PROCESS_MESSAGES,
@@ -126,13 +126,13 @@ def create_messaging_process_messages(meter: Meter) -> Counter:
     )
 
 
-MESSAGING_PUBLISH_DURATION: Final = "messaging.publish.duration"
+MESSAGING_PUBLISH_DURATION = "messaging.publish.duration"
 """
 Deprecated: Replaced by `messaging.client.operation.duration`.
 """
 
 
-def create_messaging_publish_duration(meter: Meter) -> Histogram:
+def create_messaging_publish_duration(meter):
     """Deprecated. Use `messaging.client.operation.duration` instead"""
     return meter.create_histogram(
         name=MESSAGING_PUBLISH_DURATION,
@@ -141,13 +141,13 @@ def create_messaging_publish_duration(meter: Meter) -> Histogram:
     )
 
 
-MESSAGING_PUBLISH_MESSAGES: Final = "messaging.publish.messages"
+MESSAGING_PUBLISH_MESSAGES = "messaging.publish.messages"
 """
 Deprecated: Replaced by `messaging.client.sent.messages`.
 """
 
 
-def create_messaging_publish_messages(meter: Meter) -> Counter:
+def create_messaging_publish_messages(meter):
     """Deprecated. Use `messaging.client.sent.messages` instead"""
     return meter.create_counter(
         name=MESSAGING_PUBLISH_MESSAGES,
@@ -156,13 +156,13 @@ def create_messaging_publish_messages(meter: Meter) -> Counter:
     )
 
 
-MESSAGING_RECEIVE_DURATION: Final = "messaging.receive.duration"
+MESSAGING_RECEIVE_DURATION = "messaging.receive.duration"
 """
 Deprecated: Replaced by `messaging.client.operation.duration`.
 """
 
 
-def create_messaging_receive_duration(meter: Meter) -> Histogram:
+def create_messaging_receive_duration(meter):
     """Deprecated. Use `messaging.client.operation.duration` instead"""
     return meter.create_histogram(
         name=MESSAGING_RECEIVE_DURATION,
@@ -171,13 +171,13 @@ def create_messaging_receive_duration(meter: Meter) -> Histogram:
     )
 
 
-MESSAGING_RECEIVE_MESSAGES: Final = "messaging.receive.messages"
+MESSAGING_RECEIVE_MESSAGES = "messaging.receive.messages"
 """
 Deprecated: Replaced by `messaging.client.consumed.messages`.
 """
 
 
-def create_messaging_receive_messages(meter: Meter) -> Counter:
+def create_messaging_receive_messages(meter):
     """Deprecated. Use `messaging.client.consumed.messages` instead"""
     return meter.create_counter(
         name=MESSAGING_RECEIVE_MESSAGES,

@@ -17,7 +17,7 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-LINUX_MEMORY_SLAB_STATE: Final = "linux.memory.slab.state"
+LINUX_MEMORY_SLAB_STATE = "linux.memory.slab.state"
 """
 Deprecated: Replaced by `system.memory.linux.slab.state`.
 """

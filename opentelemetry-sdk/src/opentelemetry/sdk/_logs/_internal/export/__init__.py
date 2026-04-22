@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -188,7 +187,7 @@ class SimpleLogRecordProcessor(LogRecordProcessor):
         # emits a log which returns us to this function, but when we call Exporter.export again the log
         # is no longer emitted and we exit this recursive loop naturally, a depth of >3 allows 3
         # recursive log calls but exits after because it's likely endless.
-        if cnt > 3:  # pyright: ignore[reportOperatorIssue]
+        if cnt > 3:  # pyright
             _propagate_false_logger.warning(
                 "SimpleLogRecordProcessor.on_emit has entered a recursive loop. Dropping log and exiting the loop."
             )
@@ -197,7 +196,7 @@ class SimpleLogRecordProcessor(LogRecordProcessor):
             set_value(
                 _SUPPRESS_INSTRUMENTATION_KEY,
                 True,
-                set_value(_ON_EMIT_RECURSION_COUNT_KEY, cnt + 1),  # pyright: ignore[reportOperatorIssue]
+                set_value(_ON_EMIT_RECURSION_COUNT_KEY, cnt + 1),  # pyright
             )
         )
         try:
@@ -218,7 +217,7 @@ class SimpleLogRecordProcessor(LogRecordProcessor):
                 limits=log_record.limits,
             )
             self._exporter.export((readable_log_record,))
-        except Exception:  # pylint: disable=broad-exception-caught
+        except Exception:  # pylint =broad-exception-caught
             _logger.exception("Exception while exporting logs.")
         finally:
             detach(token)
@@ -227,7 +226,7 @@ class SimpleLogRecordProcessor(LogRecordProcessor):
         self._shutdown = True
         self._exporter.shutdown()
 
-    def force_flush(self, timeout_millis = 30000):  # pylint: disable=no-self-use
+    def force_flush(self, timeout_millis = 30000):  # pylint =no-self-use
         return True
 
 
@@ -252,7 +251,7 @@ class BatchLogRecordProcessor(LogRecordProcessor):
         schedule_delay_millis = None,
         max_export_batch_size = None,
         export_timeout_millis = None,
-        max_queue_size = None,
+        max_queue_size = None
     ):
         if max_queue_size is None:
             max_queue_size = BatchLogRecordProcessor._default_max_queue_size()

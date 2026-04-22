@@ -15,12 +15,12 @@
 from enum import Enum
 from typing_extensions import Final
 
-TELEMETRY_SDK_LANGUAGE: Final = "telemetry.sdk.language"
+TELEMETRY_SDK_LANGUAGE = "telemetry.sdk.language"
 """
 The language of the telemetry SDK.
 """
 
-TELEMETRY_SDK_NAME: Final = "telemetry.sdk.name"
+TELEMETRY_SDK_NAME = "telemetry.sdk.name"
 """
 The name of the telemetry SDK as defined above.
 Note: The OpenTelemetry SDK MUST set the `telemetry.sdk.name` attribute to `opentelemetry`.
@@ -31,7 +31,7 @@ The identifier `opentelemetry` is reserved and MUST NOT be used in this case.
 All custom identifiers SHOULD be stable across different versions of an implementation.
 """
 
-TELEMETRY_SDK_VERSION: Final = "telemetry.sdk.version"
+TELEMETRY_SDK_VERSION = "telemetry.sdk.version"
 """
 The version string of the telemetry SDK.
 """

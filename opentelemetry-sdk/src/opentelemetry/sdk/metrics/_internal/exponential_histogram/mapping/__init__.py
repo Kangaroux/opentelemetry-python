@@ -20,8 +20,8 @@ class Mapping(ABC):
     Parent class for `LogarithmMapping` and `ExponentialMapping`.
     """
 
-    # pylint: disable=no-member
-    def __new__(cls, scale: int):
+    # pylint =no-member
+    def __new__(cls, scale):
         with cls._mappings_lock:
             # cls._mappings and cls._mappings_lock are implemented in each of
             # the child classes as a dictionary and a lock, respectively. They
@@ -29,22 +29,22 @@ class Mapping(ABC):
             # classes having the same instance of cls._mappings and
             # cls._mappings_lock.
             if scale not in cls._mappings:
-                cls._mappings[scale] = super().__new__(cls)
-                cls._mappings[scale]._init(scale)
+                cls._mappings = super().__new__(cls)
+                cls._mappings._init(scale)
 
-        return cls._mappings[scale]
+        return cls._mappings
 
     @abstractmethod
-    def _init(self, scale: int) -> None:
-        # pylint: disable=attribute-defined-outside-init
+    def _init(self, scale):
+        # pylint =attribute-defined-outside-init
 
         if scale > self._get_max_scale():
-            # pylint: disable=broad-exception-raised
-            raise Exception(f"scale is larger than {self._max_scale}")
+            # pylint =broad-exception-raised
+            raise Exception("scale is larger than {}".format(self._max_scale))
 
         if scale < self._get_min_scale():
-            # pylint: disable=broad-exception-raised
-            raise Exception(f"scale is smaller than {self._min_scale}")
+            # pylint =broad-exception-raised
+            raise Exception("scale is smaller than {}".format(self._min_scale))
 
         # The size of the exponential histogram buckets is determined by a
         # parameter known as scale, larger values of scale will produce smaller
@@ -56,19 +56,19 @@ class Mapping(ABC):
         self._scale = scale
 
     @abstractmethod
-    def _get_min_scale(self) -> int:
+    def _get_min_scale(self):
         """
         Return the smallest possible value for the mapping scale
         """
 
     @abstractmethod
-    def _get_max_scale(self) -> int:
+    def _get_max_scale(self):
         """
         Return the largest possible value for the mapping scale
         """
 
     @abstractmethod
-    def map_to_index(self, value: float) -> int:
+    def map_to_index(self, value):
         """
         Maps positive floating point values to indexes corresponding to
         `Mapping.scale`. Implementations are not expected to handle zeros,
@@ -76,7 +76,7 @@ class Mapping(ABC):
         """
 
     @abstractmethod
-    def get_lower_boundary(self, index: int) -> float:
+    def get_lower_boundary(self, index):
         """
         Returns the lower boundary of a given bucket index. The index is
         expected to map onto a range that is at least partially inside the
@@ -90,7 +90,7 @@ class Mapping(ABC):
         """
 
     @property
-    def scale(self) -> int:
+    def scale(self):
         """
         Returns the parameter that controls the resolution of this mapping.
         See: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/datamodel.md#exponential-scale

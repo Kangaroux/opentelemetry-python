@@ -14,7 +14,7 @@
 
 from typing_extensions import Final
 
-CLOUDFOUNDRY_APP_ID: Final = "cloudfoundry.app.id"
+CLOUDFOUNDRY_APP_ID = "cloudfoundry.app.id"
 """
 The guid of the application.
 Note: Application instrumentation should use the value from environment
@@ -22,7 +22,7 @@ variable `VCAP_APPLICATION.application_id`. This is the same value as
 reported by `cf app <app-name> --guid`.
 """
 
-CLOUDFOUNDRY_APP_INSTANCE_ID: Final = "cloudfoundry.app.instance.id"
+CLOUDFOUNDRY_APP_INSTANCE_ID = "cloudfoundry.app.instance.id"
 """
 The index of the application instance. 0 when just one instance is active.
 Note: CloudFoundry defines the `instance_id` in the [Loggregator v2 envelope](https://github.com/cloudfoundry/loggregator-api#v2-envelope).
@@ -34,7 +34,7 @@ Application instrumentation should use the value from environment
 variable `CF_INSTANCE_INDEX`.
 """
 
-CLOUDFOUNDRY_APP_NAME: Final = "cloudfoundry.app.name"
+CLOUDFOUNDRY_APP_NAME = "cloudfoundry.app.name"
 """
 The name of the application.
 Note: Application instrumentation should use the value from environment
@@ -42,7 +42,7 @@ variable `VCAP_APPLICATION.application_name`. This is the same value
 as reported by `cf apps`.
 """
 
-CLOUDFOUNDRY_ORG_ID: Final = "cloudfoundry.org.id"
+CLOUDFOUNDRY_ORG_ID = "cloudfoundry.org.id"
 """
 The guid of the CloudFoundry org the application is running in.
 Note: Application instrumentation should use the value from environment
@@ -50,7 +50,7 @@ variable `VCAP_APPLICATION.org_id`. This is the same value as
 reported by `cf org <org-name> --guid`.
 """
 
-CLOUDFOUNDRY_ORG_NAME: Final = "cloudfoundry.org.name"
+CLOUDFOUNDRY_ORG_NAME = "cloudfoundry.org.name"
 """
 The name of the CloudFoundry organization the app is running in.
 Note: Application instrumentation should use the value from environment
@@ -58,7 +58,7 @@ variable `VCAP_APPLICATION.org_name`. This is the same value as
 reported by `cf orgs`.
 """
 
-CLOUDFOUNDRY_PROCESS_ID: Final = "cloudfoundry.process.id"
+CLOUDFOUNDRY_PROCESS_ID = "cloudfoundry.process.id"
 """
 The UID identifying the process.
 Note: Application instrumentation should use the value from environment
@@ -67,7 +67,7 @@ variable `VCAP_APPLICATION.process_id`. It is supposed to be equal to
 For system components, this could be the actual PID.
 """
 
-CLOUDFOUNDRY_PROCESS_TYPE: Final = "cloudfoundry.process.type"
+CLOUDFOUNDRY_PROCESS_TYPE = "cloudfoundry.process.type"
 """
 The type of process.
 Note: CloudFoundry applications can consist of multiple jobs. Usually the
@@ -75,7 +75,7 @@ main process will be of type `web`. There can be additional background
 tasks or side-cars with different process types.
 """
 
-CLOUDFOUNDRY_SPACE_ID: Final = "cloudfoundry.space.id"
+CLOUDFOUNDRY_SPACE_ID = "cloudfoundry.space.id"
 """
 The guid of the CloudFoundry space the application is running in.
 Note: Application instrumentation should use the value from environment
@@ -83,7 +83,7 @@ variable `VCAP_APPLICATION.space_id`. This is the same value as
 reported by `cf space <space-name> --guid`.
 """
 
-CLOUDFOUNDRY_SPACE_NAME: Final = "cloudfoundry.space.name"
+CLOUDFOUNDRY_SPACE_NAME = "cloudfoundry.space.name"
 """
 The name of the CloudFoundry space the application is running in.
 Note: Application instrumentation should use the value from environment
@@ -91,7 +91,7 @@ variable `VCAP_APPLICATION.space_name`. This is the same value as
 reported by `cf spaces`.
 """
 
-CLOUDFOUNDRY_SYSTEM_ID: Final = "cloudfoundry.system.id"
+CLOUDFOUNDRY_SYSTEM_ID = "cloudfoundry.system.id"
 """
 A guid or another name describing the event source.
 Note: CloudFoundry defines the `source_id` in the [Loggregator v2 envelope](https://github.com/cloudfoundry/loggregator-api#v2-envelope).
@@ -105,7 +105,7 @@ should be used. The `system.id` should be set to
 `spec.deployment/spec.name`.
 """
 
-CLOUDFOUNDRY_SYSTEM_INSTANCE_ID: Final = "cloudfoundry.system.instance.id"
+CLOUDFOUNDRY_SYSTEM_INSTANCE_ID = "cloudfoundry.system.instance.id"
 """
 A guid describing the concrete instance of the event source.
 Note: CloudFoundry defines the `instance_id` in the [Loggregator v2 envelope](https://github.com/cloudfoundry/loggregator-api#v2-envelope).

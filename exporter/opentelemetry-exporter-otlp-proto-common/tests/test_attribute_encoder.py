@@ -39,9 +39,9 @@ class TestOTLPAttributeEncoder(unittest.TestCase):
                 "b": 3.14,  # float
                 "c": False,  # bool
                 "hello": "world",  # str
-                "greet": ["hola", "bonjour"],  # Sequence[str]
-                "data": [1, 2],  # Sequence[int]
-                "data_granular": [1.4, 2.4],  # Sequence[float]
+                "greet": ["hola", "bonjour"],  # Sequence
+                "data": [1, 2],  # Sequence
+                "data_granular": [1.4, 2.4],  # Sequence
                 "binary_data": b"x00\x01\x02",  # bytes
             }
         )
@@ -101,9 +101,9 @@ class TestOTLPAttributeEncoder(unittest.TestCase):
             )
 
         self.assertEqual(len(error.records), 1)
-        self.assertEqual(error.records[0].msg, "Failed to encode key %s: %s")
-        self.assertEqual(error.records[0].args[0], "bad_key")
-        self.assertIsInstance(error.records[0].args[1], Exception)
+        self.assertEqual(error.records.msg, "Failed to encode key %s: %s")
+        self.assertEqual(error.records.args, "bad_key")
+        self.assertIsInstance(error.records.args, Exception)
         self.assertEqual(
             result,
             [
@@ -117,9 +117,9 @@ class TestOTLPAttributeEncoder(unittest.TestCase):
             result = _encode_attributes({"a": 1, "bad_key": None, "b": 2})
 
         self.assertEqual(len(error.records), 1)
-        self.assertEqual(error.records[0].msg, "Failed to encode key %s: %s")
-        self.assertEqual(error.records[0].args[0], "bad_key")
-        self.assertIsInstance(error.records[0].args[1], Exception)
+        self.assertEqual(error.records.msg, "Failed to encode key %s: %s")
+        self.assertEqual(error.records.args, "bad_key")
+        self.assertIsInstance(error.records.args, Exception)
         self.assertEqual(
             result,
             [

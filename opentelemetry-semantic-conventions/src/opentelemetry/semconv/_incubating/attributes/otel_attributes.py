@@ -17,7 +17,7 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-OTEL_COMPONENT_NAME: Final = "otel.component.name"
+OTEL_COMPONENT_NAME = "otel.component.name"
 """
 A name uniquely identifying the instance of the OpenTelemetry component within its containing SDK instance.
 Note: Implementations SHOULD ensure a low cardinality for this attribute, even across application or SDK restarts.
@@ -35,60 +35,60 @@ as `otel.component.name`, the second one `batching_span_processor/1` and so on.
 These values will therefore be reused in the case of an application restart.
 """
 
-OTEL_COMPONENT_TYPE: Final = "otel.component.type"
+OTEL_COMPONENT_TYPE = "otel.component.type"
 """
 A name identifying the type of the OpenTelemetry component.
 Note: If none of the standardized values apply, implementations SHOULD use the language-defined name of the type.
 E.g. for Java the fully qualified classname SHOULD be used in this case.
 """
 
-OTEL_EVENT_NAME: Final = "otel.event.name"
+OTEL_EVENT_NAME = "otel.event.name"
 """
 Identifies the class / type of event.
 Note: This attribute SHOULD be used by non-OTLP exporters when destination does not support `EventName` or equivalent field. This attribute MAY be used by applications using existing logging libraries so that it can be used to set the `EventName` field by Collector or SDK components.
 """
 
-OTEL_LIBRARY_NAME: Final = "otel.library.name"
+OTEL_LIBRARY_NAME = "otel.library.name"
 """
 Deprecated: Replaced by `otel.scope.name`.
 """
 
-OTEL_LIBRARY_VERSION: Final = "otel.library.version"
+OTEL_LIBRARY_VERSION = "otel.library.version"
 """
 Deprecated: Replaced by `otel.scope.version`.
 """
 
-OTEL_SCOPE_NAME: Final = "otel.scope.name"
+OTEL_SCOPE_NAME = "otel.scope.name"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.otel_attributes.OTEL_SCOPE_NAME`.
 """
 
-OTEL_SCOPE_SCHEMA_URL: Final = "otel.scope.schema_url"
+OTEL_SCOPE_SCHEMA_URL = "otel.scope.schema_url"
 """
 The schema URL of the instrumentation scope.
 """
 
-OTEL_SCOPE_VERSION: Final = "otel.scope.version"
+OTEL_SCOPE_VERSION = "otel.scope.version"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.otel_attributes.OTEL_SCOPE_VERSION`.
 """
 
-OTEL_SPAN_PARENT_ORIGIN: Final = "otel.span.parent.origin"
+OTEL_SPAN_PARENT_ORIGIN = "otel.span.parent.origin"
 """
 Determines whether the span has a parent span, and if so, [whether it is a remote parent](https://opentelemetry.io/docs/specs/otel/trace/api/#isremote).
 """
 
-OTEL_SPAN_SAMPLING_RESULT: Final = "otel.span.sampling_result"
+OTEL_SPAN_SAMPLING_RESULT = "otel.span.sampling_result"
 """
 The result value of the sampler for this span.
 """
 
-OTEL_STATUS_CODE: Final = "otel.status_code"
+OTEL_STATUS_CODE = "otel.status_code"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.otel_attributes.OTEL_STATUS_CODE`.
 """
 
-OTEL_STATUS_DESCRIPTION: Final = "otel.status_description"
+OTEL_STATUS_DESCRIPTION = "otel.status_description"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.otel_attributes.OTEL_STATUS_DESCRIPTION`.
 """

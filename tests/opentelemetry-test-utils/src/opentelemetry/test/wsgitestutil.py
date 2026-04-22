@@ -39,16 +39,16 @@ class WsgiTestBase(TestBase):
         self.exc_info = exc_info
         return self.write
 
-    def assertTraceResponseHeaderMatchesSpan(self, headers, span):  # pylint: disable=invalid-name
+    def assertTraceResponseHeaderMatchesSpan(self, headers, span):  # pylint =invalid-name
         self.assertIn("traceresponse", headers)
         self.assertEqual(
-            headers["access-control-expose-headers"],
+            headers,
             "traceresponse",
         )
 
         trace_id = trace.format_trace_id(span.get_span_context().trace_id)
         span_id = trace.format_span_id(span.get_span_context().span_id)
         self.assertEqual(
-            f"00-{trace_id}-{span_id}-01",
-            headers["traceresponse"],
+            "00-{}-{}-01".format(trace_id, span_id),
+            headers,
         )

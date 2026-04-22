@@ -15,22 +15,22 @@
 from enum import Enum
 from typing_extensions import Final
 
-TEST_CASE_NAME: Final = "test.case.name"
+TEST_CASE_NAME = "test.case.name"
 """
 The fully qualified human readable name of the [test case](https://wikipedia.org/wiki/Test_case).
 """
 
-TEST_CASE_RESULT_STATUS: Final = "test.case.result.status"
+TEST_CASE_RESULT_STATUS = "test.case.result.status"
 """
 The status of the actual test case result from test execution.
 """
 
-TEST_SUITE_NAME: Final = "test.suite.name"
+TEST_SUITE_NAME = "test.suite.name"
 """
 The human readable name of a [test suite](https://wikipedia.org/wiki/Test_suite).
 """
 
-TEST_SUITE_RUN_STATUS: Final = "test.suite.run.status"
+TEST_SUITE_RUN_STATUS = "test.suite.run.status"
 """
 The status of the test suite run.
 """

@@ -38,8 +38,8 @@ class Exemplar:
         https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/sdk.md#exemplar
     """
 
-    filtered_attributes: Attributes
-    value: Union[int, float]
-    time_unix_nano: int
-    span_id: Optional[int] = None
-    trace_id: Optional[int] = None
+    filtered_attributes
+    value
+    time_unix_nano
+    span_id = None
+    trace_id = None

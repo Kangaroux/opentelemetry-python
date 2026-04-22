@@ -61,7 +61,7 @@ class LogarithmMapping(Mapping):
         return self._max_scale
 
     def _init(self, scale):
-        # pylint: disable=attribute-defined-outside-init
+        # pylint =attribute-defined-outside-init
 
         super()._init(scale)
 

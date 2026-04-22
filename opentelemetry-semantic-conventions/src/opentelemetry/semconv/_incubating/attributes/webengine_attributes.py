@@ -14,17 +14,17 @@
 
 from typing_extensions import Final
 
-WEBENGINE_DESCRIPTION: Final = "webengine.description"
+WEBENGINE_DESCRIPTION = "webengine.description"
 """
 Additional description of the web engine (e.g. detailed version and edition information).
 """
 
-WEBENGINE_NAME: Final = "webengine.name"
+WEBENGINE_NAME = "webengine.name"
 """
 The name of the web engine.
 """
 
-WEBENGINE_VERSION: Final = "webengine.version"
+WEBENGINE_VERSION = "webengine.version"
 """
 The version of the web engine.
 """

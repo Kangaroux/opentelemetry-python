@@ -43,9 +43,9 @@ Example::
     def get_header_from_flask_request(request, key):
         return request.headers.get_all(key)
 
-    def set_header_into_requests_request(request: requests.Request,
-                                            key: str, value: str):
-        request.headers[key] = value
+    def set_header_into_requests_request(request,
+                                            key, value):
+        request.headers = value
 
     def example_route():
         context = PROPAGATOR.extract(
@@ -81,10 +81,10 @@ logger = getLogger(__name__)
 
 
 def extract(
-    carrier: textmap.CarrierT,
-    context: Optional[Context] = None,
-    getter: textmap.Getter[textmap.CarrierT] = textmap.default_getter,
-) -> Context:
+    carrier,
+    context = None,
+    getter = textmap.default_getter
+):
     """Uses the configured propagator to extract a Context from the carrier.
 
     Args:
@@ -102,10 +102,10 @@ def extract(
 
 
 def inject(
-    carrier: textmap.CarrierT,
-    context: Optional[Context] = None,
-    setter: textmap.Setter[textmap.CarrierT] = textmap.default_setter,
-) -> None:
+    carrier,
+    context = None,
+    setter = textmap.default_setter
+):
     """Uses the configured propagator to inject a Context into the carrier.
 
     Args:
@@ -121,7 +121,7 @@ def inject(
     get_global_textmap().inject(carrier, context=context, setter=setter)
 
 
-propagators: List[textmap.TextMapPropagator] = []
+propagators = []
 
 # Single use variable here to hack black and make lint pass
 environ_propagators = environ.get(
@@ -142,7 +142,7 @@ for propagator in environ_propagators.split(","):
         propagators.append(
             next(  # type: ignore
                 iter(  # type: ignore
-                    entry_points(  # type: ignore[misc]
+                    entry_points(  # type
                         group="opentelemetry_propagator",
                         name=propagator,
                     )
@@ -151,24 +151,24 @@ for propagator in environ_propagators.split(","):
         )
     except StopIteration:
         raise ValueError(
-            f"Propagator {propagator} not found. It is either misspelled or not installed."
+            "Propagator {} not found. It is either misspelled or not installed.".format(propagator)
         )
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint =broad-exception-caught
         logger.exception("Failed to load propagator: %s", propagator)
         raise
 
 
-_HTTP_TEXT_FORMAT: textmap.TextMapPropagator = composite.CompositePropagator(
+_HTTP_TEXT_FORMAT = composite.CompositePropagator(
     propagators
 )
 
 
-def get_global_textmap() -> textmap.TextMapPropagator:
+def get_global_textmap():
     return _HTTP_TEXT_FORMAT
 
 
 def set_global_textmap(
-    http_text_format: textmap.TextMapPropagator,
-) -> None:
-    global _HTTP_TEXT_FORMAT  # pylint:disable=global-statement
+    http_text_format
+):
+    global _HTTP_TEXT_FORMAT  # pylint =global-statement
     _HTTP_TEXT_FORMAT = http_text_format

@@ -17,82 +17,82 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-SYSTEM_CPU_LOGICAL_NUMBER: Final = "system.cpu.logical_number"
+SYSTEM_CPU_LOGICAL_NUMBER = "system.cpu.logical_number"
 """
 Deprecated: Replaced by `cpu.logical_number`.
 """
 
-SYSTEM_CPU_STATE: Final = "system.cpu.state"
+SYSTEM_CPU_STATE = "system.cpu.state"
 """
 Deprecated: Replaced by `cpu.mode`.
 """
 
-SYSTEM_DEVICE: Final = "system.device"
+SYSTEM_DEVICE = "system.device"
 """
 The device identifier.
 """
 
-SYSTEM_FILESYSTEM_MODE: Final = "system.filesystem.mode"
+SYSTEM_FILESYSTEM_MODE = "system.filesystem.mode"
 """
 The filesystem mode.
 """
 
-SYSTEM_FILESYSTEM_MOUNTPOINT: Final = "system.filesystem.mountpoint"
+SYSTEM_FILESYSTEM_MOUNTPOINT = "system.filesystem.mountpoint"
 """
 The filesystem mount path.
 """
 
-SYSTEM_FILESYSTEM_STATE: Final = "system.filesystem.state"
+SYSTEM_FILESYSTEM_STATE = "system.filesystem.state"
 """
 The filesystem state.
 """
 
-SYSTEM_FILESYSTEM_TYPE: Final = "system.filesystem.type"
+SYSTEM_FILESYSTEM_TYPE = "system.filesystem.type"
 """
 The filesystem type.
 """
 
-SYSTEM_MEMORY_LINUX_SLAB_STATE: Final = "system.memory.linux.slab.state"
+SYSTEM_MEMORY_LINUX_SLAB_STATE = "system.memory.linux.slab.state"
 """
 The Linux Slab memory state.
 """
 
-SYSTEM_MEMORY_STATE: Final = "system.memory.state"
+SYSTEM_MEMORY_STATE = "system.memory.state"
 """
 The memory state.
 """
 
-SYSTEM_NETWORK_STATE: Final = "system.network.state"
+SYSTEM_NETWORK_STATE = "system.network.state"
 """
 Deprecated: Replaced by `network.connection.state`.
 """
 
-SYSTEM_PAGING_DIRECTION: Final = "system.paging.direction"
+SYSTEM_PAGING_DIRECTION = "system.paging.direction"
 """
 The paging access direction.
 """
 
-SYSTEM_PAGING_FAULT_TYPE: Final = "system.paging.fault.type"
+SYSTEM_PAGING_FAULT_TYPE = "system.paging.fault.type"
 """
 The paging fault type.
 """
 
-SYSTEM_PAGING_STATE: Final = "system.paging.state"
+SYSTEM_PAGING_STATE = "system.paging.state"
 """
 The memory paging state.
 """
 
-SYSTEM_PAGING_TYPE: Final = "system.paging.type"
+SYSTEM_PAGING_TYPE = "system.paging.type"
 """
 Deprecated: Replaced by `system.paging.fault.type`.
 """
 
-SYSTEM_PROCESS_STATUS: Final = "system.process.status"
+SYSTEM_PROCESS_STATUS = "system.process.status"
 """
 Deprecated: Replaced by `process.state`.
 """
 
-SYSTEM_PROCESSES_STATUS: Final = "system.processes.status"
+SYSTEM_PROCESSES_STATUS = "system.processes.status"
 """
 Deprecated: Replaced by `process.state`.
 """

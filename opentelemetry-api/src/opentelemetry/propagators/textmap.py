@@ -18,19 +18,19 @@ import typing
 from opentelemetry.context.context import Context
 
 CarrierT = typing.TypeVar("CarrierT")
-# pylint: disable=invalid-name
-CarrierValT = typing.Union[typing.List[str], str]
+# pylint =invalid-name
+CarrierValT = typing.Union
 
 
-class Getter(abc.ABC, typing.Generic[CarrierT]):
+class Getter(abc.ABC, typing.Generic):
     """This class implements a Getter that enables extracting propagated
     fields from a carrier.
     """
 
     @abc.abstractmethod
     def get(
-        self, carrier: CarrierT, key: str
-    ) -> typing.Optional[typing.List[str]]:
+        self, carrier, key
+    ):
         """Function that can retrieve zero
         or more values from the carrier. In the case that
         the value does not exist, returns None.
@@ -44,7 +44,7 @@ class Getter(abc.ABC, typing.Generic[CarrierT]):
         """
 
     @abc.abstractmethod
-    def keys(self, carrier: CarrierT) -> typing.List[str]:
+    def keys(self, carrier):
         """Function that can retrieve all the keys in a carrier object.
 
         Args:
@@ -55,13 +55,13 @@ class Getter(abc.ABC, typing.Generic[CarrierT]):
         """
 
 
-class Setter(abc.ABC, typing.Generic[CarrierT]):
+class Setter(abc.ABC, typing.Generic):
     """This class implements a Setter that enables injecting propagated
     fields into a carrier.
     """
 
     @abc.abstractmethod
-    def set(self, carrier: CarrierT, key: str, value: str) -> None:
+    def set(self, carrier, key, value):
         """Function that can set a value into a carrier""
 
         Args:
@@ -72,10 +72,10 @@ class Setter(abc.ABC, typing.Generic[CarrierT]):
         """
 
 
-class DefaultGetter(Getter[typing.Mapping[str, CarrierValT]]):
+class DefaultGetter(Getter):
     def get(
-        self, carrier: typing.Mapping[str, CarrierValT], key: str
-    ) -> typing.Optional[typing.List[str]]:
+        self, carrier, key
+    ):
         """Getter implementation to retrieve a value from a dictionary.
 
         Args:
@@ -92,22 +92,22 @@ class DefaultGetter(Getter[typing.Mapping[str, CarrierValT]]):
         return [val]
 
     def keys(
-        self, carrier: typing.Mapping[str, CarrierValT]
-    ) -> typing.List[str]:
+        self, carrier
+    ):
         """Keys implementation that returns all keys from a dictionary."""
         return list(carrier.keys())
 
 
-default_getter: Getter[CarrierT] = DefaultGetter()  # type: ignore
+default_getter = DefaultGetter()  # type: ignore
 
 
-class DefaultSetter(Setter[typing.MutableMapping[str, CarrierValT]]):
+class DefaultSetter(Setter):
     def set(
         self,
-        carrier: typing.MutableMapping[str, CarrierValT],
-        key: str,
-        value: CarrierValT,
-    ) -> None:
+        carrier,
+        key,
+        value
+    ):
         """Setter implementation to set a value into a dictionary.
 
         Args:
@@ -118,7 +118,7 @@ class DefaultSetter(Setter[typing.MutableMapping[str, CarrierValT]]):
         carrier[key] = value
 
 
-default_setter: Setter[CarrierT] = DefaultSetter()  # type: ignore
+default_setter = DefaultSetter()  # type: ignore
 
 
 class TextMapPropagator(abc.ABC):
@@ -133,10 +133,10 @@ class TextMapPropagator(abc.ABC):
     @abc.abstractmethod
     def extract(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        getter: Getter[CarrierT] = default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = default_getter
+    ):
         """Create a Context from values in the carrier.
 
         The extract function should retrieve values from the carrier
@@ -161,10 +161,10 @@ class TextMapPropagator(abc.ABC):
     @abc.abstractmethod
     def inject(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: Setter[CarrierT] = default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = default_setter
+    ):
         """Inject values from a Context into a carrier.
 
         inject enables the propagation of values into HTTP clients or
@@ -185,7 +185,7 @@ class TextMapPropagator(abc.ABC):
 
     @property
     @abc.abstractmethod
-    def fields(self) -> typing.Set[str]:
+    def fields(self):
         """
         Gets the fields set in the carrier by the `inject` method.
 

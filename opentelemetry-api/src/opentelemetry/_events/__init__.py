@@ -39,20 +39,18 @@ _logger = getLogger(__name__)
 class Event(LogRecord):
     def __init__(
         self,
-        name: str,
-        timestamp: Optional[int] = None,
-        trace_id: Optional[int] = None,
-        span_id: Optional[int] = None,
-        trace_flags: Optional["TraceFlags"] = None,
-        body: Optional[AnyValue] = None,
-        severity_number: Optional[SeverityNumber] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
+        name,
+        timestamp = None,
+        trace_id = None,
+        span_id = None,
+        trace_flags = None,
+        body = None,
+        severity_number = None,
+        attributes = None
     ):
         attributes = attributes or {}
-        event_attributes = {
-            **attributes,
-            "event.name": name,
-        }
+        event_attributes = attributes
+        event_attributes.update({"event.name": name,})
         super().__init__(
             timestamp=timestamp,
             trace_id=trace_id,
@@ -72,10 +70,10 @@ class Event(LogRecord):
 class EventLogger(ABC):
     def __init__(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
+        name,
+        version = None,
+        schema_url = None,
+        attributes = None
     ):
         self._name = name
         self._version = version
@@ -83,7 +81,7 @@ class EventLogger(ABC):
         self._attributes = attributes
 
     @abstractmethod
-    def emit(self, event: "Event") -> None:
+    def emit(self, event):
         """Emits a :class:`Event` representing an event."""
 
 
@@ -92,7 +90,7 @@ class EventLogger(ABC):
     "Deprecated since version 1.39.0 and will be removed in a future release."
 )
 class NoOpEventLogger(EventLogger):
-    def emit(self, event: Event) -> None:
+    def emit(self, event):
         pass
 
 
@@ -103,10 +101,10 @@ class NoOpEventLogger(EventLogger):
 class ProxyEventLogger(EventLogger):
     def __init__(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
+        name,
+        version = None,
+        schema_url = None,
+        attributes = None
     ):
         super().__init__(
             name=name,
@@ -114,11 +112,11 @@ class ProxyEventLogger(EventLogger):
             schema_url=schema_url,
             attributes=attributes,
         )
-        self._real_event_logger: Optional[EventLogger] = None
+        self._real_event_logger = None
         self._noop_event_logger = NoOpEventLogger(name)
 
     @property
-    def _event_logger(self) -> EventLogger:
+    def _event_logger(self):
         if self._real_event_logger:
             return self._real_event_logger
 
@@ -132,7 +130,7 @@ class ProxyEventLogger(EventLogger):
             return self._real_event_logger
         return self._noop_event_logger
 
-    def emit(self, event: Event) -> None:
+    def emit(self, event):
         self._event_logger.emit(event)
 
 
@@ -143,7 +141,7 @@ class EventLoggerProvider(ABC):
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         """Returns an EventLoggerProvider for use."""
 
@@ -155,11 +153,11 @@ class EventLoggerProvider(ABC):
 class NoOpEventLoggerProvider(EventLoggerProvider):
     def get_event_logger(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> EventLogger:
+        name,
+        version = None,
+        schema_url = None,
+        attributes = None
+    ):
         return NoOpEventLogger(
             name, version=version, schema_url=schema_url, attributes=attributes
         )
@@ -172,11 +170,11 @@ class NoOpEventLoggerProvider(EventLoggerProvider):
 class ProxyEventLoggerProvider(EventLoggerProvider):
     def get_event_logger(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[_ExtendedAttributes] = None,
-    ) -> EventLogger:
+        name,
+        version = None,
+        schema_url = None,
+        attributes = None
+    ):
         if _EVENT_LOGGER_PROVIDER:
             return _EVENT_LOGGER_PROVIDER.get_event_logger(
                 name,
@@ -193,7 +191,7 @@ class ProxyEventLoggerProvider(EventLoggerProvider):
 
 
 _EVENT_LOGGER_PROVIDER_SET_ONCE = Once()
-_EVENT_LOGGER_PROVIDER: Optional[EventLoggerProvider] = None
+_EVENT_LOGGER_PROVIDER = None
 _PROXY_EVENT_LOGGER_PROVIDER = ProxyEventLoggerProvider()
 
 
@@ -201,13 +199,13 @@ _PROXY_EVENT_LOGGER_PROVIDER = ProxyEventLoggerProvider()
     "You should use `get_logger_provider` instead. "
     "Deprecated since version 1.39.0 and will be removed in a future release."
 )
-def get_event_logger_provider() -> EventLoggerProvider:
-    global _EVENT_LOGGER_PROVIDER  # pylint: disable=global-variable-not-assigned
+def get_event_logger_provider():
+    global _EVENT_LOGGER_PROVIDER  # pylint =global-variable-not-assigned
     if _EVENT_LOGGER_PROVIDER is None:
         if _OTEL_PYTHON_EVENT_LOGGER_PROVIDER not in environ:
             return _PROXY_EVENT_LOGGER_PROVIDER
 
-        event_logger_provider: EventLoggerProvider = _load_provider(  # type: ignore
+        event_logger_provider = _load_provider(  # type: ignore
             _OTEL_PYTHON_EVENT_LOGGER_PROVIDER, "event_logger_provider"
         )
 
@@ -217,10 +215,10 @@ def get_event_logger_provider() -> EventLoggerProvider:
 
 
 def _set_event_logger_provider(
-    event_logger_provider: EventLoggerProvider, log: bool
-) -> None:
-    def set_elp() -> None:
-        global _EVENT_LOGGER_PROVIDER  # pylint: disable=global-statement
+    event_logger_provider, log
+):
+    def set_elp():
+        global _EVENT_LOGGER_PROVIDER  # pylint =global-statement
         _EVENT_LOGGER_PROVIDER = event_logger_provider
 
     did_set = _EVENT_LOGGER_PROVIDER_SET_ONCE.do_once(set_elp)
@@ -236,8 +234,8 @@ def _set_event_logger_provider(
     "Deprecated since version 1.39.0 and will be removed in a future release."
 )
 def set_event_logger_provider(
-    event_logger_provider: EventLoggerProvider,
-) -> None:
+    event_logger_provider
+):
     _set_event_logger_provider(event_logger_provider, log=True)
 
 
@@ -246,12 +244,12 @@ def set_event_logger_provider(
     "Deprecated since version 1.39.0 and will be removed in a future release."
 )
 def get_event_logger(
-    name: str,
-    version: Optional[str] = None,
-    schema_url: Optional[str] = None,
-    attributes: Optional[_ExtendedAttributes] = None,
-    event_logger_provider: Optional[EventLoggerProvider] = None,
-) -> "EventLogger":
+    name,
+    version = None,
+    schema_url = None,
+    attributes = None,
+    event_logger_provider = None
+):
     if event_logger_provider is None:
         event_logger_provider = get_event_logger_provider()
     return event_logger_provider.get_event_logger(

@@ -27,8 +27,8 @@ _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'opentelemetry.proto.resource.v1.resource_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'\n\"io.opentelemetry.proto.resource.v1B\rResourceProtoP\001Z*go.opentelemetry.io/proto/otlp/resource/v1\252\002\037OpenTelemetry.Proto.Resource.V1'
-  _globals['_RESOURCE']._serialized_start=128
-  _globals['_RESOURCE']._serialized_end=296
+  _globals._loaded_options = None
+  _globals._serialized_options = b'\n\"io.opentelemetry.proto.resource.v1B\rResourceProtoP\001Z*go.opentelemetry.io/proto/otlp/resource/v1\252\002\037OpenTelemetry.Proto.Resource.V1'
+  _globals._serialized_start=128
+  _globals._serialized_end=296
 # @@protoc_insertion_point(module_scope)

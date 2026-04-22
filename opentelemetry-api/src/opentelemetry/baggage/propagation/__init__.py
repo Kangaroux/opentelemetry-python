@@ -36,10 +36,10 @@ class W3CBaggagePropagator(textmap.TextMapPropagator):
 
     def extract(
         self,
-        carrier: textmap.CarrierT,
-        context: Optional[Context] = None,
-        getter: textmap.Getter[textmap.CarrierT] = textmap.default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = textmap.default_getter
+    ):
         """Extract Baggage from the carrier.
 
         See
@@ -63,7 +63,7 @@ class W3CBaggagePropagator(textmap.TextMapPropagator):
             )
             return context
 
-        baggage_entries: List[str] = split(_DELIMITER_PATTERN, header)
+        baggage_entries = split(_DELIMITER_PATTERN, header)
         total_baggage_entries = self._MAX_PAIRS
 
         if len(baggage_entries) > self._MAX_PAIRS:
@@ -83,7 +83,7 @@ class W3CBaggagePropagator(textmap.TextMapPropagator):
                 continue
             try:
                 name, value = entry.split("=", 1)
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:  # pylint =broad-exception-caught
                 _logger.warning(
                     "Baggage list-member `%s` doesn't match the format", entry
                 )
@@ -109,10 +109,10 @@ class W3CBaggagePropagator(textmap.TextMapPropagator):
 
     def inject(
         self,
-        carrier: textmap.CarrierT,
-        context: Optional[Context] = None,
-        setter: textmap.Setter[textmap.CarrierT] = textmap.default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = textmap.default_setter
+    ):
         """Injects Baggage into the carrier.
 
         See
@@ -126,12 +126,12 @@ class W3CBaggagePropagator(textmap.TextMapPropagator):
         setter.set(carrier, self._BAGGAGE_HEADER_NAME, baggage_string)
 
     @property
-    def fields(self) -> Set[str]:
+    def fields(self):
         """Returns a set with the fields set in `inject`."""
         return {self._BAGGAGE_HEADER_NAME}
 
 
-def _format_baggage(baggage_entries: Mapping[str, object]) -> str:
+def _format_baggage(baggage_entries):
     return ",".join(
         quote_plus(str(key)) + "=" + quote_plus(str(value))
         for key, value in baggage_entries.items()
@@ -139,8 +139,8 @@ def _format_baggage(baggage_entries: Mapping[str, object]) -> str:
 
 
 def _extract_first_element(
-    items: Optional[Iterable[textmap.CarrierT]],
-) -> Optional[textmap.CarrierT]:
+    items
+):
     if items is None:
         return None
     return next(iter(items), None)

@@ -14,12 +14,12 @@
 
 from typing_extensions import Final
 
-JSONRPC_PROTOCOL_VERSION: Final = "jsonrpc.protocol.version"
+JSONRPC_PROTOCOL_VERSION = "jsonrpc.protocol.version"
 """
 Protocol version, as specified in the `jsonrpc` property of the request and its corresponding response.
 """
 
-JSONRPC_REQUEST_ID: Final = "jsonrpc.request.id"
+JSONRPC_REQUEST_ID = "jsonrpc.request.id"
 """
 A string representation of the `id` property of the request and its corresponding response.
 Note: Under the [JSON-RPC specification](https://www.jsonrpc.org/specification), the `id` property may be a string, number, null, or omitted entirely. When omitted, the request is treated as a notification. Using `null` is not equivalent to omitting the `id`, but it is discouraged.

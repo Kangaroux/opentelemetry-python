@@ -15,12 +15,12 @@
 from enum import Enum
 from typing_extensions import Final
 
-K8S_CLUSTER_NAME: Final = "k8s.cluster.name"
+K8S_CLUSTER_NAME = "k8s.cluster.name"
 """
 The name of the cluster.
 """
 
-K8S_CLUSTER_UID: Final = "k8s.cluster.uid"
+K8S_CLUSTER_UID = "k8s.cluster.uid"
 """
 A pseudo-ID for the cluster, set to the UID of the `kube-system` namespace.
 Note: K8s doesn't have support for obtaining a cluster ID. If this is ever
@@ -39,7 +39,7 @@ UUIDs as standardized by
 Which states:
 
 > If generated according to one of the mechanisms defined in Rec.
-> ITU-T X.667 | ISO/IEC 9834-8, a UUID is either guaranteed to be
+> ITU-T Union/IEC 9834-8, a UUID is either guaranteed to be
 > different from all other UUIDs generated before 3603 A.D., or is
 > extremely likely to be different (depending on the mechanism chosen).
 
@@ -47,34 +47,34 @@ Therefore, UIDs between clusters should be extremely unlikely to
 conflict.
 """
 
-K8S_CONTAINER_NAME: Final = "k8s.container.name"
+K8S_CONTAINER_NAME = "k8s.container.name"
 """
 The name of the Container from Pod specification, must be unique within a Pod. Container runtime usually uses different globally unique name (`container.name`).
 """
 
-K8S_CONTAINER_RESTART_COUNT: Final = "k8s.container.restart_count"
+K8S_CONTAINER_RESTART_COUNT = "k8s.container.restart_count"
 """
 Number of times the container was restarted. This attribute can be used to identify a particular container (running or stopped) within a container spec.
 """
 
-K8S_CONTAINER_STATUS_LAST_TERMINATED_REASON: Final = (
+K8S_CONTAINER_STATUS_LAST_TERMINATED_REASON = (
     "k8s.container.status.last_terminated_reason"
 )
 """
 Last terminated reason of the Container.
 """
 
-K8S_CONTAINER_STATUS_REASON: Final = "k8s.container.status.reason"
+K8S_CONTAINER_STATUS_REASON = "k8s.container.status.reason"
 """
 The reason for the container state. Corresponds to the `reason` field of the: [K8s ContainerStateWaiting](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#containerstatewaiting-v1-core) or [K8s ContainerStateTerminated](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#containerstateterminated-v1-core).
 """
 
-K8S_CONTAINER_STATUS_STATE: Final = "k8s.container.status.state"
+K8S_CONTAINER_STATUS_STATE = "k8s.container.status.state"
 """
 The state of the container. [K8s ContainerState](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#containerstate-v1-core).
 """
 
-K8S_CRONJOB_ANNOTATION_TEMPLATE: Final = "k8s.cronjob.annotation"
+K8S_CRONJOB_ANNOTATION_TEMPLATE = "k8s.cronjob.annotation"
 """
 The cronjob annotation placed on the CronJob, the `<key>` being the annotation name, the value being the annotation value.
 Note: Examples:
@@ -85,7 +85,7 @@ Note: Examples:
   the `k8s.cronjob.annotation.data` attribute with value `""`.
 """
 
-K8S_CRONJOB_LABEL_TEMPLATE: Final = "k8s.cronjob.label"
+K8S_CRONJOB_LABEL_TEMPLATE = "k8s.cronjob.label"
 """
 The label placed on the CronJob, the `<key>` being the label name, the value being the label value.
 Note: Examples:
@@ -96,17 +96,17 @@ Note: Examples:
   the `k8s.cronjob.label.automated` attribute with value `""`.
 """
 
-K8S_CRONJOB_NAME: Final = "k8s.cronjob.name"
+K8S_CRONJOB_NAME = "k8s.cronjob.name"
 """
 The name of the CronJob.
 """
 
-K8S_CRONJOB_UID: Final = "k8s.cronjob.uid"
+K8S_CRONJOB_UID = "k8s.cronjob.uid"
 """
 The UID of the CronJob.
 """
 
-K8S_DAEMONSET_ANNOTATION_TEMPLATE: Final = "k8s.daemonset.annotation"
+K8S_DAEMONSET_ANNOTATION_TEMPLATE = "k8s.daemonset.annotation"
 """
 The annotation placed on the DaemonSet, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -117,7 +117,7 @@ Note: Examples:
   the `k8s.daemonset.annotation.data` attribute with value `""`.
 """
 
-K8S_DAEMONSET_LABEL_TEMPLATE: Final = "k8s.daemonset.label"
+K8S_DAEMONSET_LABEL_TEMPLATE = "k8s.daemonset.label"
 """
 The label placed on the DaemonSet, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -128,17 +128,17 @@ Note: Examples:
   the `k8s.daemonset.label.injected` attribute with value `""`.
 """
 
-K8S_DAEMONSET_NAME: Final = "k8s.daemonset.name"
+K8S_DAEMONSET_NAME = "k8s.daemonset.name"
 """
 The name of the DaemonSet.
 """
 
-K8S_DAEMONSET_UID: Final = "k8s.daemonset.uid"
+K8S_DAEMONSET_UID = "k8s.daemonset.uid"
 """
 The UID of the DaemonSet.
 """
 
-K8S_DEPLOYMENT_ANNOTATION_TEMPLATE: Final = "k8s.deployment.annotation"
+K8S_DEPLOYMENT_ANNOTATION_TEMPLATE = "k8s.deployment.annotation"
 """
 The annotation placed on the Deployment, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -149,7 +149,7 @@ Note: Examples:
   the `k8s.deployment.annotation.data` attribute with value `""`.
 """
 
-K8S_DEPLOYMENT_LABEL_TEMPLATE: Final = "k8s.deployment.label"
+K8S_DEPLOYMENT_LABEL_TEMPLATE = "k8s.deployment.label"
 """
 The label placed on the Deployment, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -160,28 +160,28 @@ Note: Examples:
   the `k8s.deployment.label.injected` attribute with value `""`.
 """
 
-K8S_DEPLOYMENT_NAME: Final = "k8s.deployment.name"
+K8S_DEPLOYMENT_NAME = "k8s.deployment.name"
 """
 The name of the Deployment.
 """
 
-K8S_DEPLOYMENT_UID: Final = "k8s.deployment.uid"
+K8S_DEPLOYMENT_UID = "k8s.deployment.uid"
 """
 The UID of the Deployment.
 """
 
-K8S_HPA_METRIC_TYPE: Final = "k8s.hpa.metric.type"
+K8S_HPA_METRIC_TYPE = "k8s.hpa.metric.type"
 """
 The type of metric source for the horizontal pod autoscaler.
-Note: This attribute reflects the `type` field of spec.metrics[] in the HPA.
+Note: This attribute reflects the `type` field of spec.metrics in the HPA.
 """
 
-K8S_HPA_NAME: Final = "k8s.hpa.name"
+K8S_HPA_NAME = "k8s.hpa.name"
 """
 The name of the horizontal pod autoscaler.
 """
 
-K8S_HPA_SCALETARGETREF_API_VERSION: Final = (
+K8S_HPA_SCALETARGETREF_API_VERSION = (
     "k8s.hpa.scaletargetref.api_version"
 )
 """
@@ -189,29 +189,29 @@ The API version of the target resource to scale for the HorizontalPodAutoscaler.
 Note: This maps to the `apiVersion` field in the `scaleTargetRef` of the HPA spec.
 """
 
-K8S_HPA_SCALETARGETREF_KIND: Final = "k8s.hpa.scaletargetref.kind"
+K8S_HPA_SCALETARGETREF_KIND = "k8s.hpa.scaletargetref.kind"
 """
 The kind of the target resource to scale for the HorizontalPodAutoscaler.
 Note: This maps to the `kind` field in the `scaleTargetRef` of the HPA spec.
 """
 
-K8S_HPA_SCALETARGETREF_NAME: Final = "k8s.hpa.scaletargetref.name"
+K8S_HPA_SCALETARGETREF_NAME = "k8s.hpa.scaletargetref.name"
 """
 The name of the target resource to scale for the HorizontalPodAutoscaler.
 Note: This maps to the `name` field in the `scaleTargetRef` of the HPA spec.
 """
 
-K8S_HPA_UID: Final = "k8s.hpa.uid"
+K8S_HPA_UID = "k8s.hpa.uid"
 """
 The UID of the horizontal pod autoscaler.
 """
 
-K8S_HUGEPAGE_SIZE: Final = "k8s.hugepage.size"
+K8S_HUGEPAGE_SIZE = "k8s.hugepage.size"
 """
 The size (identifier) of the K8s huge page.
 """
 
-K8S_JOB_ANNOTATION_TEMPLATE: Final = "k8s.job.annotation"
+K8S_JOB_ANNOTATION_TEMPLATE = "k8s.job.annotation"
 """
 The annotation placed on the Job, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -222,7 +222,7 @@ Note: Examples:
   the `k8s.job.annotation.data` attribute with value `""`.
 """
 
-K8S_JOB_LABEL_TEMPLATE: Final = "k8s.job.label"
+K8S_JOB_LABEL_TEMPLATE = "k8s.job.label"
 """
 The label placed on the Job, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -233,17 +233,17 @@ Note: Examples:
   the `k8s.job.label.automated` attribute with value `""`.
 """
 
-K8S_JOB_NAME: Final = "k8s.job.name"
+K8S_JOB_NAME = "k8s.job.name"
 """
 The name of the Job.
 """
 
-K8S_JOB_UID: Final = "k8s.job.uid"
+K8S_JOB_UID = "k8s.job.uid"
 """
 The UID of the Job.
 """
 
-K8S_NAMESPACE_ANNOTATION_TEMPLATE: Final = "k8s.namespace.annotation"
+K8S_NAMESPACE_ANNOTATION_TEMPLATE = "k8s.namespace.annotation"
 """
 The annotation placed on the Namespace, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -254,7 +254,7 @@ Note: Examples:
   the `k8s.namespace.annotation.data` attribute with value `""`.
 """
 
-K8S_NAMESPACE_LABEL_TEMPLATE: Final = "k8s.namespace.label"
+K8S_NAMESPACE_LABEL_TEMPLATE = "k8s.namespace.label"
 """
 The label placed on the Namespace, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -265,19 +265,19 @@ Note: Examples:
   the `k8s.namespace.label.data` attribute with value `""`.
 """
 
-K8S_NAMESPACE_NAME: Final = "k8s.namespace.name"
+K8S_NAMESPACE_NAME = "k8s.namespace.name"
 """
 The name of the namespace that the pod is running in.
 """
 
-K8S_NAMESPACE_PHASE: Final = "k8s.namespace.phase"
+K8S_NAMESPACE_PHASE = "k8s.namespace.phase"
 """
 The phase of the K8s namespace.
 Note: This attribute aligns with the `phase` field of the
 [K8s NamespaceStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#namespacestatus-v1-core).
 """
 
-K8S_NODE_ANNOTATION_TEMPLATE: Final = "k8s.node.annotation"
+K8S_NODE_ANNOTATION_TEMPLATE = "k8s.node.annotation"
 """
 The annotation placed on the Node, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -288,14 +288,14 @@ Note: Examples:
   the `k8s.node.annotation.data` attribute with value `""`.
 """
 
-K8S_NODE_CONDITION_STATUS: Final = "k8s.node.condition.status"
+K8S_NODE_CONDITION_STATUS = "k8s.node.condition.status"
 """
 The status of the condition, one of True, False, Unknown.
 Note: This attribute aligns with the `status` field of the
 [NodeCondition](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#nodecondition-v1-core).
 """
 
-K8S_NODE_CONDITION_TYPE: Final = "k8s.node.condition.type"
+K8S_NODE_CONDITION_TYPE = "k8s.node.condition.type"
 """
 The condition type of a K8s Node.
 Note: K8s Node conditions as described
@@ -309,7 +309,7 @@ or custom controllers MAY introduce additional node condition types.
 When this occurs, the exact value as reported by the Kubernetes API SHOULD be used.
 """
 
-K8S_NODE_LABEL_TEMPLATE: Final = "k8s.node.label"
+K8S_NODE_LABEL_TEMPLATE = "k8s.node.label"
 """
 The label placed on the Node, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -320,17 +320,17 @@ Note: Examples:
   the `k8s.node.label.data` attribute with value `""`.
 """
 
-K8S_NODE_NAME: Final = "k8s.node.name"
+K8S_NODE_NAME = "k8s.node.name"
 """
 The name of the Node.
 """
 
-K8S_NODE_UID: Final = "k8s.node.uid"
+K8S_NODE_UID = "k8s.node.uid"
 """
 The UID of the Node.
 """
 
-K8S_POD_ANNOTATION_TEMPLATE: Final = "k8s.pod.annotation"
+K8S_POD_ANNOTATION_TEMPLATE = "k8s.pod.annotation"
 """
 The annotation placed on the Pod, the `<key>` being the annotation name, the value being the annotation value.
 Note: Examples:
@@ -343,7 +343,7 @@ Note: Examples:
   the `k8s.pod.annotation.data` attribute with value `""`.
 """
 
-K8S_POD_HOSTNAME: Final = "k8s.pod.hostname"
+K8S_POD_HOSTNAME = "k8s.pod.hostname"
 """
 Specifies the hostname of the Pod.
 Note: The K8s Pod spec has an optional hostname field, which can be used to specify a hostname.
@@ -354,14 +354,14 @@ This attribute aligns with the `hostname` field of the
 [K8s PodSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podspec-v1-core).
 """
 
-K8S_POD_IP: Final = "k8s.pod.ip"
+K8S_POD_IP = "k8s.pod.ip"
 """
 IP address allocated to the Pod.
 Note: This attribute aligns with the `podIP` field of the
 [K8s PodStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.34/#podstatus-v1-core).
 """
 
-K8S_POD_LABEL_TEMPLATE: Final = "k8s.pod.label"
+K8S_POD_LABEL_TEMPLATE = "k8s.pod.label"
 """
 The label placed on the Pod, the `<key>` being the label name, the value being the label value.
 Note: Examples:
@@ -374,17 +374,17 @@ Note: Examples:
   the `k8s.pod.label.data` attribute with value `""`.
 """
 
-K8S_POD_LABELS_TEMPLATE: Final = "k8s.pod.labels"
+K8S_POD_LABELS_TEMPLATE = "k8s.pod.labels"
 """
 Deprecated: Replaced by `k8s.pod.label`.
 """
 
-K8S_POD_NAME: Final = "k8s.pod.name"
+K8S_POD_NAME = "k8s.pod.name"
 """
 The name of the Pod.
 """
 
-K8S_POD_START_TIME: Final = "k8s.pod.start_time"
+K8S_POD_START_TIME = "k8s.pod.start_time"
 """
 The start timestamp of the Pod.
 Note: Date and time at which the object was acknowledged by the Kubelet.
@@ -395,22 +395,22 @@ This attribute aligns with the `startTime` field of the
 in ISO 8601 (RFC 3339 compatible) format.
 """
 
-K8S_POD_STATUS_PHASE: Final = "k8s.pod.status.phase"
+K8S_POD_STATUS_PHASE = "k8s.pod.status.phase"
 """
 The phase for the pod. Corresponds to the `phase` field of the: [K8s PodStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#podstatus-v1-core).
 """
 
-K8S_POD_STATUS_REASON: Final = "k8s.pod.status.reason"
+K8S_POD_STATUS_REASON = "k8s.pod.status.reason"
 """
 The reason for the pod state. Corresponds to the `reason` field of the: [K8s PodStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.33/#podstatus-v1-core).
 """
 
-K8S_POD_UID: Final = "k8s.pod.uid"
+K8S_POD_UID = "k8s.pod.uid"
 """
 The UID of the Pod.
 """
 
-K8S_REPLICASET_ANNOTATION_TEMPLATE: Final = "k8s.replicaset.annotation"
+K8S_REPLICASET_ANNOTATION_TEMPLATE = "k8s.replicaset.annotation"
 """
 The annotation placed on the ReplicaSet, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -421,7 +421,7 @@ Note: Examples:
   the `k8s.replicaset.annotation.data` attribute with value `""`.
 """
 
-K8S_REPLICASET_LABEL_TEMPLATE: Final = "k8s.replicaset.label"
+K8S_REPLICASET_LABEL_TEMPLATE = "k8s.replicaset.label"
 """
 The label placed on the ReplicaSet, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -432,43 +432,43 @@ Note: Examples:
   the `k8s.replicaset.label.injected` attribute with value `""`.
 """
 
-K8S_REPLICASET_NAME: Final = "k8s.replicaset.name"
+K8S_REPLICASET_NAME = "k8s.replicaset.name"
 """
 The name of the ReplicaSet.
 """
 
-K8S_REPLICASET_UID: Final = "k8s.replicaset.uid"
+K8S_REPLICASET_UID = "k8s.replicaset.uid"
 """
 The UID of the ReplicaSet.
 """
 
-K8S_REPLICATIONCONTROLLER_NAME: Final = "k8s.replicationcontroller.name"
+K8S_REPLICATIONCONTROLLER_NAME = "k8s.replicationcontroller.name"
 """
 The name of the replication controller.
 """
 
-K8S_REPLICATIONCONTROLLER_UID: Final = "k8s.replicationcontroller.uid"
+K8S_REPLICATIONCONTROLLER_UID = "k8s.replicationcontroller.uid"
 """
 The UID of the replication controller.
 """
 
-K8S_RESOURCEQUOTA_NAME: Final = "k8s.resourcequota.name"
+K8S_RESOURCEQUOTA_NAME = "k8s.resourcequota.name"
 """
 The name of the resource quota.
 """
 
-K8S_RESOURCEQUOTA_RESOURCE_NAME: Final = "k8s.resourcequota.resource_name"
+K8S_RESOURCEQUOTA_RESOURCE_NAME = "k8s.resourcequota.resource_name"
 """
 The name of the K8s resource a resource quota defines.
 Note: The value for this attribute can be either the full `count/<resource>[.<group>]` string (e.g., count/deployments.apps, count/pods), or, for certain core Kubernetes resources, just the resource name (e.g., pods, services, configmaps). Both forms are supported by Kubernetes for object count quotas. See [Kubernetes Resource Quotas documentation](https://kubernetes.io/docs/concepts/policy/resource-quotas/#quota-on-object-count) for more details.
 """
 
-K8S_RESOURCEQUOTA_UID: Final = "k8s.resourcequota.uid"
+K8S_RESOURCEQUOTA_UID = "k8s.resourcequota.uid"
 """
 The UID of the resource quota.
 """
 
-K8S_SERVICE_ANNOTATION_TEMPLATE: Final = "k8s.service.annotation"
+K8S_SERVICE_ANNOTATION_TEMPLATE = "k8s.service.annotation"
 """
 The annotation placed on the Service, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -479,7 +479,7 @@ Note: Examples:
   the `k8s.service.annotation.data` attribute with value `""`.
 """
 
-K8S_SERVICE_ENDPOINT_ADDRESS_TYPE: Final = "k8s.service.endpoint.address_type"
+K8S_SERVICE_ENDPOINT_ADDRESS_TYPE = "k8s.service.endpoint.address_type"
 """
 The address type of the service endpoint.
 Note: The network address family or type of the endpoint.
@@ -489,7 +489,7 @@ It is used to differentiate metrics when a Service is backed by multiple address
 (e.g., in dual-stack clusters).
 """
 
-K8S_SERVICE_ENDPOINT_CONDITION: Final = "k8s.service.endpoint.condition"
+K8S_SERVICE_ENDPOINT_CONDITION = "k8s.service.endpoint.condition"
 """
 The condition of the service endpoint.
 Note: The current operational condition of the service endpoint.
@@ -497,7 +497,7 @@ An endpoint can have multiple conditions set at once (e.g., both `serving` and `
 This attribute aligns with the condition fields in the [K8s EndpointSlice](https://kubernetes.io/docs/reference/kubernetes-api/service-resources/endpoint-slice-v1/).
 """
 
-K8S_SERVICE_ENDPOINT_ZONE: Final = "k8s.service.endpoint.zone"
+K8S_SERVICE_ENDPOINT_ZONE = "k8s.service.endpoint.zone"
 """
 The zone of the service endpoint.
 Note: The zone where the endpoint is located, typically corresponding to a failure domain.
@@ -510,7 +510,7 @@ If the zone is not populated (e.g., nodes without the `topology.kubernetes.io/zo
 the attribute value will be an empty string.
 """
 
-K8S_SERVICE_LABEL_TEMPLATE: Final = "k8s.service.label"
+K8S_SERVICE_LABEL_TEMPLATE = "k8s.service.label"
 """
 The label placed on the Service, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -521,12 +521,12 @@ Note: Examples:
   the `k8s.service.label.data` attribute with value `""`.
 """
 
-K8S_SERVICE_NAME: Final = "k8s.service.name"
+K8S_SERVICE_NAME = "k8s.service.name"
 """
 The name of the Service.
 """
 
-K8S_SERVICE_PUBLISH_NOT_READY_ADDRESSES: Final = (
+K8S_SERVICE_PUBLISH_NOT_READY_ADDRESSES = (
     "k8s.service.publish_not_ready_addresses"
 )
 """
@@ -538,7 +538,7 @@ It aligns with the `publishNotReadyAddresses` field of the
 [K8s ServiceSpec](https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/#ServiceSpec).
 """
 
-K8S_SERVICE_SELECTOR_TEMPLATE: Final = "k8s.service.selector"
+K8S_SERVICE_SELECTOR_TEMPLATE = "k8s.service.selector"
 """
 The selector key-value pair placed on the Service, the `<key>` being the selector key, the value being the selector value.
 Note: These selectors are used to correlate with pod labels. Each selector key-value pair becomes a separate attribute.
@@ -551,7 +551,7 @@ Examples:
   the `k8s.service.selector.version` attribute with value `"v1"`.
 """
 
-K8S_SERVICE_TRAFFIC_DISTRIBUTION: Final = "k8s.service.traffic_distribution"
+K8S_SERVICE_TRAFFIC_DISTRIBUTION = "k8s.service.traffic_distribution"
 """
 The traffic distribution policy for the Service.
 Note: Specifies how traffic is distributed to endpoints for this Service.
@@ -563,19 +563,19 @@ If this field is not set on the Service, the attribute SHOULD NOT be emitted.
 When not set, Kubernetes distributes traffic evenly across all endpoints cluster-wide.
 """
 
-K8S_SERVICE_TYPE: Final = "k8s.service.type"
+K8S_SERVICE_TYPE = "k8s.service.type"
 """
 The type of the Kubernetes Service.
 Note: This attribute aligns with the `type` field of the
 [K8s ServiceSpec](https://kubernetes.io/docs/reference/kubernetes-api/service-resources/service-v1/#ServiceSpec).
 """
 
-K8S_SERVICE_UID: Final = "k8s.service.uid"
+K8S_SERVICE_UID = "k8s.service.uid"
 """
 The UID of the Service.
 """
 
-K8S_STATEFULSET_ANNOTATION_TEMPLATE: Final = "k8s.statefulset.annotation"
+K8S_STATEFULSET_ANNOTATION_TEMPLATE = "k8s.statefulset.annotation"
 """
 The annotation placed on the StatefulSet, the `<key>` being the annotation name, the value being the annotation value, even if the value is empty.
 Note: Examples:
@@ -586,7 +586,7 @@ Note: Examples:
   the `k8s.statefulset.annotation.data` attribute with value `""`.
 """
 
-K8S_STATEFULSET_LABEL_TEMPLATE: Final = "k8s.statefulset.label"
+K8S_STATEFULSET_LABEL_TEMPLATE = "k8s.statefulset.label"
 """
 The label placed on the StatefulSet, the `<key>` being the label name, the value being the label value, even if the value is empty.
 Note: Examples:
@@ -597,27 +597,27 @@ Note: Examples:
   the `k8s.statefulset.label.injected` attribute with value `""`.
 """
 
-K8S_STATEFULSET_NAME: Final = "k8s.statefulset.name"
+K8S_STATEFULSET_NAME = "k8s.statefulset.name"
 """
 The name of the StatefulSet.
 """
 
-K8S_STATEFULSET_UID: Final = "k8s.statefulset.uid"
+K8S_STATEFULSET_UID = "k8s.statefulset.uid"
 """
 The UID of the StatefulSet.
 """
 
-K8S_STORAGECLASS_NAME: Final = "k8s.storageclass.name"
+K8S_STORAGECLASS_NAME = "k8s.storageclass.name"
 """
 The name of K8s [StorageClass](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#storageclass-v1-storage-k8s-io) object.
 """
 
-K8S_VOLUME_NAME: Final = "k8s.volume.name"
+K8S_VOLUME_NAME = "k8s.volume.name"
 """
 The name of the K8s volume.
 """
 
-K8S_VOLUME_TYPE: Final = "k8s.volume.type"
+K8S_VOLUME_TYPE = "k8s.volume.type"
 """
 The type of the K8s volume.
 """

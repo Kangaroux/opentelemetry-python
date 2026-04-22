@@ -17,19 +17,19 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Histogram, Meter, UpDownCounter
 
-AZURE_COSMOSDB_CLIENT_ACTIVE_INSTANCE_COUNT: Final = (
+AZURE_COSMOSDB_CLIENT_ACTIVE_INSTANCE_COUNT = (
     "azure.cosmosdb.client.active_instance.count"
 )
 """
 Number of active client instances
-Instrument: updowncounter
+Instrument
 Unit: {instance}
 """
 
 
 def create_azure_cosmosdb_client_active_instance_count(
-    meter: Meter,
-) -> UpDownCounter:
+    meter
+):
     """Number of active client instances"""
     return meter.create_up_down_counter(
         name=AZURE_COSMOSDB_CLIENT_ACTIVE_INSTANCE_COUNT,
@@ -38,19 +38,19 @@ def create_azure_cosmosdb_client_active_instance_count(
     )
 
 
-AZURE_COSMOSDB_CLIENT_OPERATION_REQUEST_CHARGE: Final = (
+AZURE_COSMOSDB_CLIENT_OPERATION_REQUEST_CHARGE = (
     "azure.cosmosdb.client.operation.request_charge"
 )
 """
 [Request units](https://learn.microsoft.com/azure/cosmos-db/request-units) consumed by the operation
-Instrument: histogram
+Instrument
 Unit: {request_unit}
 """
 
 
 def create_azure_cosmosdb_client_operation_request_charge(
-    meter: Meter,
-) -> Histogram:
+    meter
+):
     """[Request units](https://learn.microsoft.com/azure/cosmos-db/request-units) consumed by the operation"""
     return meter.create_histogram(
         name=AZURE_COSMOSDB_CLIENT_OPERATION_REQUEST_CHARGE,

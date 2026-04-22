@@ -29,7 +29,7 @@ class EnvSubstitutionError(Exception):
     """
 
 
-def substitute_env_vars(text: str) -> str:
+def substitute_env_vars(text):
     """Substitute environment variables in configuration text.
 
     Supports the following syntax:
@@ -47,7 +47,7 @@ def substitute_env_vars(text: str) -> str:
         EnvSubstitutionError: If a required environment variable is not found.
 
     Examples:
-        >>> os.environ['SERVICE_NAME'] = 'my-service'
+        >>> os.environ = 'my-service'
         >>> substitute_env_vars('name: ${SERVICE_NAME}')
         'name: my-service'
         >>> substitute_env_vars('name: ${MISSING:-default}')
@@ -59,7 +59,7 @@ def substitute_env_vars(text: str) -> str:
     # Handling both in a single pass ensures $$ followed by ${VAR} works correctly
     pattern = r"\$\$|\$\{([A-Za-z_][A-Za-z0-9_]*)(:-([^}]*))?\}"
 
-    def replace_var(match) -> str:
+    def replace_var(match):
         if match.group(1) is None:
             # Matched $$, return literal $
             return "$"
@@ -78,7 +78,7 @@ def substitute_env_vars(text: str) -> str:
                 var_name,
             )
             raise EnvSubstitutionError(
-                f"Environment variable '{var_name}' not found and no default provided"
+                "Environment variable '{}' not found and no default provided".format(var_name)
             )
 
         return value

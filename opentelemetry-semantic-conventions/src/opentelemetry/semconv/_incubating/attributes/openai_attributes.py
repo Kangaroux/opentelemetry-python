@@ -15,22 +15,22 @@
 from enum import Enum
 from typing_extensions import Final
 
-OPENAI_API_TYPE: Final = "openai.api.type"
+OPENAI_API_TYPE = "openai.api.type"
 """
 The type of OpenAI API being used.
 """
 
-OPENAI_REQUEST_SERVICE_TIER: Final = "openai.request.service_tier"
+OPENAI_REQUEST_SERVICE_TIER = "openai.request.service_tier"
 """
 The service tier requested. May be a specific tier, default, or auto.
 """
 
-OPENAI_RESPONSE_SERVICE_TIER: Final = "openai.response.service_tier"
+OPENAI_RESPONSE_SERVICE_TIER = "openai.response.service_tier"
 """
 The service tier used for the response.
 """
 
-OPENAI_RESPONSE_SYSTEM_FINGERPRINT: Final = (
+OPENAI_RESPONSE_SYSTEM_FINGERPRINT = (
     "openai.response.system_fingerprint"
 )
 """

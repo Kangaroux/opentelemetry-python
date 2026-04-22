@@ -14,7 +14,7 @@
 
 from typing_extensions import Final
 
-POOL_NAME: Final = "pool.name"
+POOL_NAME = "pool.name"
 """
 Deprecated: Replaced by `db.client.connection.pool.name`.
 """

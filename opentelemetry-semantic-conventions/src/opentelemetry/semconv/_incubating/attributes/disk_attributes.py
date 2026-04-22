@@ -15,7 +15,7 @@
 from enum import Enum
 from typing_extensions import Final
 
-DISK_IO_DIRECTION: Final = "disk.io.direction"
+DISK_IO_DIRECTION = "disk.io.direction"
 """
 The disk IO operation direction.
 """

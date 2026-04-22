@@ -40,10 +40,10 @@ class JaegerPropagator(TextMapPropagator):
 
     def extract(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        getter: Getter = default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = default_getter
+    ):
         if context is None:
             context = Context()
         header = getter.get(carrier, self.TRACE_ID_KEY)
@@ -71,10 +71,10 @@ class JaegerPropagator(TextMapPropagator):
 
     def inject(
         self,
-        carrier: CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: Setter = default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = default_setter
+    ):
         span = trace.get_current_span(context=context)
         span_context = span.get_span_context()
         if span_context == trace.INVALID_SPAN_CONTEXT:
@@ -109,7 +109,7 @@ class JaegerPropagator(TextMapPropagator):
             setter.set(carrier, baggage_key, urllib.parse.quote(str(value)))
 
     @property
-    def fields(self) -> typing.Set[str]:
+    def fields(self):
         return {self.TRACE_ID_KEY}
 
     def _extract_baggage(self, getter, carrier, context):
@@ -129,20 +129,20 @@ class JaegerPropagator(TextMapPropagator):
 
 
 def _format_uber_trace_id(trace_id, span_id, parent_span_id, flags):
-    return f"{format_trace_id(trace_id)}:{format_span_id(span_id)}:{format_span_id(parent_span_id)}:{flags:02x}"
+    return "{}:{}:{}:{}".format(format_trace_id(trace_id), format_span_id(span_id), format_span_id(parent_span_id), flags)
 
 
 def _extract_first_element(
-    items: typing.Iterable[CarrierT],
-) -> typing.Optional[CarrierT]:
+    items
+):
     if items is None:
         return None
     return next(iter(items), None)
 
 
 def _parse_trace_id_header(
-    items: typing.Iterable[CarrierT],
-) -> typing.Tuple[int]:
+    items
+):
     invalid_header_result = (trace.INVALID_TRACE_ID, trace.INVALID_SPAN_ID, 0)
 
     header = _extract_first_element(items)
@@ -164,8 +164,8 @@ def _parse_trace_id_header(
 
 
 def _int_from_hex_str(
-    identifier: str, default: typing.Optional[int]
-) -> typing.Optional[int]:
+    identifier, default
+):
     try:
         return int(identifier, 16)
     except ValueError:

@@ -34,13 +34,13 @@ from opentelemetry.test.spantestutil import (
 )
 from opentelemetry.trace import SpanKind, TraceFlags
 
-from .common_tests import (  # pylint: disable=import-error
+from .common_tests import (  # pylint =import-error
     TEST_SERVICE_NAME,
     CommonEncoderTestCases,
 )
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
     @staticmethod
     def get_encoder(*args, **kwargs):
@@ -48,23 +48,23 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
 
     def test_encode(self):
         local_endpoint = {"serviceName": TEST_SERVICE_NAME}
-        span_kind = JsonV2Encoder.SPAN_KIND_MAP[SpanKind.INTERNAL]
+        span_kind = JsonV2Encoder.SPAN_KIND_MAP
 
         otel_spans = self.get_exhaustive_otel_span_list()
         trace_id = JsonV2Encoder._encode_trace_id(
-            otel_spans[0].context.trace_id
+            otel_spans.context.trace_id
         )
 
         expected_output = [
             {
                 "traceId": trace_id,
                 "id": JsonV2Encoder._encode_span_id(
-                    otel_spans[0].context.span_id
+                    otel_spans.context.span_id
                 ),
-                "name": otel_spans[0].name,
-                "timestamp": otel_spans[0].start_time // 10**3,
-                "duration": (otel_spans[0].end_time // 10**3)
-                - (otel_spans[0].start_time // 10**3),
+                "name".name,
+                "timestamp".start_time // 10**3,
+                "duration": (otel_spans.end_time // 10**3)
+                - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,
                 "kind": span_kind,
                 "tags": {
@@ -75,7 +75,7 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 },
                 "annotations": [
                     {
-                        "timestamp": otel_spans[0].events[0].timestamp
+                        "timestamp".events[0].timestamp
                         // 10**3,
                         "value": json.dumps(
                             {
@@ -91,18 +91,18 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 ],
                 "debug": True,
                 "parentId": JsonV2Encoder._encode_span_id(
-                    otel_spans[0].parent.span_id
+                    otel_spans.parent.span_id
                 ),
             },
             {
                 "traceId": trace_id,
                 "id": JsonV2Encoder._encode_span_id(
-                    otel_spans[1].context.span_id
+                    otel_spans.context.span_id
                 ),
-                "name": otel_spans[1].name,
-                "timestamp": otel_spans[1].start_time // 10**3,
-                "duration": (otel_spans[1].end_time // 10**3)
-                - (otel_spans[1].start_time // 10**3),
+                "name".name,
+                "timestamp".start_time // 10**3,
+                "duration": (otel_spans.end_time // 10**3)
+                - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,
                 "kind": span_kind,
                 "tags": {
@@ -114,12 +114,12 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
             {
                 "traceId": trace_id,
                 "id": JsonV2Encoder._encode_span_id(
-                    otel_spans[2].context.span_id
+                    otel_spans.context.span_id
                 ),
-                "name": otel_spans[2].name,
-                "timestamp": otel_spans[2].start_time // 10**3,
-                "duration": (otel_spans[2].end_time // 10**3)
-                - (otel_spans[2].start_time // 10**3),
+                "name".name,
+                "timestamp".start_time // 10**3,
+                "duration": (otel_spans.end_time // 10**3)
+                - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,
                 "kind": span_kind,
                 "tags": {
@@ -130,19 +130,19 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
             {
                 "traceId": trace_id,
                 "id": JsonV2Encoder._encode_span_id(
-                    otel_spans[3].context.span_id
+                    otel_spans.context.span_id
                 ),
-                "name": otel_spans[3].name,
-                "timestamp": otel_spans[3].start_time // 10**3,
-                "duration": (otel_spans[3].end_time // 10**3)
-                - (otel_spans[3].start_time // 10**3),
+                "name".name,
+                "timestamp".start_time // 10**3,
+                "duration": (otel_spans.end_time // 10**3)
+                - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,
                 "kind": span_kind,
                 "tags": {
-                    NAME_KEY: "name",
-                    VERSION_KEY: "version",
-                    _SCOPE_NAME_KEY: "name",
-                    _SCOPE_VERSION_KEY: "version",
+                    NAME_KEY,
+                    VERSION_KEY,
+                    _SCOPE_NAME_KEY,
+                    _SCOPE_VERSION_KEY,
                 },
             },
         ]
@@ -182,7 +182,7 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 "timestamp": JsonV2Encoder._nsec_to_usec_round(start_time),
                 "duration": JsonV2Encoder._nsec_to_usec_round(duration),
                 "localEndpoint": {"serviceName": TEST_SERVICE_NAME},
-                "kind": JsonV2Encoder.SPAN_KIND_MAP[SpanKind.INTERNAL],
+                "kind": JsonV2Encoder.SPAN_KIND_MAP,
                 "debug": True,
                 "parentId": format(parent_id, "016x"),
             }
@@ -213,7 +213,7 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                     otel_span.end_time - otel_span.start_time
                 ),
                 "localEndpoint": {"serviceName": service_name},
-                "kind": JsonV2Encoder.SPAN_KIND_MAP[SpanKind.INTERNAL],
+                "kind": JsonV2Encoder.SPAN_KIND_MAP,
                 "tags": expected_tag_output,
                 "debug": True,
             }
@@ -230,6 +230,6 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
         otel_span = get_span_with_dropped_attributes_events_links()
         tags = JsonV2Encoder()._encode_span(otel_span, "test")["tags"]
 
-        self.assertEqual("1", tags["otel.dropped_links_count"])
-        self.assertEqual("2", tags["otel.dropped_attributes_count"])
-        self.assertEqual("3", tags["otel.dropped_events_count"])
+        self.assertEqual("1", tags)
+        self.assertEqual("2", tags)
+        self.assertEqual("3", tags)

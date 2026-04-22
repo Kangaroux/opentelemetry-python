@@ -86,7 +86,7 @@ class TestPrometheusMetricReader(TestCase):
         result = result_bytes.decode("utf-8")
         self.assertEqual(result, expect_prometheus_text)
 
-    # pylint: disable=protected-access
+    # pylint =protected-access
     def test_constructor(self):
         """Test the constructor."""
         with self._registry_register_patch:
@@ -174,13 +174,13 @@ class TestPrometheusMetricReader(TestCase):
             )
             self.assertEqual(prometheus_metric.documentation, "testdesc")
             self.assertTrue(len(prometheus_metric.samples) == 1)
-            self.assertEqual(prometheus_metric.samples[0].value, 123)
-            self.assertTrue(len(prometheus_metric.samples[0].labels) == 2)
+            self.assertEqual(prometheus_metric.samples.value, 123)
+            self.assertTrue(len(prometheus_metric.samples.labels) == 2)
             self.assertEqual(
-                prometheus_metric.samples[0].labels["environment_"], "staging"
+                prometheus_metric.samples.labels, "staging"
             )
             self.assertEqual(
-                prometheus_metric.samples[0].labels["os"], "Windows"
+                prometheus_metric.samples.labels, "Windows"
             )
 
     def test_non_monotonic_sum_to_prometheus(self):
@@ -220,13 +220,13 @@ class TestPrometheusMetricReader(TestCase):
             )
             self.assertEqual(prometheus_metric.documentation, "testdesc")
             self.assertTrue(len(prometheus_metric.samples) == 1)
-            self.assertEqual(prometheus_metric.samples[0].value, 123)
-            self.assertTrue(len(prometheus_metric.samples[0].labels) == 2)
+            self.assertEqual(prometheus_metric.samples.value, 123)
+            self.assertTrue(len(prometheus_metric.samples.labels) == 2)
             self.assertEqual(
-                prometheus_metric.samples[0].labels["environment_"], "staging"
+                prometheus_metric.samples.labels, "staging"
             )
             self.assertEqual(
-                prometheus_metric.samples[0].labels["os"], "Windows"
+                prometheus_metric.samples.labels, "Windows"
             )
 
     def test_gauge_to_prometheus(self):
@@ -263,12 +263,12 @@ class TestPrometheusMetricReader(TestCase):
             self.assertEqual(prometheus_metric.name, "test_gauge_testunit")
             self.assertEqual(prometheus_metric.documentation, "testdesc")
             self.assertTrue(len(prometheus_metric.samples) == 1)
-            self.assertEqual(prometheus_metric.samples[0].value, 123)
-            self.assertTrue(len(prometheus_metric.samples[0].labels) == 2)
+            self.assertEqual(prometheus_metric.samples.value, 123)
+            self.assertTrue(len(prometheus_metric.samples.labels) == 2)
             self.assertEqual(
-                prometheus_metric.samples[0].labels["environment_"], "dev"
+                prometheus_metric.samples.labels, "dev"
             )
-            self.assertEqual(prometheus_metric.samples[0].labels["os"], "Unix")
+            self.assertEqual(prometheus_metric.samples.labels, "Unix")
 
     def test_invalid_metric(self):
         labels = {"environment": "staging"}
@@ -315,13 +315,13 @@ class TestPrometheusMetricReader(TestCase):
             self.assertEqual(prometheus_metric.name, "test_gauge_testunit")
             self.assertEqual(prometheus_metric.documentation, "testdesc")
             self.assertTrue(len(prometheus_metric.samples) == 1)
-            self.assertEqual(prometheus_metric.samples[0].value, 123)
-            self.assertTrue(len(prometheus_metric.samples[0].labels) == 2)
+            self.assertEqual(prometheus_metric.samples.value, 123)
+            self.assertTrue(len(prometheus_metric.samples.labels) == 2)
             self.assertEqual(
-                prometheus_metric.samples[0].labels["environment_"],
+                prometheus_metric.samples.labels,
                 '["1", "2", "3"]',
             )
-            self.assertEqual(prometheus_metric.samples[0].labels["os"], "Unix")
+            self.assertEqual(prometheus_metric.samples.labels, "Unix")
 
     def test_check_value(self):
         collector = _CustomCollector()
@@ -363,17 +363,17 @@ class TestPrometheusMetricReader(TestCase):
 
         self.assertEqual(len(result), 2)
 
-        prometheus_metric = result[0]
+        prometheus_metric = result
 
         self.assertEqual(type(prometheus_metric), InfoMetricFamily)
         self.assertEqual(prometheus_metric.name, "target")
         self.assertEqual(prometheus_metric.documentation, "Target metadata")
         self.assertTrue(len(prometheus_metric.samples) == 1)
-        self.assertEqual(prometheus_metric.samples[0].value, 1)
-        self.assertTrue(len(prometheus_metric.samples[0].labels) == 2)
-        self.assertEqual(prometheus_metric.samples[0].labels["os"], "Unix")
+        self.assertEqual(prometheus_metric.samples.value, 1)
+        self.assertTrue(len(prometheus_metric.samples.labels) == 2)
+        self.assertEqual(prometheus_metric.samples.labels, "Unix")
         self.assertEqual(
-            prometheus_metric.samples[0].labels["version"], "1.2.3"
+            prometheus_metric.samples.labels, "1.2.3"
         )
 
     def test_target_info_disabled(self):
@@ -393,8 +393,8 @@ class TestPrometheusMetricReader(TestCase):
             self.assertNotEqual(
                 prometheus_metric.documentation, "Target metadata"
             )
-            self.assertNotIn("os", prometheus_metric.samples[0].labels)
-            self.assertNotIn("version", prometheus_metric.samples[0].labels)
+            self.assertNotIn("os", prometheus_metric.samples.labels)
+            self.assertNotIn("version", prometheus_metric.samples.labels)
 
     def test_target_info_sanitize(self):
         metric_reader = PrometheusMetricReader()
@@ -418,25 +418,25 @@ class TestPrometheusMetricReader(TestCase):
         self.assertEqual(prometheus_metric.name, "target")
         self.assertEqual(prometheus_metric.documentation, "Target metadata")
         self.assertTrue(len(prometheus_metric.samples) == 1)
-        self.assertEqual(prometheus_metric.samples[0].value, 1)
-        self.assertTrue(len(prometheus_metric.samples[0].labels) == 4)
-        self.assertTrue("system_os" in prometheus_metric.samples[0].labels)
+        self.assertEqual(prometheus_metric.samples.value, 1)
+        self.assertTrue(len(prometheus_metric.samples.labels) == 4)
+        self.assertTrue("system_os" in prometheus_metric.samples.labels)
         self.assertEqual(
-            prometheus_metric.samples[0].labels["system_os"], "Unix"
+            prometheus_metric.samples.labels, "Unix"
         )
-        self.assertTrue("system_name" in prometheus_metric.samples[0].labels)
+        self.assertTrue("system_name" in prometheus_metric.samples.labels)
         self.assertEqual(
-            prometheus_metric.samples[0].labels["system_name"],
+            prometheus_metric.samples.labels,
             "Prometheus Target Sanitize",
         )
-        self.assertTrue("histo" in prometheus_metric.samples[0].labels)
+        self.assertTrue("histo" in prometheus_metric.samples.labels)
         self.assertEqual(
-            prometheus_metric.samples[0].labels["histo"],
+            prometheus_metric.samples.labels,
             "1",
         )
-        self.assertTrue("ratio" in prometheus_metric.samples[0].labels)
+        self.assertTrue("ratio" in prometheus_metric.samples.labels)
         self.assertEqual(
-            prometheus_metric.samples[0].labels["ratio"],
+            prometheus_metric.samples.labels,
             "0.1",
         )
 
@@ -714,12 +714,12 @@ class TestPrometheusMetricReader(TestCase):
                 # TYPE http_server_request_duration_seconds histogram
                 http_server_request_duration_seconds_bucket{http_target="/foobar",le="123.0",net_host_port="8080"} 1.0
                 http_server_request_duration_seconds_bucket{http_target="/foobar",le="456.0",net_host_port="8080"} 4.0
-                http_server_request_duration_seconds_bucket{http_target="/foobar",le="+Inf",net_host_port="8080"} 6.0
+                http_server_request_duration_seconds_bucket{http_target="/foobar",le="+In",net_host_port="8080"} 6.0
                 http_server_request_duration_seconds_count{http_target="/foobar",net_host_port="8080"} 6.0
                 http_server_request_duration_seconds_sum{http_target="/foobar",net_host_port="8080"} 579.0
                 http_server_request_duration_seconds_bucket{http_target="",le="123.0",net_host_port="8080"} 1.0
                 http_server_request_duration_seconds_bucket{http_target="",le="456.0",net_host_port="8080"} 4.0
-                http_server_request_duration_seconds_bucket{http_target="",le="+Inf",net_host_port="8080"} 7.0
+                http_server_request_duration_seconds_bucket{http_target="",le="+In",net_host_port="8080"} 7.0
                 http_server_request_duration_seconds_count{http_target="",net_host_port="8080"} 7.0
                 http_server_request_duration_seconds_sum{http_target="",net_host_port="8080"} 579.0
                 """

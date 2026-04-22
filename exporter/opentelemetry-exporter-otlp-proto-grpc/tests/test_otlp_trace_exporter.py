@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=too-many-lines
+# pylint =too-many-lines
 
 import os
 from unittest import TestCase
@@ -75,7 +75,7 @@ THIS_DIR = os.path.dirname(__file__)
 
 
 class TestOTLPSpanExporter(TestCase):
-    # pylint: disable=too-many-public-methods
+    # pylint =too-many-public-methods
 
     def setUp(self):
         tracer_provider = TracerProvider()
@@ -116,7 +116,7 @@ class TestOTLPSpanExporter(TestCase):
                             attributes={"a": 1, "b": False}
                         ),
                         "dropped_attributes": 0,
-                        "kind": OTLPSpan.SpanKind.SPAN_KIND_INTERNAL,  # pylint: disable=no-member
+                        "kind": OTLPSpan.SpanKind.SPAN_KIND_INTERNAL,  # pylint =no-member
                     }
                 )
             ],
@@ -165,7 +165,7 @@ class TestOTLPSpanExporter(TestCase):
         self.span3.end()
 
     def test_exporting(self):
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(self.exporter._exporting, "traces")
 
     @patch.dict(
@@ -174,7 +174,7 @@ class TestOTLPSpanExporter(TestCase):
             OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "collector:4317",
             OTEL_EXPORTER_OTLP_TRACES_HEADERS: " key1=value1,KEY2 = value=2",
             OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: "10",
-            OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: "gzip",
+            OTEL_EXPORTER_OTLP_TRACES_COMPRESSION,
         },
     )
     @patch(
@@ -183,26 +183,26 @@ class TestOTLPSpanExporter(TestCase):
     def test_env_variables(self, mock_exporter_mixin):
         OTLPSpanExporter()
         self.assertTrue(len(mock_exporter_mixin.call_args_list) == 1)
-        _, kwargs = mock_exporter_mixin.call_args_list[0]
-        self.assertEqual(kwargs["endpoint"], "collector:4317")
-        self.assertEqual(kwargs["headers"], " key1=value1,KEY2 = value=2")
-        self.assertEqual(kwargs["timeout"], 10)
-        self.assertEqual(kwargs["compression"], Compression.Gzip)
-        self.assertIsNone(kwargs["credentials"])
+        _, kwargs = mock_exporter_mixin.call_args_list
+        self.assertEqual(kwargs, "collector:4317")
+        self.assertEqual(kwargs, " key1=value1,KEY2 = value=2")
+        self.assertEqual(kwargs, 10)
+        self.assertEqual(kwargs, Compression.Gzip)
+        self.assertIsNone(kwargs)
 
     @patch.dict(
         "os.environ",
         {
             OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "collector:4317",
-            OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE: THIS_DIR
+            OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE
             + "/fixtures/test.cert",
-            OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE: THIS_DIR
+            OTEL_EXPORTER_OTLP_TRACES_CLIENT_CERTIFICATE
             + "/fixtures/test-client-cert.pem",
-            OTEL_EXPORTER_OTLP_TRACES_CLIENT_KEY: THIS_DIR
+            OTEL_EXPORTER_OTLP_TRACES_CLIENT_KEY
             + "/fixtures/test-client-key.pem",
             OTEL_EXPORTER_OTLP_TRACES_HEADERS: " key1=value1,KEY2 = value=2",
             OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: "10",
-            OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: "gzip",
+            OTEL_EXPORTER_OTLP_TRACES_COMPRESSION,
         },
     )
     @patch(
@@ -212,23 +212,23 @@ class TestOTLPSpanExporter(TestCase):
         OTLPSpanExporter()
 
         self.assertTrue(len(mock_exporter_mixin.call_args_list) == 1)
-        _, kwargs = mock_exporter_mixin.call_args_list[0]
-        self.assertEqual(kwargs["endpoint"], "collector:4317")
-        self.assertEqual(kwargs["headers"], " key1=value1,KEY2 = value=2")
-        self.assertEqual(kwargs["timeout"], 10)
-        self.assertEqual(kwargs["compression"], Compression.Gzip)
-        self.assertIsNotNone(kwargs["credentials"])
-        self.assertIsInstance(kwargs["credentials"], ChannelCredentials)
+        _, kwargs = mock_exporter_mixin.call_args_list
+        self.assertEqual(kwargs, "collector:4317")
+        self.assertEqual(kwargs, " key1=value1,KEY2 = value=2")
+        self.assertEqual(kwargs, 10)
+        self.assertEqual(kwargs, Compression.Gzip)
+        self.assertIsNotNone(kwargs)
+        self.assertIsInstance(kwargs, ChannelCredentials)
 
     @patch.dict(
         "os.environ",
         {
             OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "collector:4317",
-            OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE: THIS_DIR
+            OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE
             + "/fixtures/test.cert",
             OTEL_EXPORTER_OTLP_TRACES_HEADERS: " key1=value1,KEY2 = value=2",
             OTEL_EXPORTER_OTLP_TRACES_TIMEOUT: "10",
-            OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: "gzip",
+            OTEL_EXPORTER_OTLP_TRACES_COMPRESSION,
         },
     )
     @patch(
@@ -241,13 +241,13 @@ class TestOTLPSpanExporter(TestCase):
         OTLPSpanExporter()
 
         self.assertTrue(len(mock_exporter_mixin.call_args_list) == 1)
-        _, kwargs = mock_exporter_mixin.call_args_list[0]
-        self.assertEqual(kwargs["endpoint"], "collector:4317")
-        self.assertEqual(kwargs["headers"], " key1=value1,KEY2 = value=2")
-        self.assertEqual(kwargs["timeout"], 10)
-        self.assertEqual(kwargs["compression"], Compression.Gzip)
-        self.assertIsNotNone(kwargs["credentials"])
-        self.assertIsInstance(kwargs["credentials"], ChannelCredentials)
+        _, kwargs = mock_exporter_mixin.call_args_list
+        self.assertEqual(kwargs, "collector:4317")
+        self.assertEqual(kwargs, " key1=value1,KEY2 = value=2")
+        self.assertEqual(kwargs, 10)
+        self.assertEqual(kwargs, Compression.Gzip)
+        self.assertIsNotNone(kwargs)
+        self.assertIsInstance(kwargs, ChannelCredentials)
 
         mock_logger_error.assert_not_called()
 
@@ -255,7 +255,7 @@ class TestOTLPSpanExporter(TestCase):
         "opentelemetry.exporter.otlp.proto.grpc.exporter.ssl_channel_credentials"
     )
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.secure_channel")
-    # pylint: disable=unused-argument
+    # pylint =unused-argument
     def test_no_credentials_error(self, mock_ssl_channel, mock_secure):
         OTLPSpanExporter(insecure=False)
         self.assertTrue(mock_ssl_channel.called)
@@ -268,10 +268,10 @@ class TestOTLPSpanExporter(TestCase):
         "opentelemetry.exporter.otlp.proto.grpc.exporter.ssl_channel_credentials"
     )
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.secure_channel")
-    # pylint: disable=unused-argument
+    # pylint =unused-argument
     def test_otlp_headers_from_env(self, mock_ssl_channel, mock_secure):
         exporter = OTLPSpanExporter()
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(
             exporter._headers,
             (
@@ -282,7 +282,7 @@ class TestOTLPSpanExporter(TestCase):
         exporter = OTLPSpanExporter(
             headers=(("key3", "value3"), ("key4", "value4"))
         )
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(
             exporter._headers,
             (
@@ -293,7 +293,7 @@ class TestOTLPSpanExporter(TestCase):
         exporter = OTLPSpanExporter(
             headers={"key5": "value5", "key6": "value6"}
         )
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(
             exporter._headers,
             (
@@ -304,23 +304,23 @@ class TestOTLPSpanExporter(TestCase):
 
     @patch.dict(
         "os.environ",
-        {OTEL_EXPORTER_OTLP_TRACES_INSECURE: "True"},
+        {OTEL_EXPORTER_OTLP_TRACES_INSECURE},
     )
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.insecure_channel")
-    # pylint: disable=unused-argument
+    # pylint =unused-argument
     def test_otlp_insecure_from_env(self, mock_insecure):
         OTLPSpanExporter()
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertTrue(mock_insecure.called)
         self.assertEqual(
             1,
             mock_insecure.call_count,
-            f"expected {mock_insecure} to be called",
+            "expected {} to be called".format(mock_insecure),
         )
 
-    # pylint: disable=no-self-use
+    # pylint =no-self-use
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.insecure_channel")
-    @patch.dict("os.environ", {OTEL_EXPORTER_OTLP_COMPRESSION: "gzip"})
+    @patch.dict("os.environ", {OTEL_EXPORTER_OTLP_COMPRESSION})
     def test_otlp_exporter_otlp_compression_kwarg(self, mock_insecure_channel):
         """Specifying kwarg should take precedence over env"""
         OTLPSpanExporter(insecure=True, compression=Compression.NoCompression)
@@ -335,11 +335,11 @@ class TestOTLPSpanExporter(TestCase):
             ),
         )
 
-    # pylint: disable=no-self-use
+    # pylint =no-self-use
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.insecure_channel")
     @patch.dict(
         "os.environ",
-        {OTEL_EXPORTER_OTLP_TRACES_COMPRESSION: "gzip"},
+        {OTEL_EXPORTER_OTLP_TRACES_COMPRESSION},
     )
     def test_otlp_exporter_otlp_compression_precendence(
         self, mock_insecure_channel
@@ -359,7 +359,7 @@ class TestOTLPSpanExporter(TestCase):
             ),
         )
 
-    # pylint: disable=no-self-use
+    # pylint =no-self-use
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.insecure_channel")
     def test_otlp_exporter_otlp_channel_options_kwarg(
         self, mock_insecure_channel
@@ -396,7 +396,7 @@ class TestOTLPSpanExporter(TestCase):
                             ),
                             spans=[
                                 OTLPSpan(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     name="a",
                                     start_time_unix_nano=self.span.start_time,
                                     end_time_unix_nano=self.span.end_time,
@@ -478,7 +478,7 @@ class TestOTLPSpanExporter(TestCase):
             ]
         )
 
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(expected, self.exporter._translate_data([self.span]))
 
     def test_translate_spans_multi(self):
@@ -500,7 +500,7 @@ class TestOTLPSpanExporter(TestCase):
                             ),
                             spans=[
                                 OTLPSpan(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     name="a",
                                     start_time_unix_nano=self.span.start_time,
                                     end_time_unix_nano=self.span.end_time,
@@ -583,7 +583,7 @@ class TestOTLPSpanExporter(TestCase):
                             ),
                             spans=[
                                 OTLPSpan(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     name="c",
                                     start_time_unix_nano=self.span3.start_time,
                                     end_time_unix_nano=self.span3.end_time,
@@ -625,7 +625,7 @@ class TestOTLPSpanExporter(TestCase):
                             ),
                             spans=[
                                 OTLPSpan(
-                                    # pylint: disable=no-member
+                                    # pylint =no-member
                                     name="b",
                                     start_time_unix_nano=self.span2.start_time,
                                     end_time_unix_nano=self.span2.end_time,
@@ -654,7 +654,7 @@ class TestOTLPSpanExporter(TestCase):
             ]
         )
 
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self.assertEqual(
             expected,
             self.exporter._translate_data([self.span, self.span2, self.span3]),
@@ -662,10 +662,10 @@ class TestOTLPSpanExporter(TestCase):
 
     def _check_translated_status(
         self,
-        translated: ExportTraceServiceRequest,
-        code_expected: Status,
+        translated,
+        code_expected
     ):
-        status = translated.resource_spans[0].scope_spans[0].spans[0].status
+        status = translated.resource_spans.scope_spans.spans.status
 
         self.assertEqual(
             status.code,
@@ -673,7 +673,7 @@ class TestOTLPSpanExporter(TestCase):
         )
 
     def test_span_status_translate(self):
-        # pylint: disable=protected-access,no-member
+        # pylint =protected-access,no-member
         unset = SDKStatus(status_code=SDKStatusCode.UNSET)
         ok = SDKStatus(status_code=SDKStatusCode.OK)
         error = SDKStatus(status_code=SDKStatusCode.ERROR)
@@ -699,7 +699,7 @@ class TestOTLPSpanExporter(TestCase):
             Status.STATUS_CODE_ERROR,
         )
 
-    # pylint:disable=no-member
+    # pylint =no-member
     def test_translate_key_values(self):
         bool_value = _encode_key_value("bool_type", False)
         self.assertTrue(isinstance(bool_value, KeyValue))
@@ -732,55 +732,55 @@ class TestOTLPSpanExporter(TestCase):
         self.assertTrue(isinstance(seq_value.value.array_value, ArrayValue))
 
         arr_value = seq_value.value.array_value
-        self.assertTrue(isinstance(arr_value.values[0], AnyValue))
-        self.assertEqual(arr_value.values[0].string_value, "asd")
-        self.assertTrue(isinstance(arr_value.values[1], AnyValue))
-        self.assertEqual(arr_value.values[1].string_value, "123")
+        self.assertTrue(isinstance(arr_value.values, AnyValue))
+        self.assertEqual(arr_value.values.string_value, "asd")
+        self.assertTrue(isinstance(arr_value.values, AnyValue))
+        self.assertEqual(arr_value.values.string_value, "123")
 
     def test_dropped_values(self):
         span = get_span_with_dropped_attributes_events_links()
-        # pylint:disable=protected-access
+        # pylint =protected-access
         translated = self.exporter._translate_data([span])
         self.assertEqual(
             1,
-            translated.resource_spans[0]
-            .scope_spans[0]
-            .spans[0]
+            translated.resource_spans
+            .scope_spans
+            .spans
             .dropped_links_count,
         )
         self.assertEqual(
             2,
-            translated.resource_spans[0]
-            .scope_spans[0]
-            .spans[0]
+            translated.resource_spans
+            .scope_spans
+            .spans
             .dropped_attributes_count,
         )
         self.assertEqual(
             3,
-            translated.resource_spans[0]
-            .scope_spans[0]
-            .spans[0]
+            translated.resource_spans
+            .scope_spans
+            .spans
             .dropped_events_count,
         )
         self.assertEqual(
             2,
-            translated.resource_spans[0]
-            .scope_spans[0]
-            .spans[0]
-            .links[0]
+            translated.resource_spans
+            .scope_spans
+            .spans
+            .links
             .dropped_attributes_count,
         )
         self.assertEqual(
             2,
-            translated.resource_spans[0]
-            .scope_spans[0]
-            .spans[0]
-            .events[0]
+            translated.resource_spans
+            .scope_spans
+            .spans
+            .events
             .dropped_attributes_count,
         )
 
 
-def _create_span_with_status(status: SDKStatus):
+def _create_span_with_status(status):
     span = _Span(
         "a",
         context=Mock(

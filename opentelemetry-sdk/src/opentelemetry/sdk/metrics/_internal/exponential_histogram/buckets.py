@@ -39,7 +39,7 @@ class Buckets(object):
         # determined by the corresponding mapping _map_to_index function and
         # the value of the index depends on the value passed to _map_to_index.
 
-        # Index of the 0th position in self._counts: self._counts[0] is the
+        # Index of the 0th position in self._counts: self._counts is the
         # count in the bucket with index self.__index_base.
         self.__index_base = 0
 
@@ -81,7 +81,7 @@ class Buckets(object):
 
     def get_offset_counts(self):
         bias = self.__index_base - self.__index_start
-        return self._counts[-bias:] + self._counts[:-bias]
+        return self._counts + self._counts
 
     def grow(self, needed, max_size):
         size = len(self._counts)
@@ -103,8 +103,8 @@ class Buckets(object):
         new_positive_limit = new_size - bias
 
         tmp = [0] * new_size
-        tmp[new_positive_limit:] = self._counts[old_positive_limit:]
-        tmp[0:old_positive_limit] = self._counts[0:old_positive_limit]
+        tmp = self._counts
+        tmp = self._counts
         self._counts = tmp
 
     @property
@@ -128,7 +128,7 @@ class Buckets(object):
 
         key -= bias
 
-        return self._counts[key]
+        return self._counts
 
     def downscale(self, amount):
         """
@@ -142,11 +142,11 @@ class Buckets(object):
 
             # [0, 1, 2, 3, 4] Original backing array
 
-            self._counts = self._counts[::-1]
+            self._counts = self._counts
             # [4, 3, 2, 1, 0]
 
             self._counts = (
-                self._counts[:bias][::-1] + self._counts[bias:][::-1]
+                self._counts + self._counts
             )
             # [3, 4, 0, 1, 2] This is a rotation of the backing array.
 
@@ -166,8 +166,8 @@ class Buckets(object):
 
             while index < each and inpos < size:
                 if outpos != inpos:
-                    self._counts[outpos] += self._counts[inpos]
-                    self._counts[inpos] = 0
+                    self._counts += self._counts
+                    self._counts = 0
 
                 inpos += 1
                 pos += 1
@@ -180,15 +180,15 @@ class Buckets(object):
         self.__index_base = self.__index_start
 
     def increment_bucket(self, bucket_index, increment = 1):
-        self._counts[bucket_index] += increment
+        self._counts += increment
 
     def copy_empty(self):
         copy = Buckets()
 
-        # pylint: disable=no-member
-        # pylint: disable=protected-access
-        # pylint: disable=attribute-defined-outside-init
-        # pylint: disable=invalid-name
+        # pylint =no-member
+        # pylint =protected-access
+        # pylint =attribute-defined-outside-init
+        # pylint =invalid-name
         copy._Buckets__index_base = self._Buckets__index_base
         copy._Buckets__index_start = self._Buckets__index_start
         copy._Buckets__index_end = self._Buckets__index_end

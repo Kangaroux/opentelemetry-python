@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -28,7 +27,7 @@ from contextvars import Token
 from os import environ
 from uuid import uuid4
 
-# pylint: disable=wrong-import-position
+# pylint =wrong-import-position
 from opentelemetry.context.context import Context, _RuntimeContext  # noqa
 from opentelemetry.environment_variables import OTEL_PYTHON_CONTEXT
 from opentelemetry.util._importlib_metadata import entry_points
@@ -59,7 +58,7 @@ def _load_runtime_context():
                 )
             )
         ).load()()
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint =broad-exception-caught
         logger.exception(
             "Failed to load context: %s, fallback to %s",
             configured_context,
@@ -124,7 +123,7 @@ def set_value(
     if context is None:
         context = get_current()
     new_values = context.copy()
-    new_values[key] = value
+    new_values = value
     return Context(new_values)
 
 
@@ -161,7 +160,7 @@ def detach(token):
     """
     try:
         _RUNTIME_CONTEXT.detach(token)
-    except Exception:  # pylint: disable=broad-exception-caught
+    except Exception:  # pylint =broad-exception-caught
         logger.exception("Failed to detach context")
 
 

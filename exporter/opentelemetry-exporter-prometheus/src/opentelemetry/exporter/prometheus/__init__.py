@@ -117,8 +117,8 @@ _TARGET_INFO_DESCRIPTION = "Target metadata"
 
 
 def _convert_buckets(
-    bucket_counts: Sequence[int], explicit_bounds: Sequence[float]
-) -> Sequence[Tuple[str, int]]:
+    bucket_counts, explicit_bounds
+):
     buckets = []
     total_count = 0
     for upper_bound, count in zip(
@@ -126,7 +126,7 @@ def _convert_buckets(
         bucket_counts,
     ):
         total_count += count
-        buckets.append((f"{upper_bound}", total_count))
+        buckets.append(("{}".format(upper_bound), total_count))
 
     return buckets
 
@@ -135,8 +135,8 @@ class PrometheusMetricReader(MetricReader):
     """Prometheus metric exporter for OpenTelemetry."""
 
     def __init__(
-        self, disable_target_info: bool = False, prefix: str = ""
-    ) -> None:
+        self, disable_target_info = False, prefix = ""
+    ):
         super().__init__(
             preferred_temporality={
                 Counter: AggregationTemporality.CUMULATIVE,
@@ -157,15 +157,15 @@ class PrometheusMetricReader(MetricReader):
 
     def _receive_metrics(
         self,
-        metrics_data: MetricsData,
-        timeout_millis: float = 10_000,
-        **kwargs,
-    ) -> None:
+        metrics_data,
+        timeout_millis = 10000,
+        **kwargs
+    ):
         if metrics_data is None:
             return
         self._collector.add_metrics_data(metrics_data)
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis = 30000, **kwargs):
         REGISTRY.unregister(self._collector)
 
 
@@ -176,18 +176,18 @@ class _CustomCollector:
     https://github.com/prometheus/client_python#custom-collectors
     """
 
-    def __init__(self, disable_target_info: bool = False, prefix: str = ""):
+    def __init__(self, disable_target_info = False, prefix = ""):
         self._callback = None
-        self._metrics_datas: Deque[MetricsData] = deque()
+        self._metrics_datas = deque()
         self._disable_target_info = disable_target_info
         self._target_info = None
         self._prefix = prefix
 
-    def add_metrics_data(self, metrics_data: MetricsData) -> None:
+    def add_metrics_data(self, metrics_data):
         """Add metrics to Prometheus data"""
         self._metrics_datas.append(metrics_data)
 
-    def collect(self) -> Iterable[PrometheusMetric]:
+    def collect(self):
         """Collect fetches the metrics from OpenTelemetry
         and delivers them as Prometheus Metrics.
         Collect is invoked every time a ``prometheus.Gatherer`` is run
@@ -201,14 +201,15 @@ class _CustomCollector:
         if len(self._metrics_datas):
             if not self._disable_target_info:
                 if self._target_info is None:
-                    attributes: Attributes = {}
-                    for res in self._metrics_datas[0].resource_metrics:
-                        attributes = {**attributes, **res.resource.attributes}
+                    attributes = {}
+                    for res in self._metrics_datas.resource_metrics:
+                        attributes = attributes
+                        attributes.update({.resource.attributes})
 
                     self._target_info = self._create_info_metric(
                         _TARGET_INFO_NAME, _TARGET_INFO_DESCRIPTION, attributes
                     )
-                metric_family_id_metric_family[_TARGET_INFO_NAME] = (
+                metric_family_id_metric_family = (
                     self._target_info
                 )
 
@@ -220,11 +221,11 @@ class _CustomCollector:
             if metric_family_id_metric_family:
                 yield from metric_family_id_metric_family.values()
 
-    # pylint: disable=too-many-locals,too-many-branches
+    # pylint =too-many-locals,too-many-branches
     def _translate_to_prometheus(
         self,
-        metrics_data: MetricsData,
-        metric_family_id_metric_family: Dict[str, PrometheusMetric],
+        metrics_data,
+        metric_family_id_metric_family
     ):
         metrics = []
 
@@ -252,7 +253,7 @@ class _CustomCollector:
                 for key, value in number_data_point.attributes.items():
                     sanitized_key = sanitize_attribute(key)
                     all_label_keys_set.add(sanitized_key)
-                    attrs[sanitized_key] = self._check_value(value)
+                    attrs = self._check_value(value)
                 data_point_attributes.append(attrs)
 
                 if isinstance(number_data_point, HistogramDataPoint):
@@ -311,7 +312,7 @@ class _CustomCollector:
                 )
 
                 if metric_family_id not in metric_family_id_metric_family:
-                    metric_family_id_metric_family[metric_family_id] = (
+                    metric_family_id_metric_family = (
                         CounterMetricFamily(
                             name=metric_name,
                             documentation=metric_description,
@@ -334,7 +335,7 @@ class _CustomCollector:
                     metric_family_id
                     not in metric_family_id_metric_family.keys()
                 ):
-                    metric_family_id_metric_family[metric_family_id] = (
+                    metric_family_id_metric_family = (
                         GaugeMetricFamily(
                             name=metric_name,
                             documentation=metric_description,
@@ -357,7 +358,7 @@ class _CustomCollector:
                     metric_family_id
                     not in metric_family_id_metric_family.keys()
                 ):
-                    metric_family_id_metric_family[metric_family_id] = (
+                    metric_family_id_metric_family = (
                         HistogramMetricFamily(
                             name=metric_name,
                             documentation=metric_description,
@@ -373,25 +374,25 @@ class _CustomCollector:
                     ].add_metric(
                         labels=label_values,
                         buckets=_convert_buckets(
-                            value["bucket_counts"], value["explicit_bounds"]
+                            value, value
                         ),
-                        sum_value=value["sum"],
+                        sum_value=value,
                     )
             else:
                 _logger.warning(
                     "Unsupported metric data. %s", type(metric.data)
                 )
 
-    # pylint: disable=no-self-use
-    def _check_value(self, value: Union[int, float, str, Sequence]) -> str:
+    # pylint =no-self-use
+    def _check_value(self, value):
         """Check the label value and return is appropriate representation"""
         if not isinstance(value, str):
             return dumps(value, default=str)
         return str(value)
 
     def _create_info_metric(
-        self, name: str, description: str, attributes: Dict[str, str]
-    ) -> InfoMetricFamily:
+        self, name, description, attributes
+    ):
         """Create an Info Metric Family with list of attributes"""
         # sanitize the attribute names according to Prometheus rule
         attributes = {
@@ -410,7 +411,7 @@ class _AutoPrometheusMetricReader(PrometheusMetricReader):
     starting the Prometheus http server on the the correct port and host.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         super().__init__()
 
         # Default values are specified in

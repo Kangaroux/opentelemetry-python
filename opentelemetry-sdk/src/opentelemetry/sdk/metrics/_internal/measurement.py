@@ -20,7 +20,6 @@ from opentelemetry.metrics import Instrument
 from opentelemetry.util.types import Attributes
 
 
-@dataclass(frozen=True)
 class Measurement:
     """
     Represents a data point reported via the metrics API to the SDK.
@@ -33,8 +32,8 @@ class Measurement:
         attributes: Measurement attributes
     """
 
-    value: Union[int, float]
-    time_unix_nano: int
-    instrument: Instrument
-    context: Context
-    attributes: Attributes = None
+    value
+    time_unix_nano
+    instrument
+    context
+    attributes = None

@@ -70,14 +70,14 @@ _MAX_RETRYS = 6
 class OTLPSpanExporter(SpanExporter):
     def __init__(
         self,
-        endpoint: Optional[str] = None,
-        certificate_file: Optional[str] = None,
-        client_key_file: Optional[str] = None,
-        client_certificate_file: Optional[str] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout: Optional[float] = None,
-        compression: Optional[Compression] = None,
-        session: Optional[requests.Session] = None,
+        endpoint = None,
+        certificate_file = None,
+        client_key_file = None,
+        client_certificate_file = None,
+        headers = None,
+        timeout = None,
+        compression = None,
+        session = None
     ):
         self._shutdown_in_progress = threading.Event()
         self._endpoint = endpoint or environ.get(
@@ -135,7 +135,7 @@ class OTLPSpanExporter(SpanExporter):
         self._shutdown = False
 
     def _export(
-        self, serialized_data: bytes, timeout_sec: Optional[float] = None
+        self, serialized_data, timeout_sec = None
     ):
         data = serialized_data
         if self._compression == Compression.Gzip:
@@ -171,7 +171,7 @@ class OTLPSpanExporter(SpanExporter):
             )
         return resp
 
-    def export(self, spans: Sequence[ReadableSpan]) -> SpanExportResult:
+    def export(self, spans):
         if self._shutdown:
             _logger.warning("Exporter already shutdown, ignoring batch")
             return SpanExportResult.FAILURE
@@ -231,12 +231,12 @@ class OTLPSpanExporter(SpanExporter):
         self._shutdown_in_progress.set()
         self._session.close()
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         """Nothing is buffered in this exporter, so this method does nothing."""
         return True
 
 
-def _compression_from_env() -> Compression:
+def _compression_from_env():
     compression = (
         environ.get(
             OTEL_EXPORTER_OTLP_TRACES_COMPRESSION,
@@ -248,7 +248,7 @@ def _compression_from_env() -> Compression:
     return Compression(compression)
 
 
-def _append_trace_path(endpoint: str) -> str:
+def _append_trace_path(endpoint):
     if endpoint.endswith("/"):
         return endpoint + DEFAULT_TRACES_EXPORT_PATH
-    return endpoint + f"/{DEFAULT_TRACES_EXPORT_PATH}"
+    return endpoint + "/{}".format(DEFAULT_TRACES_EXPORT_PATH)

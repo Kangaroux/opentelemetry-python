@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -25,7 +24,7 @@ from abc import ABC, abstractmethod
 from contextvars import Token
 
 
-class Context(typing.Dict[str, object]):
+class Context(typing.Dict):
     def __setitem__(self, key, value):
         raise ValueError
 

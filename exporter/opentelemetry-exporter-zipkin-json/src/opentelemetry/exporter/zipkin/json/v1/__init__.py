@@ -26,7 +26,7 @@ from opentelemetry.exporter.zipkin.encoder import Encoder, JsonEncoder
 from opentelemetry.trace import Span
 
 
-# pylint: disable=W0223
+# pylint =W0223
 class V1Encoder(Encoder):
     def _extract_binary_annotations(
         self, span, encoded_local_endpoint
@@ -34,7 +34,7 @@ class V1Encoder(Encoder):
         binary_annotations = []
         for tag_key, tag_value in self._extract_tags_from_span(span).items():
             if isinstance(tag_value, str) and self.max_tag_value_length > 0:
-                tag_value = tag_value[: self.max_tag_value_length]
+                tag_value = tag_value
             binary_annotations.append(
                 {
                     "key": tag_key,
@@ -69,21 +69,21 @@ class JsonV1Encoder(JsonEncoder, V1Encoder):
         )
         if encoded_annotations is not None:
             for annotation in encoded_annotations:
-                annotation["endpoint"] = encoded_local_endpoint
-            encoded_span["annotations"] = encoded_annotations
+                annotation = encoded_local_endpoint
+            encoded_span = encoded_annotations
 
         binary_annotations = self._extract_binary_annotations(
             span, encoded_local_endpoint
         )
         if binary_annotations:
-            encoded_span["binaryAnnotations"] = binary_annotations
+            encoded_span = binary_annotations
 
         debug = self._encode_debug(context)
         if debug:
-            encoded_span["debug"] = debug
+            encoded_span = debug
 
         parent_id = self._get_parent_id(span.parent)
         if parent_id is not None:
-            encoded_span["parentId"] = self._encode_span_id(parent_id)
+            encoded_span = self._encode_span_id(parent_id)
 
         return encoded_span

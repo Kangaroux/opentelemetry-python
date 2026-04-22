@@ -16,7 +16,7 @@ from __future__ import unicode_literals
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=protected-access,too-many-lines
+# pylint =protected-access,too-many-lines
 from builtins import int
 from future import standard_library
 standard_library.install_aliases()
@@ -986,7 +986,7 @@ class TestOTLPMetricsEncoder(unittest.TestCase):
                 )
             ]
         )
-        # pylint: disable=protected-access
+        # pylint =protected-access
         actual = encode_metrics(metrics_data)
         self.assertEqual(expected, actual)
 

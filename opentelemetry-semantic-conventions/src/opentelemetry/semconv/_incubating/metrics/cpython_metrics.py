@@ -17,16 +17,16 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Counter, Meter
 
-CPYTHON_GC_COLLECTED_OBJECTS: Final = "cpython.gc.collected_objects"
+CPYTHON_GC_COLLECTED_OBJECTS = "cpython.gc.collected_objects"
 """
 The total number of objects collected inside a generation since interpreter start
-Instrument: counter
+Instrument
 Unit: {object}
 Note: This metric reports data from [`gc.stats()`](https://docs.python.org/3/library/gc.html#gc.get_stats).
 """
 
 
-def create_cpython_gc_collected_objects(meter: Meter) -> Counter:
+def create_cpython_gc_collected_objects(meter):
     """The total number of objects collected inside a generation since interpreter start"""
     return meter.create_counter(
         name=CPYTHON_GC_COLLECTED_OBJECTS,
@@ -35,16 +35,16 @@ def create_cpython_gc_collected_objects(meter: Meter) -> Counter:
     )
 
 
-CPYTHON_GC_COLLECTIONS: Final = "cpython.gc.collections"
+CPYTHON_GC_COLLECTIONS = "cpython.gc.collections"
 """
 The number of times a generation was collected since interpreter start
-Instrument: counter
+Instrument
 Unit: {collection}
 Note: This metric reports data from [`gc.stats()`](https://docs.python.org/3/library/gc.html#gc.get_stats).
 """
 
 
-def create_cpython_gc_collections(meter: Meter) -> Counter:
+def create_cpython_gc_collections(meter):
     """The number of times a generation was collected since interpreter start"""
     return meter.create_counter(
         name=CPYTHON_GC_COLLECTIONS,
@@ -53,16 +53,16 @@ def create_cpython_gc_collections(meter: Meter) -> Counter:
     )
 
 
-CPYTHON_GC_UNCOLLECTABLE_OBJECTS: Final = "cpython.gc.uncollectable_objects"
+CPYTHON_GC_UNCOLLECTABLE_OBJECTS = "cpython.gc.uncollectable_objects"
 """
 The total number of objects which were found to be uncollectable inside a generation since interpreter start
-Instrument: counter
+Instrument
 Unit: {object}
 Note: This metric reports data from [`gc.stats()`](https://docs.python.org/3/library/gc.html#gc.get_stats).
 """
 
 
-def create_cpython_gc_uncollectable_objects(meter: Meter) -> Counter:
+def create_cpython_gc_uncollectable_objects(meter):
     """The total number of objects which were found to be uncollectable inside a generation since interpreter start"""
     return meter.create_counter(
         name=CPYTHON_GC_UNCOLLECTABLE_OBJECTS,

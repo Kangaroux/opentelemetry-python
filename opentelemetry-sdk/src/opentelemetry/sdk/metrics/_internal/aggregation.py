@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=too-many-lines
+# pylint =too-many-lines
 
 from abc import ABC, abstractmethod
 from bisect import bisect_left
@@ -90,11 +90,11 @@ class AggregationTemporality(IntEnum):
     CUMULATIVE = 2
 
 
-class _Aggregation(ABC, Generic[_DataPointVarT]):
+class _Aggregation(ABC):
     def __init__(
         self,
-        attributes: Attributes,
-        reservoir_builder: ExemplarReservoirBuilder,
+        attributes,
+        reservoir_builder
     ):
         self._lock = Lock()
         self._attributes = attributes
@@ -103,8 +103,8 @@ class _Aggregation(ABC, Generic[_DataPointVarT]):
 
     @abstractmethod
     def aggregate(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
-    ) -> None:
+        self, measurement, should_sample_exemplar = True
+    ):
         """Aggregate a measurement.
 
         Args:
@@ -115,12 +115,12 @@ class _Aggregation(ABC, Generic[_DataPointVarT]):
     @abstractmethod
     def collect(
         self,
-        collection_aggregation_temporality: AggregationTemporality,
-        collection_start_nano: int,
-    ) -> Optional[_DataPointVarT]:
+        collection_aggregation_temporality,
+        collection_start_nano
+    ):
         pass
 
-    def _collect_exemplars(self) -> Sequence[Exemplar]:
+    def _collect_exemplars(self):
         """Returns the collected exemplars.
 
         Returns:
@@ -129,8 +129,8 @@ class _Aggregation(ABC, Generic[_DataPointVarT]):
         return self._reservoir.collect(self._attributes)
 
     def _sample_exemplar(
-        self, measurement: Measurement, should_sample_exemplar: bool
-    ) -> None:
+        self, measurement, should_sample_exemplar
+    ):
         """Offer the measurement to the exemplar reservoir for sampling.
 
         It should be called within the each :ref:`aggregate` call.
@@ -150,26 +150,26 @@ class _Aggregation(ABC, Generic[_DataPointVarT]):
 
 class _DropAggregation(_Aggregation):
     def aggregate(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
-    ) -> None:
+        self, measurement, should_sample_exemplar = True
+    ):
         pass
 
     def collect(
         self,
-        collection_aggregation_temporality: AggregationTemporality,
-        collection_start_nano: int,
-    ) -> Optional[_DataPointVarT]:
+        collection_aggregation_temporality,
+        collection_start_nano
+    ):
         pass
 
 
-class _SumAggregation(_Aggregation[Sum]):
+class _SumAggregation(_Aggregation):
     def __init__(
         self,
-        attributes: Attributes,
-        instrument_is_monotonic: bool,
-        instrument_aggregation_temporality: AggregationTemporality,
-        start_time_unix_nano: int,
-        reservoir_builder: ExemplarReservoirBuilder,
+        attributes,
+        instrument_is_monotonic,
+        instrument_aggregation_temporality,
+        start_time_unix_nano,
+        reservoir_builder
     ):
         super().__init__(attributes, reservoir_builder)
 
@@ -185,8 +185,8 @@ class _SumAggregation(_Aggregation[Sum]):
         self._previous_value = 0
 
     def aggregate(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
-    ) -> None:
+        self, measurement, should_sample_exemplar = True
+    ):
         with self._lock:
             if self._value is None:
                 self._value = 0
@@ -197,9 +197,9 @@ class _SumAggregation(_Aggregation[Sum]):
 
     def collect(
         self,
-        collection_aggregation_temporality: AggregationTemporality,
-        collection_start_nano: int,
-    ) -> Optional[NumberDataPoint]:
+        collection_aggregation_temporality,
+        collection_start_nano
+    ):
         """
         Atomically return a point for the current value of the metric and
         reset the aggregation value.
@@ -282,14 +282,11 @@ class _SumAggregation(_Aggregation[Sum]):
 
         time ->
 
-        self._previous_value
-        |-------------|
+        self._previous_value | -------------|
 
-        value (delta)
-                      |----|
+        value (delta) | ----|
 
-        returned value (cumulative)
-        |------------------|
+        returned value (cumulative) | ------------------|
 
         When the instrument is asynchronous:
 
@@ -310,14 +307,11 @@ class _SumAggregation(_Aggregation[Sum]):
 
         time ->
 
-        self._previous_value
-        |-------------|
+        self._previous_value | -------------|
 
-        value (cumulative)
-        |------------------|
+        value (cumulative) | ------------------|
 
-        returned value (delta)
-                      |----|
+        returned value (delta) | ----|
         """
 
         with self._lock:
@@ -403,17 +397,17 @@ class _SumAggregation(_Aggregation[Sum]):
             )
 
 
-class _LastValueAggregation(_Aggregation[GaugePoint]):
+class _LastValueAggregation(_Aggregation):
     def __init__(
         self,
-        attributes: Attributes,
-        reservoir_builder: ExemplarReservoirBuilder,
+        attributes,
+        reservoir_builder
     ):
         super().__init__(attributes, reservoir_builder)
         self._value = None
 
     def aggregate(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
+        self, measurement, should_sample_exemplar = True
     ):
         with self._lock:
             self._value = measurement.value
@@ -422,9 +416,9 @@ class _LastValueAggregation(_Aggregation[GaugePoint]):
 
     def collect(
         self,
-        collection_aggregation_temporality: AggregationTemporality,
-        collection_start_nano: int,
-    ) -> Optional[_DataPointVarT]:
+        collection_aggregation_temporality,
+        collection_start_nano
+    ):
         """
         Atomically return a point for the current value of the metric.
         """
@@ -445,7 +439,7 @@ class _LastValueAggregation(_Aggregation[GaugePoint]):
         )
 
 
-_DEFAULT_EXPLICIT_BUCKET_HISTOGRAM_AGGREGATION_BOUNDARIES: Sequence[float] = (
+_DEFAULT_EXPLICIT_BUCKET_HISTOGRAM_AGGREGATION_BOUNDARIES = (
     0.0,
     5.0,
     10.0,
@@ -464,15 +458,15 @@ _DEFAULT_EXPLICIT_BUCKET_HISTOGRAM_AGGREGATION_BOUNDARIES: Sequence[float] = (
 )
 
 
-class _ExplicitBucketHistogramAggregation(_Aggregation[HistogramPoint]):
+class _ExplicitBucketHistogramAggregation(_Aggregation):
     def __init__(
         self,
-        attributes: Attributes,
-        instrument_aggregation_temporality: AggregationTemporality,
-        start_time_unix_nano: int,
-        reservoir_builder: ExemplarReservoirBuilder,
-        boundaries: Optional[Sequence[float]] = None,
-        record_min_max: bool = True,
+        attributes,
+        instrument_aggregation_temporality,
+        start_time_unix_nano,
+        reservoir_builder,
+        boundaries = None,
+        record_min_max = True
     ):
         if boundaries is None:
             boundaries = (
@@ -504,12 +498,12 @@ class _ExplicitBucketHistogramAggregation(_Aggregation[HistogramPoint]):
 
         self._previous_collection_start_nano = self._start_time_unix_nano
 
-    def _get_empty_bucket_counts(self) -> List[int]:
+    def _get_empty_bucket_counts(self):
         return [0] * (len(self._boundaries) + 1)
 
     def aggregate(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
-    ) -> None:
+        self, measurement, should_sample_exemplar = True
+    ):
         with self._lock:
             if self._value is None:
                 self._value = self._get_empty_bucket_counts()
@@ -522,15 +516,15 @@ class _ExplicitBucketHistogramAggregation(_Aggregation[HistogramPoint]):
                 self._min = min(self._min, measurement_value)
                 self._max = max(self._max, measurement_value)
 
-            self._value[bisect_left(self._boundaries, measurement_value)] += 1
+            self._value += 1
 
         self._sample_exemplar(measurement, should_sample_exemplar)
 
     def collect(
         self,
-        collection_aggregation_temporality: AggregationTemporality,
-        collection_start_nano: int,
-    ) -> Optional[_DataPointVarT]:
+        collection_aggregation_temporality,
+        collection_start_nano
+    ):
         """
         Atomically return a point for the current value of the metric.
         """
@@ -612,8 +606,8 @@ class _ExplicitBucketHistogramAggregation(_Aggregation[HistogramPoint]):
             return None
 
 
-# pylint: disable=protected-access
-class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
+# pylint =protected-access
+class _ExponentialBucketHistogramAggregation(_Aggregation):
     # _min_max_size and _max_max_size are the smallest and largest values
     # the max_size parameter may have, respectively.
 
@@ -627,16 +621,16 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
 
     def __init__(
         self,
-        attributes: Attributes,
-        reservoir_builder: ExemplarReservoirBuilder,
-        instrument_aggregation_temporality: AggregationTemporality,
-        start_time_unix_nano: int,
+        attributes,
+        reservoir_builder,
+        instrument_aggregation_temporality,
+        start_time_unix_nano,
         # This is the default maximum number of buckets per positive or
         # negative number range.  The value 160 is specified by OpenTelemetry.
         # See the derivation here:
         # https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/sdk.md#exponential-bucket-histogram-aggregation)
-        max_size: int = 160,
-        max_scale: int = 20,
+        max_size = 160,
+        max_scale = 20,
     ):
         # max_size is the maximum capacity of the positive and negative
         # buckets.
@@ -650,13 +644,13 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
         # _negative holds the negative values by their absolute value.
         if max_size < self._min_max_size:
             raise ValueError(
-                f"Buckets max size {max_size} is smaller than "
+                "Buckets max size {} is smaller than ".format(max_size) +
                 "minimum max size {self._min_max_size}"
             )
 
         if max_size > self._max_max_size:
             raise ValueError(
-                f"Buckets max size {max_size} is larger than "
+                "Buckets max size {} is larger than ".format(max_size) +
                 "maximum max size {self._max_max_size}"
             )
         if max_scale > 20:
@@ -709,9 +703,9 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
         self._mapping = self._new_mapping(self._max_scale)
 
     def aggregate(
-        self, measurement: Measurement, should_sample_exemplar: bool = True
-    ) -> None:
-        # pylint: disable=too-many-branches,too-many-statements, too-many-locals
+        self, measurement, should_sample_exemplar = True
+    ):
+        # pylint =too-many-branches,too-many-statements, too-many-locals
 
         with self._lock:
             if self._value_positive is None:
@@ -815,7 +809,7 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
             # incremented.
 
             # This is analogous to
-            # self._value[bisect_left(self._boundaries, measurement_value)] += 1
+            # self._value += 1
             # in _ExplicitBucketHistogramAggregation.aggregate
             value.increment_bucket(bucket_index)
 
@@ -823,14 +817,14 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
 
     def collect(
         self,
-        collection_aggregation_temporality: AggregationTemporality,
-        collection_start_nano: int,
-    ) -> Optional[_DataPointVarT]:
+        collection_aggregation_temporality,
+        collection_start_nano
+    ):
         """
         Atomically return a point for the current value of the metric.
         """
 
-        # pylint: disable=too-many-statements, too-many-locals
+        # pylint =too-many-statements, too-many-locals
         with self._lock:
             value_positive = self._value_positive
             value_negative = self._value_negative
@@ -1068,7 +1062,7 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
         previous_point_buckets,
         current_point_buckets,
         current_scale,
-        min_scale,
+        min_scale
     ):
         (previous_point_low, previous_point_high) = self._get_low_high(
             previous_point_buckets, self._previous_scale, min_scale
@@ -1101,7 +1095,7 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
         return buckets.index_start >> shift, buckets.index_end >> shift
 
     @staticmethod
-    def _new_mapping(scale: int) -> Mapping:
+    def _new_mapping(scale):
         if scale <= 0:
             return ExponentMapping(scale)
         return LogarithmMapping(scale)
@@ -1118,12 +1112,12 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
         return change
 
     @staticmethod
-    def _downscale(change: int, positive, negative):
+    def _downscale(change, positive, negative):
         if change == 0:
             return
 
         if change < 0:
-            # pylint: disable=broad-exception-raised
+            # pylint =broad-exception-raised
             raise Exception("Invalid change of scale")
 
         positive.downscale(change)
@@ -1131,11 +1125,11 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
 
     def _merge(
         self,
-        previous_buckets: Buckets,
-        current_buckets: Buckets,
+        previous_buckets,
+        current_buckets,
         current_scale,
         min_scale,
-        aggregation_temporality,
+        aggregation_temporality
     ):
         current_change = current_scale - min_scale
 
@@ -1159,7 +1153,7 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
                 span = previous_buckets.index_end - index
 
                 if span >= self._max_size:
-                    # pylint: disable=broad-exception-raised
+                    # pylint =broad-exception-raised
                     raise Exception("Incorrect merge scale")
 
                 if span >= len(previous_buckets.counts):
@@ -1171,7 +1165,7 @@ class _ExponentialBucketHistogramAggregation(_Aggregation[HistogramPoint]):
                 span = index - previous_buckets.index_start
 
                 if span >= self._max_size:
-                    # pylint: disable=broad-exception-raised
+                    # pylint =broad-exception-raised
                     raise Exception("Incorrect merge scale")
 
                 if span >= len(previous_buckets.counts):
@@ -1200,13 +1194,11 @@ class Aggregation(ABC):
     @abstractmethod
     def _create_aggregation(
         self,
-        instrument: Instrument,
-        attributes: Attributes,
-        reservoir_factory: Callable[
-            [Type[_Aggregation]], ExemplarReservoirBuilder
-        ],
-        start_time_unix_nano: int,
-    ) -> _Aggregation:
+        instrument,
+        attributes,
+        reservoir_factory,
+        start_time_unix_nano
+    ):
         """Creates an aggregation"""
 
 
@@ -1231,14 +1223,12 @@ class DefaultAggregation(Aggregation):
 
     def _create_aggregation(
         self,
-        instrument: Instrument,
-        attributes: Attributes,
-        reservoir_factory: Callable[
-            [Type[_Aggregation]], ExemplarReservoirBuilder
-        ],
-        start_time_unix_nano: int,
-    ) -> _Aggregation:
-        # pylint: disable=too-many-return-statements
+        instrument,
+        attributes,
+        reservoir_factory,
+        start_time_unix_nano
+    ):
+        # pylint =too-many-return-statements
         if isinstance(instrument, Counter):
             return _SumAggregation(
                 attributes,
@@ -1308,28 +1298,26 @@ class DefaultAggregation(Aggregation):
                 reservoir_builder=reservoir_factory(_LastValueAggregation),
             )
 
-        # pylint: disable=broad-exception-raised
-        raise Exception(f"Invalid instrument type {type(instrument)} found")
+        # pylint =broad-exception-raised
+        raise Exception("Invalid instrument type {} found".format(type(instrument)))
 
 
 class ExponentialBucketHistogramAggregation(Aggregation):
     def __init__(
         self,
-        max_size: int = 160,
-        max_scale: int = 20,
+        max_size = 160,
+        max_scale = 20
     ):
         self._max_size = max_size
         self._max_scale = max_scale
 
     def _create_aggregation(
         self,
-        instrument: Instrument,
-        attributes: Attributes,
-        reservoir_factory: Callable[
-            [Type[_Aggregation]], ExemplarReservoirBuilder
-        ],
-        start_time_unix_nano: int,
-    ) -> _Aggregation:
+        instrument,
+        attributes,
+        reservoir_factory,
+        start_time_unix_nano
+    ):
         instrument_aggregation_temporality = AggregationTemporality.UNSPECIFIED
         if isinstance(instrument, Synchronous):
             instrument_aggregation_temporality = AggregationTemporality.DELTA
@@ -1364,21 +1352,19 @@ class ExplicitBucketHistogramAggregation(Aggregation):
 
     def __init__(
         self,
-        boundaries: Optional[Sequence[float]] = None,
-        record_min_max: bool = True,
-    ) -> None:
+        boundaries = None,
+        record_min_max = True
+    ):
         self._boundaries = boundaries
         self._record_min_max = record_min_max
 
     def _create_aggregation(
         self,
-        instrument: Instrument,
-        attributes: Attributes,
-        reservoir_factory: Callable[
-            [Type[_Aggregation]], ExemplarReservoirBuilder
-        ],
-        start_time_unix_nano: int,
-    ) -> _Aggregation:
+        instrument,
+        attributes,
+        reservoir_factory,
+        start_time_unix_nano
+    ):
         instrument_aggregation_temporality = AggregationTemporality.UNSPECIFIED
         if isinstance(instrument, Synchronous):
             instrument_aggregation_temporality = AggregationTemporality.DELTA
@@ -1410,13 +1396,11 @@ class SumAggregation(Aggregation):
 
     def _create_aggregation(
         self,
-        instrument: Instrument,
-        attributes: Attributes,
-        reservoir_factory: Callable[
-            [Type[_Aggregation]], ExemplarReservoirBuilder
-        ],
-        start_time_unix_nano: int,
-    ) -> _Aggregation:
+        instrument,
+        attributes,
+        reservoir_factory,
+        start_time_unix_nano
+    ):
         instrument_aggregation_temporality = AggregationTemporality.UNSPECIFIED
         if isinstance(instrument, Synchronous):
             instrument_aggregation_temporality = AggregationTemporality.DELTA
@@ -1444,13 +1428,11 @@ class LastValueAggregation(Aggregation):
 
     def _create_aggregation(
         self,
-        instrument: Instrument,
-        attributes: Attributes,
-        reservoir_factory: Callable[
-            [Type[_Aggregation]], ExemplarReservoirBuilder
-        ],
-        start_time_unix_nano: int,
-    ) -> _Aggregation:
+        instrument,
+        attributes,
+        reservoir_factory,
+        start_time_unix_nano
+    ):
         return _LastValueAggregation(
             attributes,
             reservoir_builder=reservoir_factory(_LastValueAggregation),
@@ -1462,13 +1444,11 @@ class DropAggregation(Aggregation):
 
     def _create_aggregation(
         self,
-        instrument: Instrument,
-        attributes: Attributes,
-        reservoir_factory: Callable[
-            [Type[_Aggregation]], ExemplarReservoirBuilder
-        ],
-        start_time_unix_nano: int,
-    ) -> _Aggregation:
+        instrument,
+        attributes,
+        reservoir_factory,
+        start_time_unix_nano
+    ):
         return _DropAggregation(
             attributes, reservoir_factory(_DropAggregation)
         )

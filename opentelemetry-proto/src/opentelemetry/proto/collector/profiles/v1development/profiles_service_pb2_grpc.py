@@ -19,13 +19,13 @@ except ImportError:
 
 if _version_not_supported:
     warnings.warn(
-        f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in opentelemetry/proto/collector/profiles/v1development/profiles_service_pb2_grpc.py depends on'
-        + f' grpcio>={GRPC_GENERATED_VERSION}.'
-        + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
-        + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
-        + f' This warning will become an error in {EXPECTED_ERROR_RELEASE},'
-        + f' scheduled for release on {SCHEDULED_RELEASE_DATE}.',
+        'The grpc package installed is at version {},'.format(GRPC_VERSION)
+        + ' but the generated code in opentelemetry/proto/collector/profiles/v1development/profiles_service_pb2_grpc.py depends on'
+        + ' grpcio>={}.'.format(GRPC_GENERATED_VERSION)
+        + ' Please upgrade your grpc module to grpcio>={}'.format(GRPC_GENERATED_VERSION)
+        + ' or downgrade your generated code using grpcio-tools<={}.'.format(GRPC_VERSION)
+        + ' This warning will become an error in {},'.format(EXPECTED_ERROR_RELEASE)
+        + ' scheduled for release on {}.'.format(SCHEDULED_RELEASE_DATE),
         RuntimeWarning
     )
 

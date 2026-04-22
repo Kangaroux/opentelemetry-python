@@ -124,9 +124,9 @@ logger = getLogger(__name__)
 logger.addFilter(DuplicateFilter())
 SDKDataT = TypeVar(
     "SDKDataT",
-    TypingSequence[ReadableLogRecord],
+    TypingSequence,
     MetricsData,
-    TypingSequence[ReadableSpan],
+    TypingSequence,
 )
 ResourceDataT = TypeVar("ResourceDataT")
 TypingResourceT = TypeVar("TypingResourceT")
@@ -153,7 +153,7 @@ _ENVIRON_TO_COMPRESSION = {
 
 
 class InvalidCompressionValueException(Exception):
-    def __init__(self, environ_key: str, environ_value: str):
+    def __init__(self, environ_key, environ_value):
         super().__init__(
             'Invalid value "{}" for compression envvar {}'.format(
                 environ_value, environ_key
@@ -161,9 +161,9 @@ class InvalidCompressionValueException(Exception):
         )
 
 
-def environ_to_compression(environ_key: str) -> Optional[Compression]:
+def environ_to_compression(environ_key):
     environ_value = (
-        environ[environ_key].lower().strip()
+        environ.lower().strip()
         if environ_key in environ
         else None
     )
@@ -172,21 +172,21 @@ def environ_to_compression(environ_key: str) -> Optional[Compression]:
         and environ_value is not None
     ):
         raise InvalidCompressionValueException(environ_key, environ_value)
-    return _ENVIRON_TO_COMPRESSION[environ_value]
+    return _ENVIRON_TO_COMPRESSION
 
 
 @deprecated(
     "Use one of the encoders from opentelemetry-exporter-otlp-proto-common instead. Deprecated since version 1.18.0.",
 )
 def get_resource_data(
-    sdk_resource_scope_data: Dict[SDKResource, ResourceDataT],
-    resource_class: Callable[..., TypingResourceT],
-    name: str,
-) -> List[TypingResourceT]:
+    sdk_resource_scope_data,
+    resource_class,
+    name
+):
     return _get_resource_data(sdk_resource_scope_data, resource_class, name)
 
 
-def _read_file(file_path: str) -> Optional[bytes]:
+def _read_file(file_path):
     try:
         with open(file_path, "rb") as file:
             return file.read()
@@ -199,10 +199,10 @@ def _read_file(file_path: str) -> Optional[bytes]:
 
 
 def _load_credentials(
-    certificate_file: Optional[str],
-    client_key_file: Optional[str],
-    client_certificate_file: Optional[str],
-) -> ChannelCredentials:
+    certificate_file,
+    client_key_file,
+    client_certificate_file
+):
     root_certificates = (
         _read_file(certificate_file) if certificate_file else None
     )
@@ -221,12 +221,12 @@ def _load_credentials(
 
 
 def _get_credentials(
-    creds: Optional[ChannelCredentials],
-    credential_entry_point_env_key: str,
-    certificate_file_env_key: str,
-    client_key_file_env_key: str,
-    client_certificate_file_env_key: str,
-) -> ChannelCredentials:
+    creds,
+    credential_entry_point_env_key,
+    certificate_file_env_key,
+    client_key_file_env_key,
+    client_certificate_file_env_key
+):
     if creds is not None:
         return creds
     _credential_env = environ.get(credential_entry_point_env_key)
@@ -242,15 +242,15 @@ def _get_credentials(
             ).load()()
         except StopIteration:
             raise RuntimeError(
-                f"Requested component '{_credential_env}' not found in "
-                f"entry point 'opentelemetry_otlp_credential_provider'"
+                "Requested component '{}' not found in ".format(_credential_env) +
+                "entry point 'opentelemetry_otlp_credential_provider'"
             )
         if isinstance(maybe_channel_creds, ChannelCredentials):
             return maybe_channel_creds
         else:
             raise RuntimeError(
-                f"Requested component '{_credential_env}' is of type {type(maybe_channel_creds)}"
-                f" must be of type `grpc.ChannelCredentials`."
+                "Requested component '{}' is of type {}".format(_credential_env, type(maybe_channel_creds)) +
+                " must be of type `grpc.ChannelCredentials`."
             )
 
     certificate_file = environ.get(certificate_file_env_key)
@@ -265,9 +265,9 @@ def _get_credentials(
     return ssl_channel_credentials()
 
 
-# pylint: disable=no-member
+# pylint =no-member
 class OTLPExporterMixin(
-    ABC, Generic[SDKDataT, ExportServiceRequestT, ExportResultT, ExportStubT]
+    ABC
 ):
     """OTLP gRPC exporter mixin.
 
@@ -288,17 +288,15 @@ class OTLPExporterMixin(
 
     def __init__(
         self,
-        stub: ExportStubT,
-        result: ExportResultT,
-        endpoint: Optional[str] = None,
-        insecure: Optional[bool] = None,
-        credentials: Optional[ChannelCredentials] = None,
-        headers: Optional[
-            Union[TypingSequence[Tuple[str, str]], Dict[str, str], str]
-        ] = None,
-        timeout: Optional[float] = None,
-        compression: Optional[Compression] = None,
-        channel_options: Optional[Tuple[Tuple[str, str]]] = None,
+        stub,
+        result,
+        endpoint = None,
+        insecure = None,
+        credentials = None,
+        headers = None,
+        timeout = None,
+        compression = None,
+        channel_options = None
     ):
         super().__init__()
         self._result = result
@@ -400,14 +398,14 @@ class OTLPExporterMixin(
     @abstractmethod
     def _translate_data(
         self,
-        data: SDKDataT,
-    ) -> ExportServiceRequestT:
+        data
+    ):
         pass
 
     def _export(
         self,
-        data: SDKDataT,
-    ) -> ExportResultT:
+        data
+    ):
         if self._shutdown:
             logger.warning("Exporter already shutdown, ignoring batch")
             return self._result.FAILURE  # type: ignore [reportReturnType]
@@ -487,7 +485,7 @@ class OTLPExporterMixin(
         # Not possible to reach here but the linter is complaining.
         return self._result.FAILURE  # type: ignore [reportReturnType]
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis = 30000, **kwargs):
         """
         Shut down the exporter.
 
@@ -504,7 +502,7 @@ class OTLPExporterMixin(
 
     @property
     @abstractmethod
-    def _exporting(self) -> str:
+    def _exporting(self):
         """
         Returns a string that describes the overall exporter, to be used in
         warning messages.

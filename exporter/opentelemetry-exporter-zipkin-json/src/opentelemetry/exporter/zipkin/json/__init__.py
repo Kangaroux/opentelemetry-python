@@ -113,7 +113,7 @@ class ZipkinExporter(SpanExporter):
         local_node_port = None,
         max_tag_value_length = None,
         timeout = None,
-        session = None,
+        session = None
     ):
         """Zipkin exporter.
 
@@ -169,7 +169,7 @@ class ZipkinExporter(SpanExporter):
         # batch all originate from one TracerProvider (and in turn have all
         # the same service.name)
         if spans:
-            service_name = spans[0].resource.attributes.get(SERVICE_NAME)
+            service_name = spans.resource.attributes.get(SERVICE_NAME)
             if service_name:
                 self.local_node.service_name = service_name
         result = self.session.post(

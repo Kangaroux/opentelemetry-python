@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=too-many-lines
+# pylint =too-many-lines
 import threading
 import time
 from logging import WARNING
@@ -101,9 +101,9 @@ OS_ENV_HEADERS = "envHeader1=val1,envHeader2=val2,User-agent=Overridden"
 OS_ENV_TIMEOUT = "30"
 
 
-# pylint: disable=protected-access
+# pylint =protected-access
 class TestOTLPMetricExporter(TestCase):
-    # pylint: disable=too-many-public-methods
+    # pylint =too-many-public-methods
     def setUp(self):
         self.metrics = {
             "sum_int": MetricsData(
@@ -170,7 +170,7 @@ class TestOTLPMetricExporter(TestCase):
             OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: "https://metrics.endpoint.env",
             OTEL_EXPORTER_OTLP_METRICS_HEADERS: "metricsEnv1=val1,metricsEnv2=val2,metricEnv3===val3==,User-agent=metrics-user-agent",
             OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: "40",
-            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_METRICS_CREDENTIAL_PROVIDER: "credential_provider",
+            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_METRICS_CREDENTIAL_PROVIDER,
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.http._common.entry_points")
@@ -290,7 +290,7 @@ class TestOTLPMetricExporter(TestCase):
 
         self.assertEqual(
             exporter._endpoint,
-            OS_ENV_ENDPOINT + f"/{DEFAULT_METRICS_EXPORT_PATH}",
+            OS_ENV_ENDPOINT + "/{}".format(DEFAULT_METRICS_EXPORT_PATH),
         )
 
     @patch.dict(
@@ -302,7 +302,7 @@ class TestOTLPMetricExporter(TestCase):
 
         self.assertEqual(
             exporter._endpoint,
-            OS_ENV_ENDPOINT + f"/{DEFAULT_METRICS_EXPORT_PATH}",
+            OS_ENV_ENDPOINT + "/{}".format(DEFAULT_METRICS_EXPORT_PATH),
         )
 
     @patch.dict(
@@ -316,7 +316,7 @@ class TestOTLPMetricExporter(TestCase):
             _ = OTLPMetricExporter()
 
             self.assertEqual(
-                cm.records[0].message,
+                cm.records.message,
                 (
                     "Header format invalid! Header values in environment "
                     "variables must be URL encoded per the OpenTelemetry "
@@ -334,7 +334,7 @@ class TestOTLPMetricExporter(TestCase):
         exporter = OTLPMetricExporter()
 
         self.assertEqual(
-            exporter.export(self.metrics["sum_int"]),
+            exporter.export(self.metrics),
             MetricExportResult.SUCCESS,
         )
 
@@ -347,7 +347,7 @@ class TestOTLPMetricExporter(TestCase):
         exporter = OTLPMetricExporter()
 
         self.assertEqual(
-            exporter.export(self.metrics["sum_int"]),
+            exporter.export(self.metrics),
             MetricExportResult.FAILURE,
         )
 
@@ -360,11 +360,11 @@ class TestOTLPMetricExporter(TestCase):
         exporter = OTLPMetricExporter()
 
         self.assertEqual(
-            exporter.export(self.metrics["sum_int"]),
+            exporter.export(self.metrics),
             MetricExportResult.SUCCESS,
         )
 
-        serialized_data = encode_metrics(self.metrics["sum_int"])
+        serialized_data = encode_metrics(self.metrics)
         mock_post.assert_called_once_with(
             url=exporter._endpoint,
             data=serialized_data.SerializeToString(),
@@ -396,8 +396,8 @@ class TestOTLPMetricExporter(TestCase):
                 ),
             ]
         )
-        split_metrics_data: List[MetricsData] = list(
-            # pylint: disable=protected-access
+        split_metrics_data = list(
+            # pylint =protected-access
             _split_metrics_data(
                 metrics_data=metrics_data,
                 max_export_batch_size=2,
@@ -475,8 +475,8 @@ class TestOTLPMetricExporter(TestCase):
             ]
         )
 
-        split_metrics_data: List[MetricsData] = list(
-            # pylint: disable=protected-access
+        split_metrics_data = list(
+            # pylint =protected-access
             _split_metrics_data(
                 metrics_data=metrics_data,
                 max_export_batch_size=3,
@@ -567,8 +567,8 @@ class TestOTLPMetricExporter(TestCase):
             ]
         )
 
-        split_metrics_data: List[MetricsData] = list(
-            # pylint: disable=protected-access
+        split_metrics_data = list(
+            # pylint =protected-access
             _split_metrics_data(
                 metrics_data=metrics_data,
                 max_export_batch_size=2,
@@ -691,16 +691,16 @@ class TestOTLPMetricExporter(TestCase):
 
         result = _get_split_resource_metrics_pb2(split_resource_metrics)
         self.assertEqual(len(result), 1)
-        self.assertIsInstance(result[0], pb2.ResourceMetrics)
-        self.assertEqual(result[0].schema_url, "http://foo-bar")
-        self.assertEqual(len(result[0].scope_metrics), 1)
-        self.assertEqual(result[0].scope_metrics[0].scope.name, "foo-scope")
-        self.assertEqual(len(result[0].scope_metrics[0].metrics), 1)
+        self.assertIsInstance(result, pb2.ResourceMetrics)
+        self.assertEqual(result.schema_url, "http://foo-bar")
+        self.assertEqual(len(result.scope_metrics), 1)
+        self.assertEqual(result.scope_metrics.scope.name, "foo-scope")
+        self.assertEqual(len(result.scope_metrics.metrics), 1)
         self.assertEqual(
-            result[0].scope_metrics[0].metrics[0].name, "foo-metric"
+            result.scope_metrics.metrics.name, "foo-metric"
         )
         self.assertEqual(
-            result[0].scope_metrics[0].metrics[0].sum.is_monotonic, True
+            result.scope_metrics.metrics.sum.is_monotonic, True
         )
 
     def test_get_split_resource_metrics_pb2_multiples(self):
@@ -789,17 +789,17 @@ class TestOTLPMetricExporter(TestCase):
 
         result = _get_split_resource_metrics_pb2(split_resource_metrics)
         self.assertEqual(len(result), 2)
-        self.assertEqual(result[0].schema_url, "http://foo-bar-1")
-        self.assertEqual(result[1].schema_url, "http://foo-bar-2")
-        self.assertEqual(len(result[0].scope_metrics), 1)
-        self.assertEqual(len(result[1].scope_metrics), 1)
-        self.assertEqual(result[0].scope_metrics[0].scope.name, "foo-scope-1")
-        self.assertEqual(result[1].scope_metrics[0].scope.name, "foo-scope-2")
+        self.assertEqual(result.schema_url, "http://foo-bar-1")
+        self.assertEqual(result.schema_url, "http://foo-bar-2")
+        self.assertEqual(len(result.scope_metrics), 1)
+        self.assertEqual(len(result.scope_metrics), 1)
+        self.assertEqual(result.scope_metrics.scope.name, "foo-scope-1")
+        self.assertEqual(result.scope_metrics.scope.name, "foo-scope-2")
         self.assertEqual(
-            result[0].scope_metrics[0].metrics[0].name, "foo-metric-1"
+            result.scope_metrics.metrics.name, "foo-metric-1"
         )
         self.assertEqual(
-            result[1].scope_metrics[0].metrics[0].name, "foo-metric-2"
+            result.scope_metrics.metrics.name, "foo-metric-2"
         )
 
     def test_get_split_resource_metrics_pb2_unsupported_metric_type(self):
@@ -835,7 +835,7 @@ class TestOTLPMetricExporter(TestCase):
         self.assertEqual(len(result), 1)
         self.assertIn(
             "Tried to split and export an unsupported metric type",
-            log.output[0],
+            log.output,
         )
 
     @patch.object(OTLPMetricExporter, "_export")
@@ -849,7 +849,7 @@ class TestOTLPMetricExporter(TestCase):
         mock_encode_metrics,
         mock_time,
         mock_random,
-        mock_export,
+        mock_export
     ):
         mock_time.return_value = 0
         mock_random.uniform.return_value = 1
@@ -944,7 +944,7 @@ class TestOTLPMetricExporter(TestCase):
         mock_encode_metrics,
         mock_time,
         mock_random,
-        mock_export,
+        mock_export
     ):
         mock_time.return_value = 0
         mock_random.uniform.return_value = 1
@@ -1021,7 +1021,7 @@ class TestOTLPMetricExporter(TestCase):
         mock_encode_metrics,
         mock_time,
         mock_random,
-        mock_export,
+        mock_export
     ):
         mock_time.return_value = 0
         mock_random.uniform.return_value = 1
@@ -1117,7 +1117,7 @@ class TestOTLPMetricExporter(TestCase):
         mock_encode_metrics,
         mock_time,
         mock_random,
-        mock_export,
+        mock_export
     ):
         mock_time.return_value = 0
         mock_random.uniform.return_value = 1
@@ -1217,7 +1217,7 @@ class TestOTLPMetricExporter(TestCase):
 
         with patch.dict(
             environ,
-            {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "CUMULATIVE"},
+            {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE},
         ):
             otlp_metric_exporter = OTLPMetricExporter()
 
@@ -1229,7 +1229,7 @@ class TestOTLPMetricExporter(TestCase):
                 )
 
         with patch.dict(
-            environ, {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "ABC"}
+            environ, {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE}
         ):
             with self.assertLogs(level=WARNING):
                 otlp_metric_exporter = OTLPMetricExporter()
@@ -1243,24 +1243,24 @@ class TestOTLPMetricExporter(TestCase):
 
         with patch.dict(
             environ,
-            {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "DELTA"},
+            {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE},
         ):
             otlp_metric_exporter = OTLPMetricExporter()
 
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[Counter],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.DELTA,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[UpDownCounter],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.CUMULATIVE,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[Histogram],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.DELTA,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[ObservableCounter],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.DELTA,
             )
             self.assertEqual(
@@ -1270,30 +1270,30 @@ class TestOTLPMetricExporter(TestCase):
                 AggregationTemporality.CUMULATIVE,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[ObservableGauge],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.CUMULATIVE,
             )
 
         with patch.dict(
             environ,
-            {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE: "LOWMEMORY"},
+            {OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE},
         ):
             otlp_metric_exporter = OTLPMetricExporter()
 
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[Counter],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.DELTA,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[UpDownCounter],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.CUMULATIVE,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[Histogram],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.DELTA,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[ObservableCounter],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.CUMULATIVE,
             )
             self.assertEqual(
@@ -1303,34 +1303,34 @@ class TestOTLPMetricExporter(TestCase):
                 AggregationTemporality.CUMULATIVE,
             )
             self.assertEqual(
-                otlp_metric_exporter._preferred_temporality[ObservableGauge],
+                otlp_metric_exporter._preferred_temporality,
                 AggregationTemporality.CUMULATIVE,
             )
 
     def test_exponential_explicit_bucket_histogram(self):
         self.assertIsInstance(
-            OTLPMetricExporter()._preferred_aggregation[Histogram],
+            OTLPMetricExporter()._preferred_aggregation,
             ExplicitBucketHistogramAggregation,
         )
 
         with patch.dict(
             environ,
             {
-                OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION: "base2_exponential_bucket_histogram"
+                OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION
             },
         ):
             self.assertIsInstance(
-                OTLPMetricExporter()._preferred_aggregation[Histogram],
+                OTLPMetricExporter()._preferred_aggregation,
                 ExponentialBucketHistogramAggregation,
             )
 
         with patch.dict(
             environ,
-            {OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION: "abc"},
+            {OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION},
         ):
             with self.assertLogs(level=WARNING) as log:
                 self.assertIsInstance(
-                    OTLPMetricExporter()._preferred_aggregation[Histogram],
+                    OTLPMetricExporter()._preferred_aggregation,
                     ExplicitBucketHistogramAggregation,
                 )
             self.assertIn(
@@ -1339,17 +1339,17 @@ class TestOTLPMetricExporter(TestCase):
                     "HISTOGRAM_AGGREGATION: abc, using explicit bucket "
                     "histogram aggregation"
                 ),
-                log.output[0],
+                log.output,
             )
 
         with patch.dict(
             environ,
             {
-                OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION: "explicit_bucket_histogram"
+                OTEL_EXPORTER_OTLP_METRICS_DEFAULT_HISTOGRAM_AGGREGATION
             },
         ):
             self.assertIsInstance(
-                OTLPMetricExporter()._preferred_aggregation[Histogram],
+                OTLPMetricExporter()._preferred_aggregation,
                 ExplicitBucketHistogramAggregation,
             )
 
@@ -1376,7 +1376,7 @@ class TestOTLPMetricExporter(TestCase):
         )
 
         self.assertEqual(
-            exporter._preferred_aggregation[Histogram], histogram_aggregation
+            exporter._preferred_aggregation, histogram_aggregation
         )
 
     @patch.object(Session, "post")
@@ -1390,7 +1390,7 @@ class TestOTLPMetricExporter(TestCase):
         with self.assertLogs(level=WARNING) as warning:
             before = time.time()
             self.assertEqual(
-                exporter.export(self.metrics["sum_int"]),
+                exporter.export(self.metrics),
                 MetricExportResult.FAILURE,
             )
             after = time.time()
@@ -1401,7 +1401,7 @@ class TestOTLPMetricExporter(TestCase):
             self.assertTrue(0.75 < after - before < 1.25)
             self.assertIn(
                 "Transient error UNAVAILABLE encountered while exporting metrics batch, retrying in",
-                warning.records[0].message,
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -1411,15 +1411,15 @@ class TestOTLPMetricExporter(TestCase):
         mock_post.side_effect = ConnectionError(msg)
         with self.assertLogs(level=WARNING) as warning:
             self.assertEqual(
-                exporter.export(self.metrics["sum_int"]),
+                exporter.export(self.metrics),
                 MetricExportResult.FAILURE,
             )
             # Check for greater 2 because the request is on each retry
             # done twice at the moment.
             self.assertGreater(mock_post.call_count, 2)
             self.assertIn(
-                f"Transient error {msg} encountered while exporting metrics batch, retrying in",
-                warning.records[0].message,
+                "Transient error {} encountered while exporting metrics batch, retrying in".format(msg),
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -1429,13 +1429,13 @@ class TestOTLPMetricExporter(TestCase):
         mock_post.side_effect = requests.exceptions.RequestException()
         with self.assertLogs(level=WARNING) as warning:
             self.assertEqual(
-                exporter.export(self.metrics["sum_int"]),
+                exporter.export(self.metrics),
                 MetricExportResult.FAILURE,
             )
             self.assertEqual(mock_post.call_count, 1)
             self.assertIn(
                 "Failed to export metrics batch code",
-                warning.records[0].message,
+                warning.records.message,
             )
 
     @patch.object(Session, "post")
@@ -1445,12 +1445,12 @@ class TestOTLPMetricExporter(TestCase):
 
         def export_side_effect(*args, **kwargs):
             # Timeout should be set to something slightly less than 400 milliseconds depending on how much time has passed.
-            self.assertAlmostEqual(0.4, kwargs["timeout"], 2)
+            self.assertAlmostEqual(0.4, kwargs, 2)
             return resp
 
         mock_post.side_effect = export_side_effect
         exporter = OTLPMetricExporter(timeout=0.4)
-        exporter.export(self.metrics["sum_int"])
+        exporter.export(self.metrics)
 
     @patch.object(Session, "post")
     def test_shutdown_interrupts_retry_backoff(self, mock_post):
@@ -1461,7 +1461,7 @@ class TestOTLPMetricExporter(TestCase):
         resp.reason = "UNAVAILABLE"
         mock_post.return_value = resp
         thread = threading.Thread(
-            target=exporter.export, args=(self.metrics["sum_int"],)
+            target=exporter.export, args=(self.metrics,)
         )
         with self.assertLogs(level=WARNING) as warning:
             before = time.time()
@@ -1474,46 +1474,46 @@ class TestOTLPMetricExporter(TestCase):
             after = time.time()
             self.assertIn(
                 "Transient error UNAVAILABLE encountered while exporting metrics batch, retrying in",
-                warning.records[0].message,
+                warning.records.message,
             )
             self.assertIn(
                 "Shutdown in progress, aborting retry.",
-                warning.records[1].message,
+                warning.records.message,
             )
 
             assert after - before < 0.2
 
 
 def _resource_metrics(
-    index: int, scope_metrics: List[pb2.ScopeMetrics]
-) -> pb2.ResourceMetrics:
+    index, scope_metrics
+):
     return pb2.ResourceMetrics(
         resource={
             "attributes": [KeyValue(key="a", value={"int_value": index})],
         },
-        schema_url=f"resource_url_{index}",
+        schema_url="resource_url_{}".format(index),
         scope_metrics=scope_metrics,
     )
 
 
-def _scope_metrics(index: int, metrics: List[pb2.Metric]) -> pb2.ScopeMetrics:
+def _scope_metrics(index, metrics):
     return pb2.ScopeMetrics(
-        scope=InstrumentationScope(name=f"scope_{index}"),
-        schema_url=f"scope_url_{index}",
+        scope=InstrumentationScope(name="scope_{}".format(index)),
+        schema_url="scope_url_{}".format(index),
         metrics=metrics,
     )
 
 
-def _gauge(index: int, data_points: List[pb2.NumberDataPoint]) -> pb2.Metric:
+def _gauge(index, data_points):
     return pb2.Metric(
-        name=f"gauge_{index}",
+        name="gauge_{}".format(index),
         description="description",
         unit="unit",
         gauge=pb2.Gauge(data_points=data_points),
     )
 
 
-def _number_data_point(value: int) -> pb2.NumberDataPoint:
+def _number_data_point(value):
     return pb2.NumberDataPoint(
         attributes=[
             KeyValue(key="a", value={"int_value": 1}),

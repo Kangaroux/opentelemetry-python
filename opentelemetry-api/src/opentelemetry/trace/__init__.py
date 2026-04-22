@@ -140,7 +140,7 @@ class Link(_LinkBase):
     def __init__(
         self,
         context,
-        attributes=None,
+        attributes=None
     ):
         super().__init__(context)
         self._attributes = attributes
@@ -156,7 +156,7 @@ class Link(_LinkBase):
         return 0
 
 
-_Links = Optional[Sequence[Link]]
+_Links = Optional
 
 
 class SpanKind(Enum):
@@ -195,7 +195,7 @@ class TracerProvider(ABC):
         instrumenting_module_name,
         instrumenting_library_version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         """Returns a `Tracer` for use by the given instrumentation library.
 
@@ -238,9 +238,9 @@ class NoOpTracerProvider(TracerProvider):
         instrumenting_module_name,
         instrumenting_library_version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
-        # pylint:disable=no-self-use,unused-argument
+        # pylint =no-self-use,unused-argument
         return NoOpTracer()
 
 
@@ -260,7 +260,7 @@ class ProxyTracerProvider(TracerProvider):
         instrumenting_module_name,
         instrumenting_library_version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         if _TRACER_PROVIDER:
             return _TRACER_PROVIDER.get_tracer(
@@ -294,7 +294,7 @@ class Tracer(ABC):
         links=None,
         start_time=None,
         record_exception=True,
-        set_status_on_exception=True,
+        set_status_on_exception=True
     ):
         """Starts a span.
 
@@ -350,7 +350,7 @@ class Tracer(ABC):
         start_time=None,
         record_exception=True,
         set_status_on_exception=True,
-        end_on_exit=True,
+        end_on_exit=True
     ):
         """Context manager for creating a new span and set it
         as the current span in this tracer's context.
@@ -385,8 +385,7 @@ class Tracer(ABC):
         This can also be used as a decorator::
 
             @tracer.start_as_current_span("name")
-            def function():
-                ...
+            def function(): pass
 
             function()
 
@@ -415,13 +414,13 @@ class Tracer(ABC):
 
 
 class ProxyTracer(Tracer):
-    # pylint: disable=W0222,signature-differs
+    # pylint =W0222,signature-differs
     def __init__(
         self,
         instrumenting_module_name,
         instrumenting_library_version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         self._instrumenting_module_name = instrumenting_module_name
         self._instrumenting_library_version = instrumenting_library_version
@@ -469,7 +468,7 @@ class NoOpTracer(Tracer):
         links=None,
         start_time=None,
         record_exception=True,
-        set_status_on_exception=True,
+        set_status_on_exception=True
     ):
         current_span = get_current_span(context)
         if isinstance(current_span, NonRecordingSpan):
@@ -498,7 +497,7 @@ class NoOpTracer(Tracer):
         start_time=None,
         record_exception=True,
         set_status_on_exception=True,
-        end_on_exit=True,
+        end_on_exit=True
     ):
         span = self.start_span(
             name=name,
@@ -537,7 +536,7 @@ def get_tracer(
     instrumenting_library_version=None,
     tracer_provider=None,
     schema_url=None,
-    attributes=None,
+    attributes=None
 ):
     """Returns a `Tracer` for use by the given instrumentation library.
 
@@ -558,7 +557,7 @@ def get_tracer(
 
 def _set_tracer_provider(tracer_provider, log):
     def set_tp():
-        global _TRACER_PROVIDER  # pylint: disable=global-statement
+        global _TRACER_PROVIDER  # pylint =global-statement
         _TRACER_PROVIDER = tracer_provider
 
     did_set = _TRACER_PROVIDER_SET_ONCE.do_once(set_tp)
@@ -597,7 +596,7 @@ def use_span(
     span,
     end_on_exit=False,
     record_exception=True,
-    set_status_on_exception=True,
+    set_status_on_exception=True
 ):
     """Takes a non-active span and activates it in the current context.
 
@@ -623,7 +622,7 @@ def use_span(
     # Record only exceptions that inherit Exception class but not BaseException, because
     # classes that directly inherit BaseException are not technically errors, e.g. GeneratorExit.
     # See https://github.com/open-telemetry/opentelemetry-python/issues/4484
-    except Exception as exc:  # pylint: disable=broad-exception-caught
+    except Exception as exc:  # pylint =broad-exception-caught
         if isinstance(span, Span) and span.is_recording():
             # Record the exception as an event
             if record_exception:

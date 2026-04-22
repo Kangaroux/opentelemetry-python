@@ -72,7 +72,7 @@ class LogRecord(ABC):
         severity_number=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         pass
 
@@ -90,7 +90,7 @@ class LogRecord(ABC):
         severity_text=None,
         severity_number=None,
         bodyValue=None,
-        attributes=None,
+        attributes=None
     ):
         pass
 
@@ -106,7 +106,7 @@ class LogRecord(ABC):
         severity_number=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         if not context:
             context = get_current()
@@ -134,7 +134,7 @@ class Logger(ABC):
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         super().__init__()
         self._name = name
@@ -152,14 +152,14 @@ class Logger(ABC):
         severity_text=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         pass
 
     @overload
     def emit(
         self,
-        record,
+        record
     ):
         pass
 
@@ -174,7 +174,7 @@ class Logger(ABC):
         severity_text=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         """Emits a :class:`LogRecord` representing a log to the processing pipeline."""
 
@@ -195,14 +195,14 @@ class NoOpLogger(Logger):
         severity_text=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         pass
 
     @overload
-    def emit(  # pylint: disable=arguments-differ
+    def emit(  # pylint =arguments-differ
         self,
-        record,
+        record
     ):
         pass
 
@@ -216,18 +216,18 @@ class NoOpLogger(Logger):
         severity_text=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         pass
 
 
 class ProxyLogger(Logger):
-    def __init__(  # pylint: disable=super-init-not-called
+    def __init__(  # pylint =super-init-not-called
         self,
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         self._name = name
         self._version = version
@@ -261,14 +261,14 @@ class ProxyLogger(Logger):
         severity_text=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         pass
 
     @overload
-    def emit(  # pylint: disable=arguments-differ
+    def emit(  # pylint =arguments-differ
         self,
-        record,
+        record
     ):
         pass
 
@@ -282,7 +282,7 @@ class ProxyLogger(Logger):
         severity_text=None,
         bodyValue=None,
         attributes=None,
-        event_name=None,
+        event_name=None
     ):
         if record:
             self._logger.emit(record)
@@ -310,7 +310,7 @@ class LoggerProvider(ABC):
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         """Returns a `Logger` for use by the given instrumentation library.
 
@@ -349,7 +349,7 @@ class NoOpLoggerProvider(LoggerProvider):
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         """Returns a NoOpLogger."""
         return NoOpLogger(
@@ -363,7 +363,7 @@ class ProxyLoggerProvider(LoggerProvider):
         name,
         version=None,
         schema_url=None,
-        attributes=None,
+        attributes=None
     ):
         if _LOGGER_PROVIDER:
             return _LOGGER_PROVIDER.get_logger(
@@ -387,7 +387,7 @@ _PROXY_LOGGER_PROVIDER = ProxyLoggerProvider()
 
 def get_logger_provider():
     """Gets the current global :class:`~.LoggerProvider` object."""
-    global _LOGGER_PROVIDER  # pylint: disable=global-variable-not-assigned
+    global _LOGGER_PROVIDER  # pylint =global-variable-not-assigned
     if _LOGGER_PROVIDER is None:
         if _OTEL_PYTHON_LOGGER_PROVIDER not in environ:
             return _PROXY_LOGGER_PROVIDER
@@ -403,7 +403,7 @@ def get_logger_provider():
 
 def _set_logger_provider(logger_provider, log):
     def set_lp():
-        global _LOGGER_PROVIDER  # pylint: disable=global-statement
+        global _LOGGER_PROVIDER  # pylint =global-statement
         _LOGGER_PROVIDER = logger_provider
 
     did_set = _LOGGER_PROVIDER_SET_ONCE.do_once(set_lp)
@@ -426,7 +426,7 @@ def get_logger(
     instrumenting_library_version="",
     logger_provider=None,
     schema_url=None,
-    attributes=None,
+    attributes=None
 ):
     """Returns a `Logger` for use within a python process.
 

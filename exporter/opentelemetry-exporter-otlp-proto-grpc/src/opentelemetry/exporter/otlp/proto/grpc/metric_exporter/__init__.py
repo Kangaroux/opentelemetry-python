@@ -11,8 +11,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 from dataclasses import replace
 from logging import getLogger
 from os import environ
@@ -97,18 +95,16 @@ class OTLPMetricExporter(
 
     def __init__(
         self,
-        endpoint: str | None = None,
-        insecure: bool | None = None,
-        credentials: ChannelCredentials | None = None,
-        headers: Union[TypingSequence[Tuple[str, str]], dict[str, str], str]
-        | None = None,
-        timeout: float | None = None,
-        compression: Compression | None = None,
-        preferred_temporality: dict[type, AggregationTemporality]
-        | None = None,
-        preferred_aggregation: dict[type, Aggregation] | None = None,
-        max_export_batch_size: int | None = None,
-        channel_options: Tuple[Tuple[str, str]] | None = None,
+        endpoint = None,
+        insecure = None,
+        credentials = None,
+        headers: Union | None = None,
+        timeout = None,
+        compression = None,
+        preferred_temporality = None,
+        preferred_aggregation = None,
+        max_export_batch_size = None,
+        channel_options: Tuple | None = None
     ):
         insecure_metrics = environ.get(OTEL_EXPORTER_OTLP_METRICS_INSECURE)
         if insecure is None and insecure_metrics is not None:
@@ -155,19 +151,19 @@ class OTLPMetricExporter(
             channel_options=channel_options,
         )
 
-        self._max_export_batch_size: int | None = max_export_batch_size
+        self._max_export_batch_size = max_export_batch_size
 
     def _translate_data(  # type: ignore [reportIncompatibleMethodOverride]
-        self, data: MetricsData
-    ) -> ExportMetricsServiceRequest:
+        self, data
+    ):
         return encode_metrics(data)
 
     def export(
         self,
-        metrics_data: MetricsData,
-        timeout_millis: float = 10_000,
-        **kwargs,
-    ) -> MetricExportResult:
+        metrics_data,
+        timeout_millis = 10000,
+        **kwargs
+    ):
         # TODO(#2663): OTLPExporterMixin should pass timeout to gRPC
         if self._max_export_batch_size is None:
             return self._export(data=metrics_data)
@@ -183,14 +179,14 @@ class OTLPMetricExporter(
 
     def _split_metrics_data(
         self,
-        metrics_data: MetricsData,
-    ) -> Iterable[MetricsData]:
+        metrics_data
+    ):
         assert self._max_export_batch_size is not None
-        batch_size: int = 0
-        split_resource_metrics: List[ResourceMetrics] = []
+        batch_size = 0
+        split_resource_metrics = []
 
         for resource_metrics in metrics_data.resource_metrics:
-            split_scope_metrics: List[ScopeMetrics] = []
+            split_scope_metrics = []
             split_resource_metrics.append(
                 replace(
                     resource_metrics,
@@ -198,7 +194,7 @@ class OTLPMetricExporter(
                 )
             )
             for scope_metrics in resource_metrics.scope_metrics:
-                split_metrics: List[Metric] = []
+                split_metrics = []
                 split_scope_metrics.append(
                     replace(
                         scope_metrics,
@@ -206,7 +202,7 @@ class OTLPMetricExporter(
                     )
                 )
                 for metric in scope_metrics.metrics:
-                    split_data_points: List[DataPointT] = []
+                    split_data_points = []
                     split_metrics.append(
                         replace(
                             metric,
@@ -265,13 +261,13 @@ class OTLPMetricExporter(
         if batch_size > 0:
             yield MetricsData(resource_metrics=split_resource_metrics)
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis = 30000, **kwargs):
         OTLPExporterMixin.shutdown(self, timeout_millis=timeout_millis)
 
     @property
-    def _exporting(self) -> str:
+    def _exporting(self):
         return "metrics"
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis = 10000):
         """Nothing is buffered in this exporter, so this method does nothing."""
         return True

@@ -62,7 +62,7 @@ class Protocol(Enum):
     V2 = "v2"
 
 
-# pylint: disable=W0223
+# pylint =W0223
 class Encoder(abc.ABC):
     """Base class for encoders that are used by the exporter.
 
@@ -102,7 +102,7 @@ class Encoder(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     def _encode_local_endpoint(
-        local_endpoint,
+        local_endpoint
     ):
         pass
 
@@ -156,8 +156,8 @@ class Encoder(abc.ABC):
                 self.max_tag_value_length is not None
                 and self.max_tag_value_length > 0
             ):
-                value = value[: self.max_tag_value_length]
-            tags[attribute_key] = value
+                value = value
+            tags = value
         return tags
 
     def _extract_tag_value_string_from_sequence(self, sequence):
@@ -249,8 +249,8 @@ class Encoder(abc.ABC):
                     and self.max_tag_value_length is not None
                     and self.max_tag_value_length > 0
                 ):
-                    value = value[: self.max_tag_value_length]
-                attrs[key] = value
+                    value = value
+                attrs = value
 
             annotations.append(
                 {
@@ -290,11 +290,11 @@ class JsonEncoder(Encoder):
     def _encode_local_endpoint(local_endpoint):
         encoded_local_endpoint = {"serviceName": local_endpoint.service_name}
         if local_endpoint.ipv4 is not None:
-            encoded_local_endpoint["ipv4"] = str(local_endpoint.ipv4)
+            encoded_local_endpoint = str(local_endpoint.ipv4)
         if local_endpoint.ipv6 is not None:
-            encoded_local_endpoint["ipv6"] = str(local_endpoint.ipv6)
+            encoded_local_endpoint = str(local_endpoint.ipv6)
         if local_endpoint.port is not None:
-            encoded_local_endpoint["port"] = local_endpoint.port
+            encoded_local_endpoint = local_endpoint.port
         return encoded_local_endpoint
 
     @staticmethod

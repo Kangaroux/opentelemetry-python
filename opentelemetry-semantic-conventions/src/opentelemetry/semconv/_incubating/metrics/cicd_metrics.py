@@ -17,15 +17,15 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Counter, Histogram, Meter, UpDownCounter
 
-CICD_PIPELINE_RUN_ACTIVE: Final = "cicd.pipeline.run.active"
+CICD_PIPELINE_RUN_ACTIVE = "cicd.pipeline.run.active"
 """
 The number of pipeline runs currently active in the system by state
-Instrument: updowncounter
+Instrument
 Unit: {run}
 """
 
 
-def create_cicd_pipeline_run_active(meter: Meter) -> UpDownCounter:
+def create_cicd_pipeline_run_active(meter):
     """The number of pipeline runs currently active in the system by state"""
     return meter.create_up_down_counter(
         name=CICD_PIPELINE_RUN_ACTIVE,
@@ -34,15 +34,15 @@ def create_cicd_pipeline_run_active(meter: Meter) -> UpDownCounter:
     )
 
 
-CICD_PIPELINE_RUN_DURATION: Final = "cicd.pipeline.run.duration"
+CICD_PIPELINE_RUN_DURATION = "cicd.pipeline.run.duration"
 """
 Duration of a pipeline run grouped by pipeline, state and result
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_cicd_pipeline_run_duration(meter: Meter) -> Histogram:
+def create_cicd_pipeline_run_duration(meter):
     """Duration of a pipeline run grouped by pipeline, state and result"""
     return meter.create_histogram(
         name=CICD_PIPELINE_RUN_DURATION,
@@ -51,17 +51,17 @@ def create_cicd_pipeline_run_duration(meter: Meter) -> Histogram:
     )
 
 
-CICD_PIPELINE_RUN_ERRORS: Final = "cicd.pipeline.run.errors"
+CICD_PIPELINE_RUN_ERRORS = "cicd.pipeline.run.errors"
 """
 The number of errors encountered in pipeline runs (eg. compile, test failures)
-Instrument: counter
+Instrument
 Unit: {error}
 Note: There might be errors in a pipeline run that are non fatal (eg. they are suppressed) or in a parallel stage multiple stages could have a fatal error.
 This means that this error count might not be the same as the count of metric `cicd.pipeline.run.duration` with run result `failure`.
 """
 
 
-def create_cicd_pipeline_run_errors(meter: Meter) -> Counter:
+def create_cicd_pipeline_run_errors(meter):
     """The number of errors encountered in pipeline runs (eg. compile, test failures)"""
     return meter.create_counter(
         name=CICD_PIPELINE_RUN_ERRORS,
@@ -70,16 +70,16 @@ def create_cicd_pipeline_run_errors(meter: Meter) -> Counter:
     )
 
 
-CICD_SYSTEM_ERRORS: Final = "cicd.system.errors"
+CICD_SYSTEM_ERRORS = "cicd.system.errors"
 """
 The number of errors in a component of the CICD system (eg. controller, scheduler, agent)
-Instrument: counter
+Instrument
 Unit: {error}
 Note: Errors in pipeline run execution are explicitly excluded. Ie a test failure is not counted in this metric.
 """
 
 
-def create_cicd_system_errors(meter: Meter) -> Counter:
+def create_cicd_system_errors(meter):
     """The number of errors in a component of the CICD system (eg. controller, scheduler, agent)"""
     return meter.create_counter(
         name=CICD_SYSTEM_ERRORS,
@@ -88,15 +88,15 @@ def create_cicd_system_errors(meter: Meter) -> Counter:
     )
 
 
-CICD_WORKER_COUNT: Final = "cicd.worker.count"
+CICD_WORKER_COUNT = "cicd.worker.count"
 """
 The number of workers on the CICD system by state
-Instrument: updowncounter
+Instrument
 Unit: {count}
 """
 
 
-def create_cicd_worker_count(meter: Meter) -> UpDownCounter:
+def create_cicd_worker_count(meter):
     """The number of workers on the CICD system by state"""
     return meter.create_up_down_counter(
         name=CICD_WORKER_COUNT,

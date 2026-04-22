@@ -27,22 +27,22 @@ class InMemorySpanExporter(SpanExporter):
     :func:`.get_finished_spans` method.
     """
 
-    def __init__(self) -> None:
-        self._finished_spans: typing.List[ReadableSpan] = []
+    def __init__(self):
+        self._finished_spans = []
         self._stopped = False
         self._lock = threading.Lock()
 
-    def clear(self) -> None:
+    def clear(self):
         """Clear list of collected spans."""
         with self._lock:
             self._finished_spans.clear()
 
-    def get_finished_spans(self) -> typing.Tuple[ReadableSpan, ...]:
+    def get_finished_spans(self):
         """Get list of collected spans."""
         with self._lock:
             return tuple(self._finished_spans)
 
-    def export(self, spans: typing.Sequence[ReadableSpan]) -> SpanExportResult:
+    def export(self, spans):
         """Stores a list of spans in memory."""
         if self._stopped:
             return SpanExportResult.FAILURE
@@ -50,12 +50,12 @@ class InMemorySpanExporter(SpanExporter):
             self._finished_spans.extend(spans)
         return SpanExportResult.SUCCESS
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         """Shut downs the exporter.
 
         Calls to export after the exporter has been shut down will fail.
         """
         self._stopped = True
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis = 30000):
         return True

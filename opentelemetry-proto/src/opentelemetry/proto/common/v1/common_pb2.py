@@ -26,18 +26,18 @@ _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'opentelemetry.proto.common.v1.common_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
-  _globals['DESCRIPTOR']._loaded_options = None
-  _globals['DESCRIPTOR']._serialized_options = b'\n io.opentelemetry.proto.common.v1B\013CommonProtoP\001Z(go.opentelemetry.io/proto/otlp/common/v1\252\002\035OpenTelemetry.Proto.Common.V1'
-  _globals['_ANYVALUE']._serialized_start=78
-  _globals['_ANYVALUE']._serialized_end=346
-  _globals['_ARRAYVALUE']._serialized_start=348
-  _globals['_ARRAYVALUE']._serialized_end=417
-  _globals['_KEYVALUELIST']._serialized_start=419
-  _globals['_KEYVALUELIST']._serialized_end=490
-  _globals['_KEYVALUE']._serialized_start=492
-  _globals['_KEYVALUE']._serialized_end=571
-  _globals['_INSTRUMENTATIONSCOPE']._serialized_start=574
-  _globals['_INSTRUMENTATIONSCOPE']._serialized_end=722
-  _globals['_ENTITYREF']._serialized_start=724
-  _globals['_ENTITYREF']._serialized_end=812
+  _globals._loaded_options = None
+  _globals._serialized_options = b'\n io.opentelemetry.proto.common.v1B\013CommonProtoP\001Z(go.opentelemetry.io/proto/otlp/common/v1\252\002\035OpenTelemetry.Proto.Common.V1'
+  _globals._serialized_start=78
+  _globals._serialized_end=346
+  _globals._serialized_start=348
+  _globals._serialized_end=417
+  _globals._serialized_start=419
+  _globals._serialized_end=490
+  _globals._serialized_start=492
+  _globals._serialized_end=571
+  _globals._serialized_start=574
+  _globals._serialized_end=722
+  _globals._serialized_start=724
+  _globals._serialized_end=812
 # @@protoc_insertion_point(module_scope)

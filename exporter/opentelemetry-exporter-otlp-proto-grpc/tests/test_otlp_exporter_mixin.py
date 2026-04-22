@@ -15,7 +15,7 @@
 import threading
 import time
 import unittest
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 from logging import WARNING, getLogger
@@ -25,10 +25,10 @@ from unittest import TestCase
 from unittest.mock import Mock, patch
 
 import grpc
-from google.protobuf.duration_pb2 import (  # pylint: disable=no-name-in-module
+from google.protobuf.duration_pb2 import (  # pylint =no-name-in-module
     Duration,
 )
-from google.rpc.error_details_pb2 import (  # pylint: disable=no-name-in-module
+from google.rpc.error_details_pb2 import (  # pylint =no-name-in-module
     RetryInfo,
 )
 from grpc import ChannelCredentials, Compression, StatusCode, server
@@ -81,34 +81,34 @@ class OTLPSpanExporterForTesting(
         super().__init__(TraceServiceStub, SpanExportResult, **kwargs)
 
     def _translate_data(
-        self, data: Sequence[ReadableSpan]
-    ) -> ExportTraceServiceRequest:
+        self, data
+    ):
         return encode_spans(data)
 
-    def export(self, spans: Sequence[ReadableSpan]) -> SpanExportResult:
+    def export(self, spans):
         return self._export(spans)
 
     @property
     def _exporting(self):
         return "traces"
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs):
+    def shutdown(self, timeout_millis = 30000, **kwargs):
         return OTLPExporterMixin.shutdown(self, timeout_millis, **kwargs)
 
 
 class TraceServiceServicerWithExportParams(TraceServiceServicer):
     def __init__(
         self,
-        export_result: StatusCode,
-        optional_retry_nanos: Optional[int] = None,
-        optional_export_sleep: Optional[float] = None,
+        export_result,
+        optional_retry_nanos = None,
+        optional_export_sleep = None
     ):
         self.export_result = export_result
         self.optional_export_sleep = optional_export_sleep
         self.optional_retry_nanos = optional_retry_nanos
         self.num_requests = 0
 
-    # pylint: disable=invalid-name,unused-argument
+    # pylint =invalid-name,unused-argument
     def Export(self, request, context):
         self.num_requests += 1
         if self.optional_export_sleep:
@@ -149,7 +149,7 @@ class ThreadWithReturnValue(threading.Thread):
             # an argument that has a member that points to the thread.
             del self._target, self._args, self._kwargs  # type: ignore
 
-    def join(self, timeout: Optional[float] = None) -> Any:
+    def join(self, timeout = None):
         super().join(timeout=timeout)
         return self._return
 
@@ -232,12 +232,12 @@ class TestOTLPExporterMixin(TestCase):
             self.assertEqual(
                 1,
                 mock_method.call_count,
-                f"expected {mock_method} to be called for {endpoint} {insecure}",
+                "expected {} to be called for {} {}".format(mock_method, endpoint, insecure),
             )
             self.assertEqual(
                 expected_endpoint,
-                mock_method.call_args[0][0],
-                f"expected {expected_endpoint} got {mock_method.call_args[0][0]} {endpoint}",
+                mock_method.call_args,
+                "expected {} got {} {}".format(expected_endpoint, mock_method.call_args, endpoint),
             )
             mock_method.reset_mock()
 
@@ -265,7 +265,7 @@ class TestOTLPExporterMixin(TestCase):
             with self.assertRaises(InvalidCompressionValueException):
                 environ_to_compression("test_invalid")
 
-    # pylint: disable=no-self-use
+    # pylint =no-self-use
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.insecure_channel")
     @patch.dict("os.environ", {})
     def test_otlp_exporter_otlp_compression_unspecified(
@@ -287,7 +287,7 @@ class TestOTLPExporterMixin(TestCase):
     @patch.dict(
         "os.environ",
         {
-            _OTEL_PYTHON_EXPORTER_OTLP_GRPC_CREDENTIAL_PROVIDER: "credential_provider"
+            _OTEL_PYTHON_EXPORTER_OTLP_GRPC_CREDENTIAL_PROVIDER
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.entry_points")
@@ -301,13 +301,13 @@ class TestOTLPExporterMixin(TestCase):
             return_value=[IterEntryPoint("custom_credential", f)]
         )
         exporter = OTLPSpanExporterForTesting(insecure=False)
-        # pylint: disable=protected-access
+        # pylint =protected-access
         assert exporter._credentials is credential
 
     @patch.dict(
         "os.environ",
         {
-            _OTEL_PYTHON_EXPORTER_OTLP_GRPC_CREDENTIAL_PROVIDER: "credential_provider"
+            _OTEL_PYTHON_EXPORTER_OTLP_GRPC_CREDENTIAL_PROVIDER
         },
     )
     def test_that_missing_entry_point_raises_exception(self):
@@ -317,7 +317,7 @@ class TestOTLPExporterMixin(TestCase):
     @patch.dict(
         "os.environ",
         {
-            _OTEL_PYTHON_EXPORTER_OTLP_GRPC_CREDENTIAL_PROVIDER: "credential_provider"
+            _OTEL_PYTHON_EXPORTER_OTLP_GRPC_CREDENTIAL_PROVIDER
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.entry_points")
@@ -333,7 +333,7 @@ class TestOTLPExporterMixin(TestCase):
         with self.assertRaises(RuntimeError):
             OTLPSpanExporterForTesting(insecure=False)
 
-    # pylint: disable=no-self-use, disable=unused-argument
+    # pylint =no-self-use, disable=unused-argument
     @patch(
         "opentelemetry.exporter.otlp.proto.grpc.exporter.ssl_channel_credentials"
     )
@@ -345,9 +345,9 @@ class TestOTLPExporterMixin(TestCase):
         OTLPSpanExporterForTesting(insecure=False)
         self.assertTrue(mock_ssl_channel.called)
 
-    # pylint: disable=no-self-use
+    # pylint =no-self-use
     @patch("opentelemetry.exporter.otlp.proto.grpc.exporter.insecure_channel")
-    @patch.dict("os.environ", {OTEL_EXPORTER_OTLP_COMPRESSION: "gzip"})
+    @patch.dict("os.environ", {OTEL_EXPORTER_OTLP_COMPRESSION})
     def test_otlp_exporter_otlp_compression_envvar(
         self, mock_insecure_channel
     ):
@@ -378,7 +378,7 @@ class TestOTLPExporterMixin(TestCase):
                 self.exporter.export([self.span]), SpanExportResult.FAILURE
             )
             self.assertEqual(
-                warning.records[0].message,
+                warning.records.message,
                 "Exporter already shutdown, ignoring batch",
             )
 
@@ -403,7 +403,7 @@ class TestOTLPExporterMixin(TestCase):
             # Wait a bit for export to fail and the backoff sleep to start
             time.sleep(0.05)
             # The code should now be in a 1 second backoff.
-            # pylint: disable=protected-access
+            # pylint =protected-access
             self.assertFalse(self.exporter._shutdown_in_progress.is_set())
             self.exporter.shutdown()
             self.assertTrue(self.exporter._shutdown_in_progress.is_set())
@@ -413,12 +413,12 @@ class TestOTLPExporterMixin(TestCase):
             # Shutdown should have interrupted the sleep.
             self.assertTrue(end_wait - begin_wait < 0.2)
             self.assertEqual(
-                warning.records[1].message,
+                warning.records.message,
                 "Shutdown in progress, aborting retry.",
             )
 
     def test_export_over_closed_grpc_channel(self):
-        # pylint: disable=protected-access
+        # pylint =protected-access
 
         add_TraceServiceServicer_to_server(
             TraceServiceServicerWithExportParams(StatusCode.OK),
@@ -509,7 +509,7 @@ class TestOTLPExporterMixin(TestCase):
             after = time.time()
             self.assertEqual(
                 "Failed to export traces to localhost:4317, error code: StatusCode.DEADLINE_EXCEEDED",
-                warning.records[-1].message,
+                warning.records.message,
             )
             self.assertEqual(mock_trace_service.num_requests, 2)
             self.assertAlmostEqual(after - before, 1.4, 1)
@@ -525,7 +525,7 @@ class TestOTLPExporterMixin(TestCase):
             self.assertTrue(mock_channel.called)
 
     def test_otlp_headers_from_env(self):
-        # pylint: disable=protected-access
+        # pylint =protected-access
         # This ensures that there is no other header than standard user-agent.
         self.assertEqual(
             self.exporter._headers,
@@ -544,7 +544,7 @@ class TestOTLPExporterMixin(TestCase):
                 self.exporter.export([self.span]), SpanExportResult.FAILURE
             )
             self.assertEqual(
-                warning.records[-1].message,
+                warning.records.message,
                 "Failed to export traces to localhost:4317, error code: StatusCode.ALREADY_EXISTS",
             )
 

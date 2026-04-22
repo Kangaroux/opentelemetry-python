@@ -75,8 +75,8 @@ class TestZipkinExporter(unittest.TestCase):
 
     def test_constructor_env_vars(self):
         os_endpoint = "https://foo:9911/path"
-        os.environ[OTEL_EXPORTER_ZIPKIN_ENDPOINT] = os_endpoint
-        os.environ[OTEL_EXPORTER_ZIPKIN_TIMEOUT] = "15"
+        os.environ = os_endpoint
+        os.environ = "15"
 
         exporter = ZipkinExporter()
 
@@ -107,8 +107,8 @@ class TestZipkinExporter(unittest.TestCase):
         vars are set. Explicit params should take precedence.
         """
         os_endpoint = "https://os.env.param:9911/path"
-        os.environ[OTEL_EXPORTER_ZIPKIN_ENDPOINT] = os_endpoint
-        os.environ[OTEL_EXPORTER_ZIPKIN_TIMEOUT] = "15"
+        os.environ = os_endpoint
+        os.environ = "15"
 
         constructor_param_endpoint = "https://constructor.param:9911/path"
         local_node_ipv4 = "192.168.0.1"
@@ -162,7 +162,7 @@ class TestZipkinExporter(unittest.TestCase):
     @patch("requests.Session.post")
     def test_export_span_service_name(self, mock_post):
         mock_post.return_value = MockResponse(200)
-        resource = Resource.create({SERVICE_NAME: "test"})
+        resource = Resource.create({SERVICE_NAME})
         context = trace.SpanContext(
             trace_id=0x000000000000000000000000DEADBEEF,
             span_id=0x00000000DEADBEF0,

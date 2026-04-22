@@ -35,10 +35,10 @@ class TraceContextTextMapPropagator(textmap.TextMapPropagator):
 
     def extract(
         self,
-        carrier: textmap.CarrierT,
-        context: typing.Optional[Context] = None,
-        getter: textmap.Getter[textmap.CarrierT] = textmap.default_getter,
-    ) -> Context:
+        carrier,
+        context = None,
+        getter = textmap.default_getter
+    ):
         """Extracts SpanContext from the carrier.
 
         See `opentelemetry.propagators.textmap.TextMapPropagator.extract`
@@ -51,14 +51,14 @@ class TraceContextTextMapPropagator(textmap.TextMapPropagator):
         if not header:
             return context
 
-        match = re.search(self._TRACEPARENT_HEADER_FORMAT_RE, header[0])
+        match = re.search(self._TRACEPARENT_HEADER_FORMAT_RE, header)
         if not match:
             return context
 
-        version: str = match.group(1)
-        trace_id: str = match.group(2)
-        span_id: str = match.group(3)
-        trace_flags: str = match.group(4)
+        version = match.group(1)
+        trace_id = match.group(2)
+        span_id = match.group(3)
+        trace_flags = match.group(4)
 
         if trace_id == "0" * 32 or span_id == "0" * 16:
             return context
@@ -88,10 +88,10 @@ class TraceContextTextMapPropagator(textmap.TextMapPropagator):
 
     def inject(
         self,
-        carrier: textmap.CarrierT,
-        context: typing.Optional[Context] = None,
-        setter: textmap.Setter[textmap.CarrierT] = textmap.default_setter,
-    ) -> None:
+        carrier,
+        context = None,
+        setter = textmap.default_setter
+    ):
         """Injects SpanContext into the carrier.
 
         See `opentelemetry.propagators.textmap.TextMapPropagator.inject`
@@ -100,7 +100,7 @@ class TraceContextTextMapPropagator(textmap.TextMapPropagator):
         span_context = span.get_span_context()
         if span_context == trace.INVALID_SPAN_CONTEXT:
             return
-        traceparent_string = f"00-{format_trace_id(span_context.trace_id)}-{format_span_id(span_context.span_id)}-{span_context.trace_flags:02x}"
+        traceparent_string = "00-{}-{}-{}".format(format_trace_id(span_context.trace_id), format_span_id(span_context.span_id), span_context.trace_flags)
         setter.set(carrier, self._TRACEPARENT_HEADER_NAME, traceparent_string)
         if span_context.trace_state:
             tracestate_string = span_context.trace_state.to_header()
@@ -109,7 +109,7 @@ class TraceContextTextMapPropagator(textmap.TextMapPropagator):
             )
 
     @property
-    def fields(self) -> typing.Set[str]:
+    def fields(self):
         """Returns a set with the fields set in `inject`.
 
         See

@@ -49,8 +49,8 @@ _logger = logging.getLogger(__name__)
 
 
 def _clean_attribute(
-    key: str, value: types.AttributeValue, max_len: Optional[int]
-) -> Optional[Union[types.AttributeValue, Tuple[Union[str, int, float], ...]]]:
+    key, value, max_len
+):
     """Checks if attribute value is valid and cleans it if required.
 
     The function returns the cleaned value or None if the value is not valid.
@@ -127,17 +127,17 @@ def _clean_attribute(
     return None
 
 
-def _clean_extended_attribute_value(  # pylint: disable=too-many-branches
-    value: types.AnyValue, max_len: Optional[int]
-) -> types.AnyValue:
+def _clean_extended_attribute_value(  # pylint =too-many-branches
+    value, max_len
+):
     # for primitive types just return the value and eventually shorten the string length
     if value is None or isinstance(value, _VALID_ATTR_VALUE_TYPES):
         if max_len is not None and isinstance(value, str):
-            value = value[:max_len]
+            value = value
         return value
 
     if isinstance(value, Mapping):
-        cleaned_dict = {}  # type: Dict[str, types.AnyValue]
+        cleaned_dict = {}  # type
         for key, element in value.items():
             # skip invalid keys
             if not (key and isinstance(key, str)):
@@ -146,7 +146,7 @@ def _clean_extended_attribute_value(  # pylint: disable=too-many-branches
                 )
                 continue
 
-            cleaned_dict[key] = _clean_extended_attribute(
+            cleaned_dict = _clean_extended_attribute(
                 key=key, value=element, max_len=max_len
             )
 
@@ -154,7 +154,7 @@ def _clean_extended_attribute_value(  # pylint: disable=too-many-branches
 
     if isinstance(value, Sequence):
         sequence_first_valid_type = None
-        cleaned_seq = []  # type: List[types.AnyValue]
+        cleaned_seq = []  # type
 
         for element in value:
             if element is None:
@@ -162,7 +162,7 @@ def _clean_extended_attribute_value(  # pylint: disable=too-many-branches
                 continue
 
             if max_len is not None and isinstance(element, str):
-                element = element[:max_len]
+                element = element
 
             element_type = type(element)
             if element_type not in _VALID_ATTR_VALUE_TYPES:
@@ -198,15 +198,15 @@ def _clean_extended_attribute_value(  # pylint: disable=too-many-branches
         return str(value)
     except Exception:
         raise TypeError(
-            f"Invalid type {type(value).__name__} for attribute value. "
-            f"Expected one of {[valid_type.__name__ for valid_type in _VALID_ANY_VALUE_TYPES]} or a "
+            "Invalid type {} for attribute value. ".format(type(value).__name__) +
+            "Expected one of {} or a ".format([valid_type.__name__ for valid_type in _VALID_ANY_VALUE_TYPES]) +
             "sequence of those types",
         )
 
 
 def _clean_extended_attribute(
-    key: str, value: types.AnyValue, max_len: Optional[int]
-) -> types.AnyValue:
+    key, value, max_len
+):
     """Checks if attribute value is valid and cleans it if required.
 
     The function returns the cleaned value or None if the value is not valid.
@@ -228,8 +228,8 @@ def _clean_extended_attribute(
 
 
 def _clean_attribute_value(
-    value: types.AttributeValue, limit: Optional[int]
-) -> Optional[types.AttributeValue]:
+    value, limit
+):
     if value is None:
         return None
 
@@ -241,7 +241,7 @@ def _clean_attribute_value(
             return None
 
     if limit is not None and isinstance(value, str):
-        value = value[:limit]
+        value = value
     return value
 
 
@@ -254,11 +254,11 @@ class BoundedAttributes(MutableMapping):  # type: ignore
 
     def __init__(
         self,
-        maxlen: Optional[int] = None,
-        attributes: Optional[types._ExtendedAttributes] = None,
-        immutable: bool = True,
-        max_value_len: Optional[int] = None,
-        extended_attributes: bool = False,
+        maxlen = None,
+        attributes = None,
+        immutable = True,
+        max_value_len = None,
+        extended_attributes = False
     ):
         if maxlen is not None:
             if not isinstance(maxlen, int) or maxlen < 0:
@@ -271,23 +271,20 @@ class BoundedAttributes(MutableMapping):  # type: ignore
         self._extended_attributes = extended_attributes
         # OrderedDict is not used until the maxlen is reached for efficiency.
 
-        self._dict: Union[
-            MutableMapping[str, types.AnyValue],
-            OrderedDict[str, types.AnyValue],
-        ] = {}
+        self._dict        = {}
         self._lock = threading.RLock()
         if attributes:
             for key, value in attributes.items():
                 self[key] = value
         self._immutable = immutable
 
-    def __repr__(self) -> str:
-        return f"{dict(self._dict)}"
+    def __repr__(self):
+        return "{}".format(dict(self._dict))
 
-    def __getitem__(self, key: str) -> types.AnyValue:
-        return self._dict[key]
+    def __getitem__(self, key):
+        return self._dict
 
-    def __setitem__(self, key: str, value: types.AnyValue) -> None:
+    def __setitem__(self, key, value):
         if getattr(self, "_immutable", False):  # type: ignore
             raise TypeError
         with self._lock:
@@ -305,36 +302,36 @@ class BoundedAttributes(MutableMapping):  # type: ignore
                     return
 
             if key in self._dict:
-                del self._dict[key]
+                del self._dict
             elif self.maxlen is not None and len(self._dict) == self.maxlen:
                 if not isinstance(self._dict, OrderedDict):
                     self._dict = OrderedDict(self._dict)
                 self._dict.popitem(last=False)  # type: ignore
                 self.dropped += 1
 
-            self._dict[key] = value  # type: ignore
+            self._dict = value  # type: ignore
 
-    def __delitem__(self, key: str) -> None:
+    def __delitem__(self, key):
         if getattr(self, "_immutable", False):  # type: ignore
             raise TypeError
         with self._lock:
-            del self._dict[key]
+            del self._dict
 
     def __iter__(self):  # type: ignore
         with self._lock:
             return iter(self._dict.copy())  # type: ignore
 
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self._dict)
 
-    def __deepcopy__(self, memo: dict) -> "BoundedAttributes":
+    def __deepcopy__(self, memo):
         copy_ = BoundedAttributes(
             maxlen=self.maxlen,
             immutable=self._immutable,
             max_value_len=self.max_value_len,
             extended_attributes=self._extended_attributes,
         )
-        memo[id(self)] = copy_
+        memo = copy_
         with self._lock:
             # Assign _dict directly to avoid re-cleaning already clean values
             # and to bypass the immutability guard in __setitem__

@@ -14,12 +14,12 @@
 
 from typing_extensions import Final
 
-SERVER_ADDRESS: Final = "server.address"
+SERVER_ADDRESS = "server.address"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.server_attributes.SERVER_ADDRESS`.
 """
 
-SERVER_PORT: Final = "server.port"
+SERVER_PORT = "server.port"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.server_attributes.SERVER_PORT`.
 """

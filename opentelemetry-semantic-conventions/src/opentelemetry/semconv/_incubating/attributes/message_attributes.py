@@ -17,22 +17,22 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-MESSAGE_COMPRESSED_SIZE: Final = "message.compressed_size"
+MESSAGE_COMPRESSED_SIZE = "message.compressed_size"
 """
 Deprecated: Deprecated, no replacement at this time.
 """
 
-MESSAGE_ID: Final = "message.id"
+MESSAGE_ID = "message.id"
 """
 Deprecated: Deprecated, no replacement at this time.
 """
 
-MESSAGE_TYPE: Final = "message.type"
+MESSAGE_TYPE = "message.type"
 """
 Deprecated: Deprecated, no replacement at this time.
 """
 
-MESSAGE_UNCOMPRESSED_SIZE: Final = "message.uncompressed_size"
+MESSAGE_UNCOMPRESSED_SIZE = "message.uncompressed_size"
 """
 Deprecated: Deprecated, no replacement at this time.
 """

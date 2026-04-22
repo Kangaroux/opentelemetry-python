@@ -17,15 +17,15 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Histogram, Meter, UpDownCounter
 
-HTTP_CLIENT_ACTIVE_REQUESTS: Final = "http.client.active_requests"
+HTTP_CLIENT_ACTIVE_REQUESTS = "http.client.active_requests"
 """
 Number of active HTTP requests
-Instrument: updowncounter
+Instrument
 Unit: {request}
 """
 
 
-def create_http_client_active_requests(meter: Meter) -> UpDownCounter:
+def create_http_client_active_requests(meter):
     """Number of active HTTP requests"""
     return meter.create_up_down_counter(
         name=HTTP_CLIENT_ACTIVE_REQUESTS,
@@ -34,15 +34,15 @@ def create_http_client_active_requests(meter: Meter) -> UpDownCounter:
     )
 
 
-HTTP_CLIENT_CONNECTION_DURATION: Final = "http.client.connection.duration"
+HTTP_CLIENT_CONNECTION_DURATION = "http.client.connection.duration"
 """
 The duration of the successfully established outbound HTTP connections
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_http_client_connection_duration(meter: Meter) -> Histogram:
+def create_http_client_connection_duration(meter):
     """The duration of the successfully established outbound HTTP connections"""
     return meter.create_histogram(
         name=HTTP_CLIENT_CONNECTION_DURATION,
@@ -51,15 +51,15 @@ def create_http_client_connection_duration(meter: Meter) -> Histogram:
     )
 
 
-HTTP_CLIENT_OPEN_CONNECTIONS: Final = "http.client.open_connections"
+HTTP_CLIENT_OPEN_CONNECTIONS = "http.client.open_connections"
 """
 Number of outbound HTTP connections that are currently active or idle on the client
-Instrument: updowncounter
+Instrument
 Unit: {connection}
 """
 
 
-def create_http_client_open_connections(meter: Meter) -> UpDownCounter:
+def create_http_client_open_connections(meter):
     """Number of outbound HTTP connections that are currently active or idle on the client"""
     return meter.create_up_down_counter(
         name=HTTP_CLIENT_OPEN_CONNECTIONS,
@@ -68,16 +68,16 @@ def create_http_client_open_connections(meter: Meter) -> UpDownCounter:
     )
 
 
-HTTP_CLIENT_REQUEST_BODY_SIZE: Final = "http.client.request.body.size"
+HTTP_CLIENT_REQUEST_BODY_SIZE = "http.client.request.body.size"
 """
 Size of HTTP client request bodies
-Instrument: histogram
-Unit: By
+Instrument
+Unit
 Note: The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
 """
 
 
-def create_http_client_request_body_size(meter: Meter) -> Histogram:
+def create_http_client_request_body_size(meter):
     """Size of HTTP client request bodies"""
     return meter.create_histogram(
         name=HTTP_CLIENT_REQUEST_BODY_SIZE,
@@ -86,13 +86,13 @@ def create_http_client_request_body_size(meter: Meter) -> Histogram:
     )
 
 
-HTTP_CLIENT_REQUEST_DURATION: Final = "http.client.request.duration"
+HTTP_CLIENT_REQUEST_DURATION = "http.client.request.duration"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.metrics.http_metrics.HTTP_CLIENT_REQUEST_DURATION`.
 """
 
 
-def create_http_client_request_duration(meter: Meter) -> Histogram:
+def create_http_client_request_duration(meter):
     """Duration of HTTP client requests"""
     return meter.create_histogram(
         name=HTTP_CLIENT_REQUEST_DURATION,
@@ -101,16 +101,16 @@ def create_http_client_request_duration(meter: Meter) -> Histogram:
     )
 
 
-HTTP_CLIENT_RESPONSE_BODY_SIZE: Final = "http.client.response.body.size"
+HTTP_CLIENT_RESPONSE_BODY_SIZE = "http.client.response.body.size"
 """
 Size of HTTP client response bodies
-Instrument: histogram
-Unit: By
+Instrument
+Unit
 Note: The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
 """
 
 
-def create_http_client_response_body_size(meter: Meter) -> Histogram:
+def create_http_client_response_body_size(meter):
     """Size of HTTP client response bodies"""
     return meter.create_histogram(
         name=HTTP_CLIENT_RESPONSE_BODY_SIZE,
@@ -119,15 +119,15 @@ def create_http_client_response_body_size(meter: Meter) -> Histogram:
     )
 
 
-HTTP_SERVER_ACTIVE_REQUESTS: Final = "http.server.active_requests"
+HTTP_SERVER_ACTIVE_REQUESTS = "http.server.active_requests"
 """
 Number of active HTTP server requests
-Instrument: updowncounter
+Instrument
 Unit: {request}
 """
 
 
-def create_http_server_active_requests(meter: Meter) -> UpDownCounter:
+def create_http_server_active_requests(meter):
     """Number of active HTTP server requests"""
     return meter.create_up_down_counter(
         name=HTTP_SERVER_ACTIVE_REQUESTS,
@@ -136,16 +136,16 @@ def create_http_server_active_requests(meter: Meter) -> UpDownCounter:
     )
 
 
-HTTP_SERVER_REQUEST_BODY_SIZE: Final = "http.server.request.body.size"
+HTTP_SERVER_REQUEST_BODY_SIZE = "http.server.request.body.size"
 """
 Size of HTTP server request bodies
-Instrument: histogram
-Unit: By
+Instrument
+Unit
 Note: The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
 """
 
 
-def create_http_server_request_body_size(meter: Meter) -> Histogram:
+def create_http_server_request_body_size(meter):
     """Size of HTTP server request bodies"""
     return meter.create_histogram(
         name=HTTP_SERVER_REQUEST_BODY_SIZE,
@@ -154,13 +154,13 @@ def create_http_server_request_body_size(meter: Meter) -> Histogram:
     )
 
 
-HTTP_SERVER_REQUEST_DURATION: Final = "http.server.request.duration"
+HTTP_SERVER_REQUEST_DURATION = "http.server.request.duration"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.metrics.http_metrics.HTTP_SERVER_REQUEST_DURATION`.
 """
 
 
-def create_http_server_request_duration(meter: Meter) -> Histogram:
+def create_http_server_request_duration(meter):
     """Duration of HTTP server requests"""
     return meter.create_histogram(
         name=HTTP_SERVER_REQUEST_DURATION,
@@ -169,16 +169,16 @@ def create_http_server_request_duration(meter: Meter) -> Histogram:
     )
 
 
-HTTP_SERVER_RESPONSE_BODY_SIZE: Final = "http.server.response.body.size"
+HTTP_SERVER_RESPONSE_BODY_SIZE = "http.server.response.body.size"
 """
 Size of HTTP server response bodies
-Instrument: histogram
-Unit: By
+Instrument
+Unit
 Note: The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
 """
 
 
-def create_http_server_response_body_size(meter: Meter) -> Histogram:
+def create_http_server_response_body_size(meter):
     """Size of HTTP server response bodies"""
     return meter.create_histogram(
         name=HTTP_SERVER_RESPONSE_BODY_SIZE,

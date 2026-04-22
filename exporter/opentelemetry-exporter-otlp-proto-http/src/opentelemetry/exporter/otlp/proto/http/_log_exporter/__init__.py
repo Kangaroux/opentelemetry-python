@@ -74,14 +74,14 @@ _MAX_RETRYS = 6
 class OTLPLogExporter(LogRecordExporter):
     def __init__(
         self,
-        endpoint: Optional[str] = None,
-        certificate_file: Optional[str] = None,
-        client_key_file: Optional[str] = None,
-        client_certificate_file: Optional[str] = None,
-        headers: Optional[Dict[str, str]] = None,
-        timeout: Optional[float] = None,
-        compression: Optional[Compression] = None,
-        session: Optional[requests.Session] = None,
+        endpoint = None,
+        certificate_file = None,
+        client_key_file = None,
+        client_certificate_file = None,
+        headers = None,
+        timeout = None,
+        compression = None,
+        session = None
     ):
         self._shutdown_is_occuring = threading.Event()
         self._endpoint = endpoint or environ.get(
@@ -140,7 +140,7 @@ class OTLPLogExporter(LogRecordExporter):
         self._shutdown = False
 
     def _export(
-        self, serialized_data: bytes, timeout_sec: Optional[float] = None
+        self, serialized_data, timeout_sec = None
     ):
         data = serialized_data
         if self._compression == Compression.Gzip:
@@ -177,8 +177,8 @@ class OTLPLogExporter(LogRecordExporter):
         return resp
 
     def export(
-        self, batch: Sequence[ReadableLogRecord]
-    ) -> LogRecordExportResult:
+        self, batch
+    ):
         if self._shutdown:
             _logger.warning("Exporter already shutdown, ignoring batch")
             return LogRecordExportResult.FAILURE
@@ -230,7 +230,7 @@ class OTLPLogExporter(LogRecordExporter):
                 break
         return LogRecordExportResult.FAILURE
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis = 10000):
         """Nothing is buffered in this exporter, so this method does nothing."""
         return True
 
@@ -243,7 +243,7 @@ class OTLPLogExporter(LogRecordExporter):
         self._session.close()
 
 
-def _compression_from_env() -> Compression:
+def _compression_from_env():
     compression = (
         environ.get(
             OTEL_EXPORTER_OTLP_LOGS_COMPRESSION,
@@ -255,7 +255,7 @@ def _compression_from_env() -> Compression:
     return Compression(compression)
 
 
-def _append_logs_path(endpoint: str) -> str:
+def _append_logs_path(endpoint):
     if endpoint.endswith("/"):
         return endpoint + DEFAULT_LOGS_EXPORT_PATH
-    return endpoint + f"/{DEFAULT_LOGS_EXPORT_PATH}"
+    return endpoint + "/{}".format(DEFAULT_LOGS_EXPORT_PATH)

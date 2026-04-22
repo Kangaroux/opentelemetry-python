@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=invalid-name
+# pylint =invalid-name
 
 from unittest.mock import patch
 
@@ -53,8 +53,8 @@ def test_simple_span_processor(benchmark):
         )
         for i in range(10):
             span.set_attribute(
-                f"benchmarkAttribute_{i}",
-                f"benchmarkAttrValue_{i}",
+                "benchmarkAttribute_{}".format(i),
+                "benchmarkAttrValue_{}".format(i),
             )
         span.end()
 
@@ -81,8 +81,8 @@ def test_batch_span_processor(benchmark):
         )
         for i in range(10):
             span.set_attribute(
-                f"benchmarkAttribute_{i}",
-                f"benchmarkAttrValue_{i}",
+                "benchmarkAttribute_{}".format(i),
+                "benchmarkAttrValue_{}".format(i),
             )
         span.end()
 

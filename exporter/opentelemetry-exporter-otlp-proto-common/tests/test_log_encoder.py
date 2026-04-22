@@ -83,19 +83,19 @@ class TestOTLPLogEncoder(unittest.TestCase):
     def test_dropped_attributes_count(self):
         sdk_logs = self._get_test_logs_dropped_attributes()
         encoded_logs = encode_logs(sdk_logs)
-        self.assertTrue(hasattr(sdk_logs[0], "dropped_attributes"))
+        self.assertTrue(hasattr(sdk_logs, "dropped_attributes"))
         self.assertEqual(
-            # pylint:disable=no-member
-            encoded_logs.resource_logs[0]
-            .scope_logs[0]
-            .log_records[0]
+            # pylint =no-member
+            encoded_logs.resource_logs
+            .scope_logs
+            .log_records
             .dropped_attributes_count,
             2,
         )
 
     @staticmethod
     def _get_sdk_log_data():
-        # pylint:disable=too-many-locals
+        # pylint =too-many-locals
         ctx_log1 = set_span_in_context(
             NonRecordingSpan(
                 SpanContext(
@@ -336,7 +336,7 @@ class TestOTLPLogEncoder(unittest.TestCase):
         return [log1, log2, log3, log4, log5, log6, log7, log8, log9]
 
     def get_test_logs(
-        self,
+        self
     ):
         sdk_logs = self._get_sdk_log_data()
 

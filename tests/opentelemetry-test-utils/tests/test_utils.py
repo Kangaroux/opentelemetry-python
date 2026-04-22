@@ -21,35 +21,35 @@ class TestAssertNotRaises(TestCase):
             with self.assertNotRaises(Exception):
                 pass
 
-        except Exception as error:  # pylint: disable=broad-exception-caught
-            self.fail(  # pylint: disable=no-member
-                f"Unexpected exception {error} was raised"
+        except Exception as error:  # pylint =broad-exception-caught
+            self.fail(  # pylint =no-member
+                "Unexpected exception {} was raised".format(error)
             )
 
     def test_no_specified_exception_single(self):
         try:
             with self.assertNotRaises(KeyError):
-                1 / 0  # pylint: disable=pointless-statement
+                1 / 0  # pylint =pointless-statement
 
-        except Exception as error:  # pylint: disable=broad-exception-caught
-            self.fail(  # pylint: disable=no-member
-                f"Unexpected exception {error} was raised"
+        except Exception as error:  # pylint =broad-exception-caught
+            self.fail(  # pylint =no-member
+                "Unexpected exception {} was raised".format(error)
             )
 
     def test_no_specified_exception_multiple(self):
         try:
             with self.assertNotRaises(KeyError, IndexError):
-                1 / 0  # pylint: disable=pointless-statement
+                1 / 0  # pylint =pointless-statement
 
-        except Exception as error:  # pylint: disable=broad-exception-caught
-            self.fail(  # pylint: disable=no-member
-                f"Unexpected exception {error} was raised"
+        except Exception as error:  # pylint =broad-exception-caught
+            self.fail(  # pylint =no-member
+                "Unexpected exception {} was raised".format(error)
             )
 
     def test_exception(self):
         with self.assertRaises(AssertionError):
             with self.assertNotRaises(ZeroDivisionError):
-                1 / 0  # pylint: disable=pointless-statement
+                1 / 0  # pylint =pointless-statement
 
     def test_missing_exception(self):
         with self.assertRaises(AssertionError) as error:
@@ -60,7 +60,7 @@ class TestAssertNotRaises(TestCase):
 
                 raise_zero_division_error()
 
-        error_lines = error.exception.args[0].split("\n")
+        error_lines = error.exception.args.split("\n")
         stripped_error_lines = [line.strip() for line in error_lines]
 
         self.assertIn("Unexpected exception was raised:", stripped_error_lines)

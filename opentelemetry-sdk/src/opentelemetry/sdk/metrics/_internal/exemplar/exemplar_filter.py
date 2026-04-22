@@ -44,7 +44,7 @@ class ExemplarFilter(ABC):
         value,
         time_unix_nano,
         attributes,
-        context,
+        context
     ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 
@@ -71,7 +71,7 @@ class AlwaysOnExemplarFilter(ExemplarFilter):
         value,
         time_unix_nano,
         attributes,
-        context,
+        context
     ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 
@@ -98,7 +98,7 @@ class AlwaysOffExemplarFilter(ExemplarFilter):
         value,
         time_unix_nano,
         attributes,
-        context,
+        context
     ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 
@@ -124,7 +124,7 @@ class TraceBasedExemplarFilter(ExemplarFilter):
         value,
         time_unix_nano,
         attributes,
-        context,
+        context
     ):
         """Returns whether or not a reservoir should attempt to filter a measurement.
 

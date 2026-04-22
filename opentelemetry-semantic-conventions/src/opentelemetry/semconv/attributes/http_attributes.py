@@ -15,7 +15,7 @@
 from enum import Enum
 from typing_extensions import Final
 
-HTTP_REQUEST_HEADER_TEMPLATE: Final = "http.request.header"
+HTTP_REQUEST_HEADER_TEMPLATE = "http.request.header"
 """
 HTTP request headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
 Note: Instrumentations SHOULD require an explicit configuration of which headers are to be captured.
@@ -36,7 +36,7 @@ Examples:
   attribute with value `["1.2.3.4", "1.2.3.5"]` or `["1.2.3.4, 1.2.3.5"]` depending on the HTTP library.
 """
 
-HTTP_REQUEST_METHOD: Final = "http.request.method"
+HTTP_REQUEST_METHOD = "http.request.method"
 """
 HTTP request method.
 Note: HTTP request method value SHOULD be "known" to the instrumentation.
@@ -63,18 +63,18 @@ Instrumentations for specific web frameworks that consider HTTP methods to be ca
 Tracing instrumentations that do so, MUST also set `http.request.method_original` to the original value.
 """
 
-HTTP_REQUEST_METHOD_ORIGINAL: Final = "http.request.method_original"
+HTTP_REQUEST_METHOD_ORIGINAL = "http.request.method_original"
 """
 Original HTTP method sent by the client in the request line.
 """
 
-HTTP_REQUEST_RESEND_COUNT: Final = "http.request.resend_count"
+HTTP_REQUEST_RESEND_COUNT = "http.request.resend_count"
 """
 The ordinal number of request resending attempt (for any reason, including redirects).
 Note: The resend count SHOULD be updated each time an HTTP request gets resent by the client, regardless of what was the cause of the resending (e.g. redirection, authorization failure, 503 Server Unavailable, network issues, or any other).
 """
 
-HTTP_RESPONSE_HEADER_TEMPLATE: Final = "http.response.header"
+HTTP_RESPONSE_HEADER_TEMPLATE = "http.response.header"
 """
 HTTP response headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
 Note: Instrumentations SHOULD require an explicit configuration of which headers are to be captured.
@@ -91,15 +91,15 @@ Examples:
 - A header `Content-Type: application/json` header SHOULD be recorded as the `http.request.response.content-type`
   attribute with value `["application/json"]`.
 - A header `My-custom-header: abc, def` header SHOULD be recorded as the `http.response.header.my-custom-header`
-  attribute with value `["abc", "def"]` or `["abc, def"]` depending on the HTTP library.
+  attribute with value `["abc", "de"]` or `["abc, def"]` depending on the HTTP library.
 """
 
-HTTP_RESPONSE_STATUS_CODE: Final = "http.response.status_code"
+HTTP_RESPONSE_STATUS_CODE = "http.response.status_code"
 """
 [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
 """
 
-HTTP_ROUTE: Final = "http.route"
+HTTP_ROUTE = "http.route"
 """
 The matched route template for the request. This MUST be low-cardinality and include all static path segments, with dynamic path segments represented with placeholders.
 Note: MUST NOT be populated when this is not supported by the HTTP server framework as the route attribute should have low-cardinality and the URI path can NOT substitute it.

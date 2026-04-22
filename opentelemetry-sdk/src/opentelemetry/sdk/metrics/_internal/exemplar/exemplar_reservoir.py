@@ -49,11 +49,11 @@ class ExemplarReservoir(ABC):
     @abstractmethod
     def offer(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> None:
+        value,
+        time_unix_nano,
+        attributes,
+        context
+    ):
         """Offers a measurement to be sampled.
 
         Args:
@@ -65,7 +65,7 @@ class ExemplarReservoir(ABC):
         raise NotImplementedError("ExemplarReservoir.offer is not implemented")
 
     @abstractmethod
-    def collect(self, point_attributes: Attributes) -> List[Exemplar]:
+    def collect(self, point_attributes):
         """Returns accumulated Exemplars and also resets the reservoir for the next
         sampling period
 
@@ -83,21 +83,21 @@ class ExemplarReservoir(ABC):
 
 
 class ExemplarBucket:
-    def __init__(self) -> None:
-        self.__value: Union[int, float] = 0
-        self.__attributes: Attributes = None
-        self.__time_unix_nano: int = 0
-        self.__span_id: Optional[int] = None
-        self.__trace_id: Optional[int] = None
-        self.__offered: bool = False
+    def __init__(self):
+        self.__value = 0
+        self.__attributes = None
+        self.__time_unix_nano = 0
+        self.__span_id = None
+        self.__trace_id = None
+        self.__offered = False
 
     def offer(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> None:
+        value,
+        time_unix_nano,
+        attributes,
+        context
+    ):
         """Offers a measurement to be sampled.
 
         Args:
@@ -117,7 +117,7 @@ class ExemplarBucket:
 
         self.__offered = True
 
-    def collect(self, point_attributes: Attributes) -> Optional[Exemplar]:
+    def collect(self, point_attributes):
         """May return an Exemplar and resets the bucket for the next sampling period."""
         if not self.__offered:
             return None
@@ -127,7 +127,7 @@ class ExemplarBucket:
         # https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/sdk.md#exemplar
         filtered_attributes = (
             {
-                k: v
+                k
                 for k, v in self.__attributes.items()
                 if k not in point_attributes
             }
@@ -145,7 +145,7 @@ class ExemplarBucket:
         self.__reset()
         return exemplar
 
-    def __reset(self) -> None:
+    def __reset(self):
         """Reset the bucket state after a collection cycle."""
         self.__value = 0
         self.__attributes = {}
@@ -162,14 +162,14 @@ class BucketIndexError(ValueError):
 class FixedSizeExemplarReservoirABC(ExemplarReservoir):
     """Abstract class for a reservoir with fixed size."""
 
-    def __init__(self, size: int, **kwargs) -> None:
+    def __init__(self, size, **kwargs):
         super().__init__(**kwargs)
-        self._size: int = size
-        self._reservoir_storage: Mapping[int, ExemplarBucket] = defaultdict(
+        self._size = size
+        self._reservoir_storage = defaultdict(
             ExemplarBucket
         )
 
-    def collect(self, point_attributes: Attributes) -> List[Exemplar]:
+    def collect(self, point_attributes):
         """Returns accumulated Exemplars and also resets the reservoir for the next
         sampling period
 
@@ -194,11 +194,11 @@ class FixedSizeExemplarReservoirABC(ExemplarReservoir):
 
     def offer(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> None:
+        value,
+        time_unix_nano,
+        attributes,
+        context
+    ):
         """Offers a measurement to be sampled.
 
         Args:
@@ -212,7 +212,7 @@ class FixedSizeExemplarReservoirABC(ExemplarReservoir):
                 value, time_unix_nano, attributes, context
             )
 
-            self._reservoir_storage[index].offer(
+            self._reservoir_storage.offer(
                 value, time_unix_nano, attributes, context
             )
         except BucketIndexError:
@@ -222,11 +222,11 @@ class FixedSizeExemplarReservoirABC(ExemplarReservoir):
     @abstractmethod
     def _find_bucket_index(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> int:
+        value,
+        time_unix_nano,
+        attributes,
+        context
+    ):
         """Determines the bucket index for the given measurement.
 
         It should be implemented by subclasses based on specific strategies.
@@ -244,7 +244,7 @@ class FixedSizeExemplarReservoirABC(ExemplarReservoir):
             BucketIndexError: If no bucket index can be found.
         """
 
-    def _reset(self) -> None:
+    def _reset(self):
         """Reset the reservoir by resetting any stateful logic after a collection cycle."""
 
 
@@ -257,21 +257,21 @@ class SimpleFixedSizeExemplarReservoir(FixedSizeExemplarReservoirABC):
         https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/sdk.md#simplefixedsizeexemplarreservoir
     """
 
-    def __init__(self, size: int = 1, **kwargs) -> None:
+    def __init__(self, size = 1, **kwargs):
         super().__init__(size, **kwargs)
-        self._measurements_seen: int = 0
+        self._measurements_seen = 0
 
-    def _reset(self) -> None:
+    def _reset(self):
         super()._reset()
         self._measurements_seen = 0
 
     def _find_bucket_index(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> int:
+        value,
+        time_unix_nano,
+        attributes,
+        context
+    ):
         self._measurements_seen += 1
         if self._measurements_seen < self._size:
             return self._measurements_seen - 1
@@ -292,39 +292,39 @@ class AlignedHistogramBucketExemplarReservoir(FixedSizeExemplarReservoirABC):
         https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/sdk.md#alignedhistogrambucketexemplarreservoir
     """
 
-    def __init__(self, boundaries: Sequence[float], **kwargs) -> None:
+    def __init__(self, boundaries, **kwargs):
         super().__init__(len(boundaries) + 1, **kwargs)
-        self._boundaries: Sequence[float] = boundaries
+        self._boundaries = boundaries
 
     def offer(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> None:
+        value,
+        time_unix_nano,
+        attributes,
+        context
+    ):
         """Offers a measurement to be sampled."""
         index = self._find_bucket_index(
             value, time_unix_nano, attributes, context
         )
-        self._reservoir_storage[index].offer(
+        self._reservoir_storage.offer(
             value, time_unix_nano, attributes, context
         )
 
     def _find_bucket_index(
         self,
-        value: Union[int, float],
-        time_unix_nano: int,
-        attributes: Attributes,
-        context: Context,
-    ) -> int:
+        value,
+        time_unix_nano,
+        attributes,
+        context
+    ):
         for index, boundary in enumerate(self._boundaries):
             if value <= boundary:
                 return index
         return len(self._boundaries)
 
 
-ExemplarReservoirBuilder = Callable[[Dict[str, Any]], ExemplarReservoir]
+ExemplarReservoirBuilder = Callable
 ExemplarReservoirBuilder.__doc__ = """ExemplarReservoir builder.
 
 It may receive the Aggregation parameters it is bounded to; e.g.

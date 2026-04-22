@@ -29,7 +29,7 @@ class MockFunc:
     threads.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.lock = threading.Lock()
         self.call_count = 0
         self.mock = Mock()
@@ -52,31 +52,31 @@ class ConcurrencyTestBase(unittest.TestCase):
     orig_switch_interval = sys.getswitchinterval()
 
     @classmethod
-    def setUpClass(cls) -> None:
+    def setUpClass(cls):
         super().setUpClass()
         # switch threads more often to increase chance of contention
         sys.setswitchinterval(1e-12)
 
     @classmethod
-    def tearDownClass(cls) -> None:
+    def tearDownClass(cls):
         super().tearDownClass()
         sys.setswitchinterval(cls.orig_switch_interval)
 
     @staticmethod
     def run_with_many_threads(
-        func_to_test: Callable[[], ReturnT],
-        num_threads: int = 100,
-    ) -> List[ReturnT]:
+        func_to_test,
+        num_threads = 100
+    ):
         """Util to run ``func_to_test`` in ``num_threads`` concurrently"""
 
         barrier = threading.Barrier(num_threads)
-        results: List[Optional[ReturnT]] = [None] * num_threads
+        results = [None] * num_threads
 
-        def thread_start(idx: int) -> None:
+        def thread_start(idx):
             nonlocal results
             # Get all threads here before releasing them to create contention
             barrier.wait()
-            results[idx] = func_to_test()
+            results = func_to_test()
 
         threads = [
             threading.Thread(target=partial(thread_start, i))

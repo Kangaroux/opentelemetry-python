@@ -10,8 +10,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
-
 import gzip
 import logging
 import random
@@ -110,18 +108,17 @@ _MAX_RETRYS = 6
 class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
     def __init__(
         self,
-        endpoint: str | None = None,
-        certificate_file: str | None = None,
-        client_key_file: str | None = None,
-        client_certificate_file: str | None = None,
-        headers: dict[str, str] | None = None,
-        timeout: float | None = None,
-        compression: Compression | None = None,
-        session: requests.Session | None = None,
-        preferred_temporality: dict[type, AggregationTemporality]
-        | None = None,
-        preferred_aggregation: dict[type, Aggregation] | None = None,
-        max_export_batch_size: int | None = None,
+        endpoint = None,
+        certificate_file = None,
+        client_key_file = None,
+        client_certificate_file = None,
+        headers = None,
+        timeout = None,
+        compression = None,
+        session = None,
+        preferred_temporality = None,
+        preferred_aggregation = None,
+        max_export_batch_size = None
     ):
         """OTLP HTTP metrics exporter
 
@@ -201,11 +198,11 @@ class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
         self._common_configuration(
             preferred_temporality, preferred_aggregation
         )
-        self._max_export_batch_size: int | None = max_export_batch_size
+        self._max_export_batch_size = max_export_batch_size
         self._shutdown = False
 
     def _export(
-        self, serialized_data: bytes, timeout_sec: Optional[float] = None
+        self, serialized_data, timeout_sec = None
     ):
         data = serialized_data
         if self._compression == Compression.Gzip:
@@ -243,9 +240,9 @@ class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
 
     def _export_with_retries(
         self,
-        serialized_data: bytes,
-        deadline_sec: float,
-    ) -> MetricExportResult:
+        serialized_data,
+        deadline_sec
+    ):
         """Export serialized data with retry logic until success, non-transient error, or exponential backoff maxed out.
 
         Args:
@@ -302,10 +299,10 @@ class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
 
     def export(
         self,
-        metrics_data: MetricsData,
-        timeout_millis: Optional[float] = 10000,
-        **kwargs,
-    ) -> MetricExportResult:
+        metrics_data,
+        timeout_millis = 10000,
+        **kwargs
+    ):
         if self._shutdown:
             _logger.warning("Exporter already shutdown, ignoring batch")
             return MetricExportResult.FAILURE
@@ -335,7 +332,7 @@ class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
         # Only returns SUCCESS if all batches succeeded
         return MetricExportResult.SUCCESS
 
-    def shutdown(self, timeout_millis: float = 30_000, **kwargs) -> None:
+    def shutdown(self, timeout_millis = 30000, **kwargs):
         if self._shutdown:
             _logger.warning("Exporter already shutdown, ignoring call")
             return
@@ -344,18 +341,18 @@ class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
         self._session.close()
 
     @property
-    def _exporting(self) -> str:
+    def _exporting(self):
         return "metrics"
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis = 10000):
         """Nothing is buffered in this exporter, so this method does nothing."""
         return True
 
 
 def _split_metrics_data(
-    metrics_data: pb2.MetricsData,
-    max_export_batch_size: int | None = None,
-) -> Iterable[pb2.MetricsData]:
+    metrics_data,
+    max_export_batch_size = None
+):
     """Splits metrics data into several MetricsData (copies protobuf originals),
     based on configured data point max export batch size.
 
@@ -363,13 +360,13 @@ def _split_metrics_data(
         metrics_data: metrics object based on HTTP protocol buffer definition
 
     Returns:
-        Iterable[pb2.MetricsData]: An iterable of pb2.MetricsData objects containing
+        Iterable: An iterable of pb2.MetricsData objects containing
             pb2.ResourceMetrics, pb2.ScopeMetrics, pb2.Metrics, and data points
     """
     if not max_export_batch_size:
         return metrics_data
 
-    batch_size: int = 0
+    batch_size = 0
     # Stores split metrics data as editable references
     # used to write batched pb2 objects for export when finalized
     split_resource_metrics = []
@@ -415,11 +412,11 @@ def _split_metrics_data(
                     },
                 }
                 if hasattr(data_container, "aggregation_temporality"):
-                    metric_dict[field_name]["aggregation_temporality"] = (
+                    metric_dict = (
                         data_container.aggregation_temporality
                     )
                 if hasattr(data_container, "is_monotonic"):
-                    metric_dict[field_name]["is_monotonic"] = (
+                    metric_dict = (
                         data_container.is_monotonic
                     )
                 split_metrics.append(metric_dict)
@@ -454,11 +451,11 @@ def _split_metrics_data(
                             },
                         }
                         if hasattr(data_container, "aggregation_temporality"):
-                            metric_dict[field_name][
+                            metric_dict[
                                 "aggregation_temporality"
                             ] = data_container.aggregation_temporality
                         if hasattr(data_container, "is_monotonic"):
-                            metric_dict[field_name]["is_monotonic"] = (
+                            metric_dict = (
                                 data_container.is_monotonic
                             )
 
@@ -499,8 +496,8 @@ def _split_metrics_data(
 
 
 def _get_split_resource_metrics_pb2(
-    split_resource_metrics: List[Dict],
-) -> List[pb2.ResourceMetrics]:
+    split_resource_metrics
+):
     """Helper that returns a list of pb2.ResourceMetrics objects based on split_resource_metrics.
     Example input:
 
@@ -521,15 +518,15 @@ def _get_split_resource_metrics_pb2(
                             "is_monotonic": "false",
                             "data_points": [
                                 {
-                                    start_time_unix_nano: 1000
-                                    time_unix_nano: 1001
+                                    start_time_unix_nano
+                                    time_unix_nano
                                     exemplars {
-                                        time_unix_nano: 1002
+                                        time_unix_nano
                                         span_id: "foo-span"
                                         trace_id: "foo-trace"
-                                        as_int: 5
+                                        as_int
                                     }
-                                    as_int: 5
+                                    as_int
                                 }
                             ]
                         }
@@ -545,7 +542,7 @@ def _get_split_resource_metrics_pb2(
             ScopeMetrics, Metrics, and data points.
 
     Returns:
-        List[pb2.ResourceMetrics]: A list of pb2.ResourceMetrics objects containing
+        List: A list of pb2.ResourceMetrics objects containing
             pb2.ScopeMetrics, pb2.Metrics, and data points
     """
     split_resource_metrics_pb = []
@@ -660,14 +657,14 @@ def _get_split_resource_metrics_pb2(
     "Use one of the encoders from opentelemetry-exporter-otlp-proto-common instead. Deprecated since version 1.18.0.",
 )
 def get_resource_data(
-    sdk_resource_scope_data: Dict[SDKResource, Any],  # ResourceDataT?
-    resource_class: Callable[..., PB2Resource],
-    name: str,
-) -> List[PB2Resource]:
+    sdk_resource_scope_data,  # ResourceDataT?
+    resource_class,
+    name
+):
     return _get_resource_data(sdk_resource_scope_data, resource_class, name)
 
 
-def _compression_from_env() -> Compression:
+def _compression_from_env():
     compression = (
         environ.get(
             OTEL_EXPORTER_OTLP_METRICS_COMPRESSION,
@@ -679,7 +676,7 @@ def _compression_from_env() -> Compression:
     return Compression(compression)
 
 
-def _append_metrics_path(endpoint: str) -> str:
+def _append_metrics_path(endpoint):
     if endpoint.endswith("/"):
         return endpoint + DEFAULT_METRICS_EXPORT_PATH
-    return endpoint + f"/{DEFAULT_METRICS_EXPORT_PATH}"
+    return endpoint + "/{}".format(DEFAULT_METRICS_EXPORT_PATH)

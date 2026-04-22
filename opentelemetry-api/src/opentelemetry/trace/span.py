@@ -113,7 +113,7 @@ class Span(abc.ABC):
         timestamp if the `timestamp` argument is omitted.
         """
 
-    def add_link(self, context, attributes=None):  # pylint: disable=no-self-use
+    def add_link(self, context, attributes=None):  # pylint =no-self-use
         """Adds a `Link`.
 
         Adds a single `Link` with the `SpanContext` of the span to link to and,
@@ -200,7 +200,7 @@ class TraceFlags(int):
 DEFAULT_TRACE_OPTIONS = TraceFlags.get_default()
 
 
-class TraceState(typing.Mapping[str, str]):
+class TraceState(typing.Mapping):
     """A list of key-value pairs representing vendor-specific trace info.
 
     Keys and values are strings of up to 256 printable US-ASCII characters.
@@ -212,7 +212,7 @@ class TraceState(typing.Mapping[str, str]):
     """
 
     def __init__(self, entries=None):
-        self._dict = {}  # type: Dict[str, str]
+        self._dict = {}  # type
         if entries is None:
             return
         if len(entries) > _TRACECONTEXT_MAXIMUM_TRACESTATE_KEYS:
@@ -227,7 +227,7 @@ class TraceState(typing.Mapping[str, str]):
                 if key in self._dict:
                     _logger.warning("Duplicate key: %s found.", key)
                     continue
-                self._dict[key] = value
+                self._dict = value
             else:
                 _logger.warning(
                     "Invalid key/value pair (%s, %s) found.", key, value
@@ -237,7 +237,7 @@ class TraceState(typing.Mapping[str, str]):
         return item in self._dict
 
     def __getitem__(self, key):
-        return self._dict[key]
+        return self._dict
 
     def __iter__(self):
         return iter(self._dict)
@@ -355,7 +355,7 @@ class TraceState(typing.Mapping[str, str]):
             If the number of keys is beyond the maximum, all values
             will be discarded and an empty tracestate will be returned.
         """
-        pairs = {}  # type: Dict[str, str]
+        pairs = {}  # type
         for header in header_list:
             members = re.split(_delimiter_pattern, header)
             for member in members:
@@ -374,7 +374,7 @@ class TraceState(typing.Mapping[str, str]):
                 # duplicate keys are not legal in header
                 if key in pairs:
                     return cls()
-                pairs[key] = value
+                pairs = value
         return cls(list(pairs.items()))
 
     @classmethod
@@ -416,7 +416,7 @@ class SpanContext(tuple):
         span_id,
         is_remote,
         trace_flags=DEFAULT_TRACE_OPTIONS,
-        trace_state=DEFAULT_TRACE_STATE,
+        trace_state=DEFAULT_TRACE_STATE
     ):
         if trace_flags is None:
             trace_flags = DEFAULT_TRACE_OPTIONS
@@ -515,14 +515,14 @@ class NonRecordingSpan(Span):
         self,
         name,
         attributes=None,
-        timestamp=None,
+        timestamp=None
     ):
         pass
 
     def add_link(
         self,
         context,
-        attributes=None,
+        attributes=None
     ):
         pass
 
@@ -532,7 +532,7 @@ class NonRecordingSpan(Span):
     def set_status(
         self,
         status,
-        description=None,
+        description=None
     ):
         pass
 
@@ -541,7 +541,7 @@ class NonRecordingSpan(Span):
         exception,
         attributes=None,
         timestamp=None,
-        escaped=False,
+        escaped=False
     ):
         pass
 

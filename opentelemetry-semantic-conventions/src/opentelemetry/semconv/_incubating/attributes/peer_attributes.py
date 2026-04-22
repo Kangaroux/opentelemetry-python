@@ -14,7 +14,7 @@
 
 from typing_extensions import Final
 
-PEER_SERVICE: Final = "peer.service"
+PEER_SERVICE = "peer.service"
 """
 Deprecated: Replaced by `service.peer.name`.
 """

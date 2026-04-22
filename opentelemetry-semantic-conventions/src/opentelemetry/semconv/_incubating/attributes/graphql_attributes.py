@@ -15,18 +15,18 @@
 from enum import Enum
 from typing_extensions import Final
 
-GRAPHQL_DOCUMENT: Final = "graphql.document"
+GRAPHQL_DOCUMENT = "graphql.document"
 """
 The GraphQL document being executed.
 Note: The value may be sanitized to exclude sensitive information.
 """
 
-GRAPHQL_OPERATION_NAME: Final = "graphql.operation.name"
+GRAPHQL_OPERATION_NAME = "graphql.operation.name"
 """
 The name of the operation being executed.
 """
 
-GRAPHQL_OPERATION_TYPE: Final = "graphql.operation.type"
+GRAPHQL_OPERATION_TYPE = "graphql.operation.type"
 """
 The type of the operation being executed.
 """

@@ -55,7 +55,7 @@ def _generate_sum(
     attributes=None,
     description=None,
     unit=None,
-    is_monotonic=True,
+    is_monotonic=True
 ):
     if attributes is None:
         attributes = BoundedAttributes(attributes={"a": 1, "b": True})
@@ -115,7 +115,7 @@ def _generate_histogram(
     name,
     attributes = None,
     description = None,
-    unit = None,
+    unit = None
 ):
     if attributes is None:
         attributes = BoundedAttributes(attributes={"a": 1, "b": True})

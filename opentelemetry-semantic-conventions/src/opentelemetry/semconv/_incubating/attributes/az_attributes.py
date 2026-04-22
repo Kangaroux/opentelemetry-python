@@ -14,12 +14,12 @@
 
 from typing_extensions import Final
 
-AZ_NAMESPACE: Final = "az.namespace"
+AZ_NAMESPACE = "az.namespace"
 """
 Deprecated: Replaced by `azure.resource_provider.namespace`.
 """
 
-AZ_SERVICE_REQUEST_ID: Final = "az.service_request_id"
+AZ_SERVICE_REQUEST_ID = "az.service_request_id"
 """
 Deprecated: Replaced by `azure.service.request.id`.
 """

@@ -15,10 +15,10 @@
 
 from typing_extensions import Final
 
-DB_CLIENT_OPERATION_DURATION: Final = "db.client.operation.duration"
+DB_CLIENT_OPERATION_DURATION = "db.client.operation.duration"
 """
 Duration of database client operations
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 Note: Batch operations SHOULD be recorded as a single operation.
 """

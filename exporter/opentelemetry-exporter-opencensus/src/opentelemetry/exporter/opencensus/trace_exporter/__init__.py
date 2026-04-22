@@ -41,7 +41,7 @@ DEFAULT_ENDPOINT = "localhost:55678"
 logger = logging.getLogger(__name__)
 
 
-# pylint: disable=no-member
+# pylint =no-member
 class OpenCensusSpanExporter(SpanExporter):
     """OpenCensus Collector span exporter.
 
@@ -55,11 +55,11 @@ class OpenCensusSpanExporter(SpanExporter):
         self,
         endpoint=DEFAULT_ENDPOINT,
         host_name=None,
-        client=None,
+        client=None
     ):
         tracer_provider = trace.get_tracer_provider()
         service_name = (
-            tracer_provider.resource.attributes[SERVICE_NAME]
+            tracer_provider.resource.attributes
             if getattr(tracer_provider, "resource", None)
             else Resource.create().attributes.get(SERVICE_NAME)
         )
@@ -82,7 +82,7 @@ class OpenCensusSpanExporter(SpanExporter):
         # batch all originate from one TracerProvider (and in turn have all
         # the same service_name)
         if spans:
-            service_name = spans[0].resource.attributes.get(SERVICE_NAME)
+            service_name = spans.resource.attributes.get(SERVICE_NAME)
             if service_name:
                 self.node = utils.get_node(service_name, self.host_name)
         try:
@@ -111,7 +111,7 @@ class OpenCensusSpanExporter(SpanExporter):
         return True
 
 
-# pylint: disable=too-many-branches
+# pylint =too-many-branches
 def translate_to_collector(spans):
     collector_spans = []
     for span in spans:

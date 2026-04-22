@@ -29,5 +29,5 @@ class TestZipkinExporter(unittest.TestCase):
         try:
             json.ZipkinExporter()
             http.ZipkinExporter()
-        except Exception as exc:  # pylint: disable=broad-exception-caught
+        except Exception as exc:  # pylint =broad-exception-caught
             self.assertIsNone(exc)

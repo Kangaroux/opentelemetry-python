@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 from dataclasses import dataclass, field
 from typing import Callable, Sequence
 
@@ -27,20 +25,19 @@ from opentelemetry.trace import Link, SpanKind, TraceState
 from opentelemetry.util.types import Attributes
 
 
-@dataclass(frozen=True)
 class SamplingIntent:
     """Information to make a consistent sampling decision."""
 
-    threshold: int
+    threshold
     """The sampling threshold value. A lower threshold increases the likelihood of sampling."""
 
-    threshold_reliable: bool = field(default=True)
+    threshold_reliable = field(default=True)
     """Indicates whether the threshold is reliable for Span-to-Metrics estimation."""
 
-    attributes: Attributes = field(default=None)
+    attributes = field(default=None)
     """Any attributes to be added to a sampled span."""
 
-    update_trace_state: Callable[[TraceState], TraceState] = field(
+    update_trace_state = field(
         default=lambda ts: ts
     )
     """Any updates to be made to trace state."""
@@ -51,16 +48,16 @@ class ComposableSampler(Protocol):
 
     def sampling_intent(
         self,
-        parent_ctx: Context | None,
-        name: str,
-        span_kind: SpanKind | None,
-        attributes: Attributes,
-        links: Sequence[Link] | None,
-        trace_state: TraceState | None,
-    ) -> SamplingIntent:
+        parent_ctx,
+        name,
+        span_kind,
+        attributes,
+        links,
+        trace_state
+    ):
         """Returns information to make a sampling decision."""
-        ...  # pylint: disable=unnecessary-ellipsis
+        pass # pylint =unnecessary-ellipsis
 
-    def get_description(self) -> str:
+    def get_description(self):
         """Returns a description of the sampler."""
-        ...  # pylint: disable=unnecessary-ellipsis
+        pass # pylint =unnecessary-ellipsis

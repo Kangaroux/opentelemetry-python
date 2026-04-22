@@ -23,7 +23,7 @@ OTEL_SDK_DISABLED = "OTEL_SDK_DISABLED"
 .. envvar:: OTEL_SDK_DISABLED
 
 The :envvar:`OTEL_SDK_DISABLED` environment variable disables the SDK for all signals
-Default: "false"
+Default
 """
 
 OTEL_RESOURCE_ATTRIBUTES = "OTEL_RESOURCE_ATTRIBUTES"
@@ -57,7 +57,7 @@ OTEL_LOG_LEVEL = "OTEL_LOG_LEVEL"
 .. envvar:: OTEL_LOG_LEVEL
 
 The :envvar:`OTEL_LOG_LEVEL` environment variable sets the log level used by the SDK logger
-Default: "info"
+Default
 """
 
 OTEL_TRACES_SAMPLER = "OTEL_TRACES_SAMPLER"
@@ -67,7 +67,7 @@ OTEL_TRACES_SAMPLER = "OTEL_TRACES_SAMPLER"
 The :envvar:`OTEL_TRACES_SAMPLER` environment variable sets the sampler to be used for traces.
 Sampling is a mechanism to control the noise introduced by OpenTelemetry by reducing the number
 of traces collected and sent to the backend
-Default: "parentbased_always_on"
+Default
 """
 
 OTEL_TRACES_SAMPLER_ARG = "OTEL_TRACES_SAMPLER_ARG"
@@ -85,7 +85,7 @@ OTEL_BLRP_SCHEDULE_DELAY = "OTEL_BLRP_SCHEDULE_DELAY"
 .. envvar:: OTEL_BLRP_SCHEDULE_DELAY
 
 The :envvar:`OTEL_BLRP_SCHEDULE_DELAY` represents the delay interval between two consecutive exports of the BatchLogRecordProcessor.
-Default: 5000
+Default
 """
 
 OTEL_BLRP_EXPORT_TIMEOUT = "OTEL_BLRP_EXPORT_TIMEOUT"
@@ -94,7 +94,7 @@ OTEL_BLRP_EXPORT_TIMEOUT = "OTEL_BLRP_EXPORT_TIMEOUT"
 
 The :envvar:`OTEL_BLRP_EXPORT_TIMEOUT` represents the maximum allowed time to export data from the BatchLogRecordProcessor.
 This environment variable currently does nothing, see https://github.com/open-telemetry/opentelemetry-python/issues/4555.
-Default: 30000
+Default
 """
 
 OTEL_BLRP_MAX_QUEUE_SIZE = "OTEL_BLRP_MAX_QUEUE_SIZE"
@@ -102,7 +102,7 @@ OTEL_BLRP_MAX_QUEUE_SIZE = "OTEL_BLRP_MAX_QUEUE_SIZE"
 .. envvar:: OTEL_BLRP_MAX_QUEUE_SIZE
 
 The :envvar:`OTEL_BLRP_MAX_QUEUE_SIZE` represents the maximum queue size for the data export of the BatchLogRecordProcessor.
-Default: 2048
+Default
 """
 
 OTEL_BLRP_MAX_EXPORT_BATCH_SIZE = "OTEL_BLRP_MAX_EXPORT_BATCH_SIZE"
@@ -110,7 +110,7 @@ OTEL_BLRP_MAX_EXPORT_BATCH_SIZE = "OTEL_BLRP_MAX_EXPORT_BATCH_SIZE"
 .. envvar:: OTEL_BLRP_MAX_EXPORT_BATCH_SIZE
 
 The :envvar:`OTEL_BLRP_MAX_EXPORT_BATCH_SIZE` represents the maximum batch size for the data export of the BatchLogRecordProcessor.
-Default: 512
+Default
 """
 
 OTEL_BSP_SCHEDULE_DELAY = "OTEL_BSP_SCHEDULE_DELAY"
@@ -118,7 +118,7 @@ OTEL_BSP_SCHEDULE_DELAY = "OTEL_BSP_SCHEDULE_DELAY"
 .. envvar:: OTEL_BSP_SCHEDULE_DELAY
 
 The :envvar:`OTEL_BSP_SCHEDULE_DELAY` represents the delay interval between two consecutive exports of the BatchSpanProcessor.
-Default: 5000
+Default
 """
 
 OTEL_BSP_EXPORT_TIMEOUT = "OTEL_BSP_EXPORT_TIMEOUT"
@@ -126,7 +126,7 @@ OTEL_BSP_EXPORT_TIMEOUT = "OTEL_BSP_EXPORT_TIMEOUT"
 .. envvar:: OTEL_BSP_EXPORT_TIMEOUT
 
 The :envvar:`OTEL_BSP_EXPORT_TIMEOUT` represents the maximum allowed time to export data from the BatchSpanProcessor.
-Default: 30000
+Default
 """
 
 OTEL_BSP_MAX_QUEUE_SIZE = "OTEL_BSP_MAX_QUEUE_SIZE"
@@ -134,7 +134,7 @@ OTEL_BSP_MAX_QUEUE_SIZE = "OTEL_BSP_MAX_QUEUE_SIZE"
 .. envvar:: OTEL_BSP_MAX_QUEUE_SIZE
 
 The :envvar:`OTEL_BSP_MAX_QUEUE_SIZE` represents the maximum queue size for the data export of the BatchSpanProcessor.
-Default: 2048
+Default
 """
 
 OTEL_BSP_MAX_EXPORT_BATCH_SIZE = "OTEL_BSP_MAX_EXPORT_BATCH_SIZE"
@@ -142,7 +142,7 @@ OTEL_BSP_MAX_EXPORT_BATCH_SIZE = "OTEL_BSP_MAX_EXPORT_BATCH_SIZE"
 .. envvar:: OTEL_BSP_MAX_EXPORT_BATCH_SIZE
 
 The :envvar:`OTEL_BSP_MAX_EXPORT_BATCH_SIZE` represents the maximum batch size for the data export of the BatchSpanProcessor.
-Default: 512
+Default
 """
 
 OTEL_ATTRIBUTE_COUNT_LIMIT = "OTEL_ATTRIBUTE_COUNT_LIMIT"
@@ -151,7 +151,7 @@ OTEL_ATTRIBUTE_COUNT_LIMIT = "OTEL_ATTRIBUTE_COUNT_LIMIT"
 
 The :envvar:`OTEL_ATTRIBUTE_COUNT_LIMIT` represents the maximum allowed attribute count for spans, events and links.
 This limit is overridden by model specific limits such as OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT.
-Default: 128
+Default
 """
 
 OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT = "OTEL_ATTRIBUTE_VALUE_LENGTH_LIMIT"
@@ -166,7 +166,7 @@ OTEL_EVENT_ATTRIBUTE_COUNT_LIMIT = "OTEL_EVENT_ATTRIBUTE_COUNT_LIMIT"
 .. envvar:: OTEL_EVENT_ATTRIBUTE_COUNT_LIMIT
 
 The :envvar:`OTEL_EVENT_ATTRIBUTE_COUNT_LIMIT` represents the maximum allowed event attribute count.
-Default: 128
+Default
 """
 
 OTEL_LINK_ATTRIBUTE_COUNT_LIMIT = "OTEL_LINK_ATTRIBUTE_COUNT_LIMIT"
@@ -174,7 +174,7 @@ OTEL_LINK_ATTRIBUTE_COUNT_LIMIT = "OTEL_LINK_ATTRIBUTE_COUNT_LIMIT"
 .. envvar:: OTEL_LINK_ATTRIBUTE_COUNT_LIMIT
 
 The :envvar:`OTEL_LINK_ATTRIBUTE_COUNT_LIMIT` represents the maximum allowed link attribute count.
-Default: 128
+Default
 """
 
 OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT = "OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT"
@@ -182,7 +182,7 @@ OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT = "OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT"
 .. envvar:: OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT
 
 The :envvar:`OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT` represents the maximum allowed span attribute count.
-Default: 128
+Default
 """
 
 OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT = (
@@ -200,7 +200,7 @@ OTEL_SPAN_EVENT_COUNT_LIMIT = "OTEL_SPAN_EVENT_COUNT_LIMIT"
 .. envvar:: OTEL_SPAN_EVENT_COUNT_LIMIT
 
 The :envvar:`OTEL_SPAN_EVENT_COUNT_LIMIT` represents the maximum allowed span event count.
-Default: 128
+Default
 """
 
 OTEL_SPAN_LINK_COUNT_LIMIT = "OTEL_SPAN_LINK_COUNT_LIMIT"
@@ -208,7 +208,7 @@ OTEL_SPAN_LINK_COUNT_LIMIT = "OTEL_SPAN_LINK_COUNT_LIMIT"
 .. envvar:: OTEL_SPAN_LINK_COUNT_LIMIT
 
 The :envvar:`OTEL_SPAN_LINK_COUNT_LIMIT` represents the maximum allowed span link count.
-Default: 128
+Default
 """
 
 OTEL_EXPORTER_ZIPKIN_ENDPOINT = "OTEL_EXPORTER_ZIPKIN_ENDPOINT"
@@ -224,7 +224,7 @@ OTEL_EXPORTER_ZIPKIN_TIMEOUT = "OTEL_EXPORTER_ZIPKIN_TIMEOUT"
 .. envvar:: OTEL_EXPORTER_ZIPKIN_TIMEOUT
 
 Maximum time (in seconds) the Zipkin exporter will wait for each batch export.
-Default: 10
+Default
 """
 
 OTEL_EXPORTER_OTLP_PROTOCOL = "OTEL_EXPORTER_OTLP_PROTOCOL"
@@ -295,7 +295,7 @@ OTEL_EXPORTER_OTLP_TIMEOUT = "OTEL_EXPORTER_OTLP_TIMEOUT"
 .. envvar:: OTEL_EXPORTER_OTLP_TIMEOUT
 
 The :envvar:`OTEL_EXPORTER_OTLP_TIMEOUT` is the maximum time (in seconds) the OTLP exporter will wait for each batch export.
-Default: 10
+Default
 """
 
 OTEL_EXPORTER_OTLP_ENDPOINT = "OTEL_EXPORTER_OTLP_ENDPOINT"
@@ -314,7 +314,7 @@ OTEL_EXPORTER_OTLP_INSECURE = "OTEL_EXPORTER_OTLP_INSECURE"
 
 The :envvar:`OTEL_EXPORTER_OTLP_INSECURE` represents whether to enable client transport security for gRPC requests.
 A scheme of https takes precedence over this configuration setting.
-Default: False
+Default
 """
 
 OTEL_EXPORTER_OTLP_TRACES_INSECURE = "OTEL_EXPORTER_OTLP_TRACES_INSECURE"
@@ -323,7 +323,7 @@ OTEL_EXPORTER_OTLP_TRACES_INSECURE = "OTEL_EXPORTER_OTLP_TRACES_INSECURE"
 
 The :envvar:`OTEL_EXPORTER_OTLP_TRACES_INSECURE` represents whether to enable client transport security
 for gRPC requests for spans. A scheme of https takes precedence over the this configuration setting.
-Default: False
+Default
 """
 
 
@@ -368,7 +368,7 @@ Entry point providers should implement the following:
     import grpc
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def channel_credential_provider() -> grpc.ChannelCredentials:
+    def channel_credential_provider():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -387,7 +387,7 @@ Entry point providers should implement the following:
     import requests
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def request_session_provder() -> requests.Session:
+    def request_session_provder():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -405,7 +405,7 @@ Entry point providers should implement the following:
     import requests
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def request_session_provder() -> requests.Session:
+    def request_session_provder():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -423,7 +423,7 @@ Entry point providers should implement the following:
     import grpc
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def channel_credential_provider() -> grpc.ChannelCredentials:
+    def channel_credential_provider():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -441,7 +441,7 @@ Entry point providers should implement the following:
     import requests
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def request_session_provder() -> requests.Session:
+    def request_session_provder():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -459,7 +459,7 @@ Entry point providers should implement the following:
     import grpc
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def channel_credential_provider() -> grpc.ChannelCredentials:
+    def channel_credential_provider():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -477,7 +477,7 @@ Entry point providers should implement the following:
     import requests
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def request_session_provder() -> requests.Session:
+    def request_session_provder():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -495,7 +495,7 @@ Entry point providers should implement the following:
     import grpc
 
     # Add a reference to this function under the `opentelemetry_otlp_credential_provider` entry point.
-    def channel_credential_provider() -> grpc.ChannelCredentials:
+    def channel_credential_provider():
 
 Note: This environment variable is experimental and subject to change.
 """
@@ -644,7 +644,7 @@ OTEL_EXPORTER_OTLP_TRACES_TIMEOUT = "OTEL_EXPORTER_OTLP_TRACES_TIMEOUT"
 
 The :envvar:`OTEL_EXPORTER_OTLP_TRACES_TIMEOUT` is the maximum time (in seconds) the OTLP exporter will
 wait for each batch export for spans.
-Default: 10
+Default
 """
 
 OTEL_EXPORTER_OTLP_METRICS_TIMEOUT = "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT"
@@ -653,7 +653,7 @@ OTEL_EXPORTER_OTLP_METRICS_TIMEOUT = "OTEL_EXPORTER_OTLP_METRICS_TIMEOUT"
 
 The :envvar:`OTEL_EXPORTER_OTLP_METRICS_TIMEOUT` is the maximum time (in seconds) the OTLP exporter will
 wait for each batch export for metrics.
-Default: 10
+Default
 """
 
 OTEL_EXPORTER_OTLP_METRICS_INSECURE = "OTEL_EXPORTER_OTLP_METRICS_INSECURE"
@@ -662,7 +662,7 @@ OTEL_EXPORTER_OTLP_METRICS_INSECURE = "OTEL_EXPORTER_OTLP_METRICS_INSECURE"
 
 The :envvar:`OTEL_EXPORTER_OTLP_METRICS_INSECURE` represents whether to enable client transport security
 for gRPC requests for metrics. A scheme of https takes precedence over the this configuration setting.
-Default: False
+Default
 """
 
 OTEL_EXPORTER_OTLP_LOGS_INSECURE = "OTEL_EXPORTER_OTLP_LOGS_INSECURE"
@@ -671,7 +671,7 @@ OTEL_EXPORTER_OTLP_LOGS_INSECURE = "OTEL_EXPORTER_OTLP_LOGS_INSECURE"
 
 The :envvar:`OTEL_EXPORTER_OTLP_LOGS_INSECURE` represents whether to enable client transport security
 for gRPC requests for logs. A scheme of https takes precedence over the this configuration setting.
-Default: False
+Default
 """
 
 OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE = "OTEL_EXPORTER_OTLP_LOGS_CERTIFICATE"
@@ -688,7 +688,7 @@ OTEL_EXPORTER_OTLP_LOGS_TIMEOUT = "OTEL_EXPORTER_OTLP_LOGS_TIMEOUT"
 
 The :envvar:`OTEL_EXPORTER_OTLP_LOGS_TIMEOUT` is the maximum time (in seconds) the OTLP exporter will
 wait for each batch export for logs.
-Default: 10
+Default
 """
 
 OTEL_SERVICE_NAME = "OTEL_SERVICE_NAME"
@@ -717,7 +717,7 @@ _OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED = (
 
 The :envvar:`OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED` environment variable allows users to
 enable/disable the auto instrumentation for the python logging module.
-Default: False
+Default
 
 Note: Logs SDK and its related settings are experimental.
 
@@ -791,7 +791,7 @@ OTEL_EXPORTER_PROMETHEUS_HOST = "OTEL_EXPORTER_PROMETHEUS_HOST"
 
 The :envvar:`OTEL_EXPORTER_PROMETHEUS_HOST` environment variable configures the host used by
 the Prometheus exporter.
-Default: "localhost"
+Default
 
 This is an experimental environment variable and the name of this variable and its behavior can
 change in a non-backwards compatible way.
@@ -803,7 +803,7 @@ OTEL_EXPORTER_PROMETHEUS_PORT = "OTEL_EXPORTER_PROMETHEUS_PORT"
 
 The :envvar:`OTEL_EXPORTER_PROMETHEUS_PORT` environment variable configures the port used by
 the Prometheus exporter.
-Default: 9464
+Default
 
 This is an experimental environment variable and the name of this variable and its behavior can
 change in a non-backwards compatible way.
@@ -815,7 +815,7 @@ OTEL_PYTHON_TRACER_CONFIGURATOR = "OTEL_PYTHON_TRACER_CONFIGURATOR"
 
 The :envvar:`OTEL_PYTHON_TRACER_CONFIGURATOR` environment variable allows users to set a
 custom Tracer Configurator function.
-Default: opentelemetry.sdk.trace._default_tracer_configurator
+Default
 
 This is an experimental environment variable and the name of this variable and its behavior can
 change in a non-backwards compatible way.

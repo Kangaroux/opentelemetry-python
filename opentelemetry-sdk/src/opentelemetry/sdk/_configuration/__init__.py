@@ -17,8 +17,6 @@
 OpenTelemetry SDK Configurator for Easy Instrumentation with Distros
 """
 
-from __future__ import annotations
-
 import logging
 import logging.config
 import os
@@ -119,30 +117,26 @@ _logger = logging.getLogger(__name__)
 
 ExporterArgsMap = Mapping[
     Union[
-        Type[SpanExporter],
-        Type[MetricExporter],
-        Type[MetricReader],
-        Type[LogRecordExporter],
+        Type,
+        Type,
+        Type,
+        Type,
     ],
-    Mapping[str, Any],
+    Mapping,
 ]
 
 
 class _ConfigurationExporterSpanProcessorT(Protocol):
-    def __call__(
-        self, span_exporter: SpanExporter, *args, **kwargs
-    ) -> SpanProcessor: ...
+    def __call__(self, span_exporter, *args, **kwargs):
+        pass
 
 
 class _ConfigurationExporterLogRecordProcessorT(Protocol):
-    def __call__(
-        self, exporter: LogRecordExporter, *args, **kwargs
-    ) -> LogRecordProcessor: ...
+    def __call__(self, exporter, *args, **kwargs):
+        pass
 
 
-def _import_config_components(
-    selected_components: Sequence[str], entry_point_name: str
-) -> list[tuple[str, Type]]:
+def _import_config_components(selected_components, entry_point_name):
     component_implementations = []
 
     for selected_component in selected_components:
@@ -161,33 +155,33 @@ def _import_config_components(
             )
         except KeyError:
             raise RuntimeError(
-                f"Requested entry point '{entry_point_name}' not found"
+                "Requested entry point '{}' not found".format(entry_point_name)
             )
 
         except StopIteration:
             raise RuntimeError(
-                f"Requested component '{selected_component}' not found in "
-                f"entry point '{entry_point_name}'"
+                "Requested component '{}' not found in ".format(
+                    selected_component
+                )
+                + "entry point '{}'".format(entry_point_name)
             )
 
     return component_implementations
 
 
-def _get_sampler() -> str | None:
+def _get_sampler():
     return environ.get(OTEL_TRACES_SAMPLER, None)
 
 
-def _get_id_generator() -> str:
+def _get_id_generator():
     return environ.get(OTEL_PYTHON_ID_GENERATOR, _DEFAULT_ID_GENERATOR)
 
 
-def _get_tracer_configurator() -> str | None:
+def _get_tracer_configurator():
     return environ.get(OTEL_PYTHON_TRACER_CONFIGURATOR, None)
 
 
-def _get_exporter_entry_point(
-    exporter_name: str, signal_type: Literal["traces", "metrics", "logs"]
-):
+def _get_exporter_entry_point(exporter_name, signal_type):
     if exporter_name not in (
         _EXPORTER_OTLP,
         _EXPORTER_OTLP_PROTO_GRPC,
@@ -196,9 +190,9 @@ def _get_exporter_entry_point(
         return exporter_name
 
     # Checking env vars for OTLP protocol (grpc/http).
-    otlp_protocol = environ.get(
-        _PROTOCOL_ENV_BY_SIGNAL_TYPE[signal_type]
-    ) or environ.get(OTEL_EXPORTER_OTLP_PROTOCOL)
+    otlp_protocol = environ.get(_PROTOCOL_ENV_BY_SIGNAL_TYPE) or environ.get(
+        OTEL_EXPORTER_OTLP_PROTOCOL
+    )
 
     if not otlp_protocol:
         if exporter_name == _EXPORTER_OTLP:
@@ -211,10 +205,12 @@ def _get_exporter_entry_point(
         if otlp_protocol not in _EXPORTER_BY_OTLP_PROTOCOL:
             # Invalid value was set by the env var
             raise RuntimeError(
-                f"Unsupported OTLP protocol '{otlp_protocol}' is configured"
+                "Unsupported OTLP protocol '{}' is configured".format(
+                    otlp_protocol
+                )
             )
 
-        return _EXPORTER_BY_OTLP_PROTOCOL[otlp_protocol]
+        return _EXPORTER_BY_OTLP_PROTOCOL
 
     # grpc/http already specified by exporter_name, only add a warning in case
     # of a conflict.
@@ -229,9 +225,7 @@ def _get_exporter_entry_point(
     return exporter_name
 
 
-def _get_exporter_names(
-    signal_type: Literal["traces", "metrics", "logs"],
-) -> list[str]:
+def _get_exporter_names(signal_type):
     names = environ.get(_EXPORTER_ENV_BY_SIGNAL_TYPE.get(signal_type, ""))
 
     if not names or names.lower().strip() == "none":
@@ -244,14 +238,14 @@ def _get_exporter_names(
 
 
 def _init_tracing(
-    exporters: dict[str, Type[SpanExporter]],
-    id_generator: IdGenerator | None = None,
-    sampler: Sampler | None = None,
-    resource: Resource | None = None,
-    exporter_args_map: ExporterArgsMap | None = None,
-    span_processors: Sequence[SpanProcessor] | None = None,
-    export_span_processor: _ConfigurationExporterSpanProcessorT | None = None,
-    tracer_configurator: _TracerConfiguratorT | None = None,
+    exporters,
+    id_generator=None,
+    sampler=None,
+    resource=None,
+    exporter_args_map=None,
+    span_processors=None,
+    export_span_processor=None,
+    tracer_configurator=None,
 ):
     provider = TracerProvider(
         id_generator=id_generator,
@@ -275,13 +269,7 @@ def _init_tracing(
         )
 
 
-def _init_metrics(
-    exporters_or_readers: dict[
-        str, Union[Type[MetricExporter], Type[MetricReader]]
-    ],
-    resource: Resource | None = None,
-    exporter_args_map: ExporterArgsMap | None = None,
-):
+def _init_metrics(exporters_or_readers, resource=None, exporter_args_map=None):
     metric_readers = []
 
     exporter_args_map = exporter_args_map or {}
@@ -301,13 +289,12 @@ def _init_metrics(
 
 
 def _init_logging(
-    exporters: dict[str, Type[LogRecordExporter]],
-    resource: Resource | None = None,
-    setup_logging_handler: bool = True,
-    exporter_args_map: ExporterArgsMap | None = None,
-    log_record_processors: Sequence[LogRecordProcessor] | None = None,
-    export_log_record_processor: _ConfigurationExporterLogRecordProcessorT
-    | None = None,
+    exporters,
+    resource=None,
+    setup_logging_handler=True,
+    exporter_args_map=None,
+    log_record_processors=None,
+    export_log_record_processor=None,
 ):
     provider = LoggerProvider(resource=resource)
     set_logger_provider(provider)
@@ -328,7 +315,7 @@ def _init_logging(
     # silence warnings from internal users until we drop the deprecated Events API
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=DeprecationWarning)
-        # pylint: disable=import-outside-toplevel
+        # pylint =import-outside-toplevel
         from opentelemetry._events import (  # noqa: PLC0415
             set_event_logger_provider,
         )
@@ -355,10 +342,10 @@ def _init_logging(
         _overwrite_logging_config_fns(handler)
 
 
-def _overwrite_logging_config_fns(handler: LoggingHandler) -> None:
+def _overwrite_logging_config_fns(handler):
     root = logging.getLogger()
 
-    def wrapper(config_fn: Callable) -> Callable:
+    def wrapper(config_fn):
         def overwritten_config_fn(*args, **kwargs):
             removed_handler = False
             # We don't want the OTLP handler to be modified or deleted by the logging config functions.
@@ -380,9 +367,7 @@ def _overwrite_logging_config_fns(handler: LoggingHandler) -> None:
     logging.basicConfig = wrapper(logging.basicConfig)
 
 
-def _import_tracer_configurator(
-    tracer_configurator_name: str | None,
-) -> _TracerConfiguratorT | None:
+def _import_tracer_configurator(tracer_configurator_name):
     if not tracer_configurator_name:
         return None
 
@@ -391,7 +376,7 @@ def _import_tracer_configurator(
             [tracer_configurator_name.strip()],
             "_opentelemetry_tracer_configurator",
         )[0]
-    except Exception as exc:  # pylint: disable=broad-exception-caught
+    except Exception as exc:  # pylint =broad-exception-caught
         _logger.warning(
             "Using default tracer configurator. Failed to load tracer configurator, %s: %s",
             tracer_configurator_name,
@@ -402,14 +387,8 @@ def _import_tracer_configurator(
 
 
 def _import_exporters(
-    trace_exporter_names: Sequence[str],
-    metric_exporter_names: Sequence[str],
-    log_exporter_names: Sequence[str],
-) -> tuple[
-    dict[str, Type[SpanExporter]],
-    dict[str, Union[Type[MetricExporter], Type[MetricReader]]],
-    dict[str, Type[LogRecordExporter]],
-]:
+    trace_exporter_names, metric_exporter_names, log_exporter_names
+):
     trace_exporters = {}
     metric_exporters = {}
     log_exporters = {}
@@ -421,9 +400,11 @@ def _import_exporters(
         trace_exporter_names, "opentelemetry_traces_exporter"
     ):
         if issubclass(exporter_impl, SpanExporter):
-            trace_exporters[exporter_name] = exporter_impl
+            trace_exporters = exporter_impl
         else:
-            raise RuntimeError(f"{exporter_name} is not a trace exporter")
+            raise RuntimeError(
+                "{} is not a trace exporter".format(exporter_name)
+            )
 
     for (
         exporter_name,
@@ -434,9 +415,11 @@ def _import_exporters(
         # The metric exporter components may be push MetricExporter or pull exporters which
         # subclass MetricReader directly
         if issubclass(exporter_impl, (MetricExporter, MetricReader)):
-            metric_exporters[exporter_name] = exporter_impl
+            metric_exporters = exporter_impl
         else:
-            raise RuntimeError(f"{exporter_name} is not a metric exporter")
+            raise RuntimeError(
+                "{} is not a metric exporter".format(exporter_name)
+            )
 
     for (
         exporter_name,
@@ -445,23 +428,23 @@ def _import_exporters(
         log_exporter_names, "opentelemetry_logs_exporter"
     ):
         if issubclass(exporter_impl, LogRecordExporter):
-            log_exporters[exporter_name] = exporter_impl
+            log_exporters = exporter_impl
         else:
-            raise RuntimeError(f"{exporter_name} is not a log exporter")
+            raise RuntimeError(
+                "{} is not a log exporter".format(exporter_name)
+            )
 
     return trace_exporters, metric_exporters, log_exporters
 
 
-def _import_sampler_factory(
-    sampler_name: str,
-) -> Callable[[float | str | None], Sampler]:
+def _import_sampler_factory(sampler_name):
     _, sampler_impl = _import_config_components(
         [sampler_name.strip()], _OTEL_SAMPLER_ENTRY_POINT_GROUP
     )[0]
     return sampler_impl
 
 
-def _import_sampler(sampler_name: str | None) -> Sampler | None:
+def _import_sampler(sampler_name):
     if not sampler_name:
         return None
     try:
@@ -481,11 +464,13 @@ def _import_sampler(sampler_name: str | None) -> Sampler | None:
 
         sampler = sampler_factory(arg)
         if not isinstance(sampler, Sampler):
-            message = f"Sampler factory, {sampler_factory}, produced output, {sampler}, which is not a Sampler."
+            message = "Sampler factory, {}, produced output, {}, which is not a Sampler.".format(
+                sampler_factory, sampler
+            )
             _logger.warning(message)
             raise ValueError(message)
         return sampler
-    except Exception as exc:  # pylint: disable=broad-exception-caught
+    except Exception as exc:  # pylint =broad-exception-caught
         _logger.warning(
             "Using default sampler. Failed to initialize sampler, %s: %s",
             sampler_name,
@@ -494,7 +479,7 @@ def _import_sampler(sampler_name: str | None) -> Sampler | None:
         return None
 
 
-def _import_id_generator(id_generator_name: str) -> IdGenerator:
+def _import_id_generator(id_generator_name):
     id_generator_name, id_generator_impl = _import_config_components(
         [id_generator_name.strip()], "opentelemetry_id_generator"
     )[0]
@@ -502,27 +487,26 @@ def _import_id_generator(id_generator_name: str) -> IdGenerator:
     if issubclass(id_generator_impl, IdGenerator):
         return id_generator_impl()
 
-    raise RuntimeError(f"{id_generator_name} is not an IdGenerator")
+    raise RuntimeError("{} is not an IdGenerator".format(id_generator_name))
 
 
 def _initialize_components(
-    auto_instrumentation_version: Optional[str] = None,
-    trace_exporter_names: Optional[List[str]] = None,
-    metric_exporter_names: Optional[List[str]] = None,
-    log_exporter_names: Optional[List[str]] = None,
-    sampler: Sampler | None = None,
-    resource_attributes: Attributes | None = None,
-    id_generator: IdGenerator | None = None,
-    setup_logging_handler: bool | None = None,
-    exporter_args_map: ExporterArgsMap | None = None,
-    span_processors: Sequence[SpanProcessor] | None = None,
-    export_span_processor: _ConfigurationExporterSpanProcessorT | None = None,
-    log_record_processors: Sequence[LogRecordProcessor] | None = None,
-    export_log_record_processor: _ConfigurationExporterLogRecordProcessorT
-    | None = None,
-    tracer_configurator: _TracerConfiguratorT | None = None,
+    auto_instrumentation_version=None,
+    trace_exporter_names=None,
+    metric_exporter_names=None,
+    log_exporter_names=None,
+    sampler=None,
+    resource_attributes=None,
+    id_generator=None,
+    setup_logging_handler=None,
+    exporter_args_map=None,
+    span_processors=None,
+    export_span_processor=None,
+    log_record_processors=None,
+    export_log_record_processor=None,
+    tracer_configurator=None,
 ):
-    # pylint: disable=too-many-locals
+    # pylint =too-many-locals
     if trace_exporter_names is None:
         trace_exporter_names = []
     if metric_exporter_names is None:
@@ -544,7 +528,9 @@ def _initialize_components(
         resource_attributes = {}
     # populate version if using auto-instrumentation
     if auto_instrumentation_version:
-        resource_attributes[ResourceAttributes.TELEMETRY_AUTO_VERSION] = (  # type: ignore[reportIndexIssue]
+        resource_attributes[
+            ResourceAttributes.TELEMETRY_AUTO_VERSION
+        ] = (  # type
             auto_instrumentation_version
         )
     if tracer_configurator is None:

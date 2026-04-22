@@ -37,21 +37,21 @@ try:
 except ImportError as exc:
     raise ImportError(
         "File configuration requires pyyaml. "
-        "Install with: pip install opentelemetry-sdk[file-configuration]"
-    ) from exc
+        "Install with: pip install opentelemetry-sdk"
+    )
 
 try:
     import jsonschema
 except ImportError as exc:
     raise ImportError(
         "File configuration requires jsonschema. "
-        "Install with: pip install opentelemetry-sdk[file-configuration]"
-    ) from exc
+        "Install with: pip install opentelemetry-sdk"
+    )
 
-_schema_cache: List[Dict[str, Any]] = []
+_schema_cache = []
 
 
-def _get_schema() -> dict:
+def _get_schema():
     if not _schema_cache:
         schema_path = (
             importlib_files("opentelemetry.sdk._configuration") / "schema.json"
@@ -59,7 +59,7 @@ def _get_schema() -> dict:
         _schema_cache.append(
             json.loads(schema_path.read_text(encoding="utf-8"))
         )
-    return _schema_cache[0]
+    return _schema_cache
 
 
 _logger = logging.getLogger(__name__)
@@ -76,7 +76,7 @@ class ConfigurationError(Exception):
     """
 
 
-def load_config_file(file_path: str) -> OpenTelemetryConfiguration:
+def load_config_file(file_path):
     """Load and parse an OpenTelemetry configuration file.
 
     Supports YAML and JSON formats. Performs environment variable substitution
@@ -100,12 +100,14 @@ def load_config_file(file_path: str) -> OpenTelemetryConfiguration:
 
     if not path.exists():
         _logger.error("Configuration file not found: %s", file_path)
-        raise ConfigurationError(f"Configuration file not found: {file_path}")
+        raise ConfigurationError(
+            "Configuration file not found: {}".format(file_path)
+        )
 
     if not path.is_file():
         _logger.error("Configuration path is not a file: %s", file_path)
         raise ConfigurationError(
-            f"Configuration path is not a file: {file_path}"
+            "Configuration path is not a file: {}".format(file_path)
         )
 
     try:
@@ -114,16 +116,16 @@ def load_config_file(file_path: str) -> OpenTelemetryConfiguration:
     except (OSError, IOError) as exc:
         _logger.exception("Failed to read configuration file: %s", file_path)
         raise ConfigurationError(
-            f"Failed to read configuration file: {file_path}"
-        ) from exc
+            "Failed to read configuration file: {}".format(file_path)
+        )
 
     # Perform environment variable substitution
     try:
         content = substitute_env_vars(content)
     except Exception as exc:
         raise ConfigurationError(
-            f"Environment variable substitution failed: {exc}"
-        ) from exc
+            "Environment variable substitution failed: {}".format(exc)
+        )
 
     # Parse based on file extension
     suffix = path.suffix.lower()
@@ -135,14 +137,16 @@ def load_config_file(file_path: str) -> OpenTelemetryConfiguration:
         else:
             _logger.error("Unsupported file format: %s", suffix)
             raise ConfigurationError(
-                f"Unsupported file format: {suffix}. Use .yaml, .yml, or .json"
+                "Unsupported file format: {}. Use .yaml, .yml, or .json".format(
+                    suffix
+                )
             )
     except yaml.YAMLError as exc:
         _logger.exception("Failed to parse YAML from %s", file_path)
-        raise ConfigurationError(f"Failed to parse YAML: {exc}") from exc
+        raise ConfigurationError("Failed to parse YAML: {}".format(exc))
     except json.JSONDecodeError as exc:
         _logger.exception("Failed to parse JSON from %s", file_path)
-        raise ConfigurationError(f"Failed to parse JSON: {exc}") from exc
+        raise ConfigurationError("Failed to parse JSON: {}".format(exc))
 
     if data is None:
         _logger.error("Configuration file is empty: %s", file_path)
@@ -154,7 +158,9 @@ def load_config_file(file_path: str) -> OpenTelemetryConfiguration:
             type(data).__name__,
         )
         raise ConfigurationError(
-            f"Configuration must be a mapping/object, got {type(data).__name__}"
+            "Configuration must be a mapping/object, got {}".format(
+                type(data).__name__
+            )
         )
 
     _validate_schema(data)
@@ -167,13 +173,13 @@ def load_config_file(file_path: str) -> OpenTelemetryConfiguration:
             "Failed to validate configuration from %s", file_path
         )
         raise ConfigurationError(
-            f"Failed to validate configuration: {exc}"
-        ) from exc
+            "Failed to validate configuration: {}".format(exc)
+        )
 
     return config
 
 
-def _validate_schema(data: dict) -> None:
+def _validate_schema(data):
     """Validate configuration dict against the OTel configuration JSON schema.
 
     Raises:
@@ -187,18 +193,18 @@ def _validate_schema(data: dict) -> None:
         )
     except jsonschema.ValidationError as exc:
         raise ConfigurationError(
-            f"Configuration does not match schema: {exc.message} "
-            f"(at {' -> '.join(str(p) for p in exc.absolute_path)})"
+            "Configuration does not match schema: {} ".format(exc.message)
+            + "(at {})".format(" -> ".join(str(p) for p in exc.absolute_path))
             if exc.absolute_path
-            else f"Configuration does not match schema: {exc.message}"
-        ) from exc
+            else "Configuration does not match schema: {}".format(exc.message)
+        )
     except jsonschema.SchemaError as exc:
         raise ConfigurationError(
-            f"Invalid configuration schema: {exc.message}"
-        ) from exc
+            "Invalid configuration schema: {}".format(exc.message)
+        )
 
 
-def _dict_to_model(data: Dict[str, Any]) -> OpenTelemetryConfiguration:
+def _dict_to_model(data):
     """Convert dictionary to OpenTelemetryConfiguration model.
 
     Uses the generated dataclass from models.py. This provides basic
@@ -224,6 +230,8 @@ def _dict_to_model(data: Dict[str, Any]) -> OpenTelemetryConfiguration:
     except TypeError as exc:
         # Provide more helpful error message
         raise TypeError(
-            f"Configuration structure is invalid. "
-            f"Check that all required fields are present and correctly typed: {exc}"
-        ) from exc
+            "Configuration structure is invalid. "
+            "Check that all required fields are present and correctly typed: {}".format(
+                exc
+            )
+        )

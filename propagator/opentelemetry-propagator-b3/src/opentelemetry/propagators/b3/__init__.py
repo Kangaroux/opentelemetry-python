@@ -59,7 +59,7 @@ class B3MultiFormat(TextMapPropagator):
         self,
         carrier,
         context = None,
-        getter = default_getter,
+        getter = default_getter
     ):
         if context is None:
             context = Context()
@@ -79,7 +79,7 @@ class B3MultiFormat(TextMapPropagator):
             fields = single_header.split("-", 4)
 
             if len(fields) == 1:
-                sampled = fields[0]
+                sampled = fields
             elif len(fields) == 2:
                 trace_id, span_id = fields
             elif len(fields) == 3:
@@ -140,7 +140,7 @@ class B3MultiFormat(TextMapPropagator):
         self,
         carrier,
         context = None,
-        setter = default_setter,
+        setter = default_setter
     ):
         span = trace.get_current_span(context=context)
 
@@ -179,7 +179,7 @@ class B3SingleFormat(B3MultiFormat):
         self,
         carrier,
         context = None,
-        setter = default_setter,
+        setter = default_setter
     ):
         span = trace.get_current_span(context=context)
 
@@ -211,7 +211,7 @@ class B3Format(B3MultiFormat):
 
 
 def _extract_first_element(
-    items,
+    items
 ):
     if items is None:
         return None

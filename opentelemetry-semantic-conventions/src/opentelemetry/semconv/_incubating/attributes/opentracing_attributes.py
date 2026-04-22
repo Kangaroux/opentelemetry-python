@@ -15,7 +15,7 @@
 from enum import Enum
 from typing_extensions import Final
 
-OPENTRACING_REF_TYPE: Final = "opentracing.ref_type"
+OPENTRACING_REF_TYPE = "opentracing.ref_type"
 """
 Parent-child Reference type.
 Note: The causal relationship between a child Span and a parent Span.

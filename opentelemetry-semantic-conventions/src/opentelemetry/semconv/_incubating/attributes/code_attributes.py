@@ -14,52 +14,52 @@
 
 from typing_extensions import Final
 
-CODE_COLUMN: Final = "code.column"
+CODE_COLUMN = "code.column"
 """
 Deprecated: Replaced by `code.column.number`.
 """
 
-CODE_COLUMN_NUMBER: Final = "code.column.number"
+CODE_COLUMN_NUMBER = "code.column.number"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.code_attributes.CODE_COLUMN_NUMBER`.
 """
 
-CODE_FILE_PATH: Final = "code.file.path"
+CODE_FILE_PATH = "code.file.path"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.code_attributes.CODE_FILE_PATH`.
 """
 
-CODE_FILEPATH: Final = "code.filepath"
+CODE_FILEPATH = "code.filepath"
 """
 Deprecated: Replaced by `code.file.path`.
 """
 
-CODE_FUNCTION: Final = "code.function"
+CODE_FUNCTION = "code.function"
 """
 Deprecated: Value should be included in `code.function.name` which is expected to be a fully-qualified name.
 """
 
-CODE_FUNCTION_NAME: Final = "code.function.name"
+CODE_FUNCTION_NAME = "code.function.name"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.code_attributes.CODE_FUNCTION_NAME`.
 """
 
-CODE_LINE_NUMBER: Final = "code.line.number"
+CODE_LINE_NUMBER = "code.line.number"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.code_attributes.CODE_LINE_NUMBER`.
 """
 
-CODE_LINENO: Final = "code.lineno"
+CODE_LINENO = "code.lineno"
 """
 Deprecated: Replaced by `code.line.number`.
 """
 
-CODE_NAMESPACE: Final = "code.namespace"
+CODE_NAMESPACE = "code.namespace"
 """
 Deprecated: Value should be included in `code.function.name` which is expected to be a fully-qualified name.
 """
 
-CODE_STACKTRACE: Final = "code.stacktrace"
+CODE_STACKTRACE = "code.stacktrace"
 """
 Deprecated in favor of stable :py:const:`opentelemetry.semconv.attributes.code_attributes.CODE_STACKTRACE`.
 """

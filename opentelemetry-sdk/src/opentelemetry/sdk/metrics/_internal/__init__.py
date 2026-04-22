@@ -76,8 +76,8 @@ class Meter(APIMeter):
 
     def __init__(
         self,
-        instrumentation_scope: InstrumentationScope,
-        measurement_consumer: MeasurementConsumer,
+        instrumentation_scope,
+        measurement_consumer
     ):
         super().__init__(
             name=instrumentation_scope.name,
@@ -89,13 +89,13 @@ class Meter(APIMeter):
         self._instrument_id_instrument = {}
         self._instrument_registration_lock = Lock()
 
-    def create_counter(self, name, unit="", description="") -> APICounter:
+    def create_counter(self, name, unit="", description=""):
         with self._instrument_registration_lock:
             status = self._register_instrument(
                 name, _Counter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument[status.instrument_id] = (
+                self._instrument_id_instrument = (
                     _Counter(
                         name,
                         self._instrumentation_scope,
@@ -104,7 +104,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument[status.instrument_id]
+            instrument = self._instrument_id_instrument
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -121,13 +121,13 @@ class Meter(APIMeter):
 
     def create_up_down_counter(
         self, name, unit="", description=""
-    ) -> APIUpDownCounter:
+    ):
         with self._instrument_registration_lock:
             status = self._register_instrument(
                 name, _UpDownCounter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument[status.instrument_id] = (
+                self._instrument_id_instrument = (
                     _UpDownCounter(
                         name,
                         self._instrumentation_scope,
@@ -136,7 +136,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument[status.instrument_id]
+            instrument = self._instrument_id_instrument
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -156,14 +156,14 @@ class Meter(APIMeter):
         name,
         callbacks=None,
         unit="",
-        description="",
-    ) -> APIObservableCounter:
+        description=""
+    ):
         with self._instrument_registration_lock:
             status = self._register_instrument(
                 name, _ObservableCounter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument[status.instrument_id] = (
+                self._instrument_id_instrument = (
                     _ObservableCounter(
                         name,
                         self._instrumentation_scope,
@@ -173,7 +173,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument[status.instrument_id]
+            instrument = self._instrument_id_instrument
 
         if not status.already_registered:
             self._measurement_consumer.register_asynchronous_instrument(
@@ -195,12 +195,12 @@ class Meter(APIMeter):
 
     def create_histogram(
         self,
-        name: str,
-        unit: str = "",
-        description: str = "",
-        *,
-        explicit_bucket_boundaries_advisory: Optional[Sequence[float]] = None,
-    ) -> APIHistogram:
+        name,
+        unit = "",
+        description = "",
+
+        explicit_bucket_boundaries_advisory = None
+    ):
         if explicit_bucket_boundaries_advisory is not None:
             invalid_advisory = False
             if isinstance(explicit_bucket_boundaries_advisory, Sequence):
@@ -231,7 +231,7 @@ class Meter(APIMeter):
                 explicit_bucket_boundaries_advisory,
             )
             if not status.already_registered:
-                self._instrument_id_instrument[status.instrument_id] = (
+                self._instrument_id_instrument = (
                     _Histogram(
                         name,
                         self._instrumentation_scope,
@@ -241,7 +241,7 @@ class Meter(APIMeter):
                         explicit_bucket_boundaries_advisory,
                     )
                 )
-            instrument = self._instrument_id_instrument[status.instrument_id]
+            instrument = self._instrument_id_instrument
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -256,18 +256,18 @@ class Meter(APIMeter):
             )
         return instrument
 
-    def create_gauge(self, name, unit="", description="") -> APIGauge:
+    def create_gauge(self, name, unit="", description=""):
         with self._instrument_registration_lock:
             status = self._register_instrument(name, _Gauge, unit, description)
             if not status.already_registered:
-                self._instrument_id_instrument[status.instrument_id] = _Gauge(
+                self._instrument_id_instrument = _Gauge(
                     name,
                     self._instrumentation_scope,
                     self._measurement_consumer,
                     unit,
                     description,
                 )
-            instrument = self._instrument_id_instrument[status.instrument_id]
+            instrument = self._instrument_id_instrument
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -284,13 +284,13 @@ class Meter(APIMeter):
 
     def create_observable_gauge(
         self, name, callbacks=None, unit="", description=""
-    ) -> APIObservableGauge:
+    ):
         with self._instrument_registration_lock:
             status = self._register_instrument(
                 name, _ObservableGauge, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument[status.instrument_id] = (
+                self._instrument_id_instrument = (
                     _ObservableGauge(
                         name,
                         self._instrumentation_scope,
@@ -300,7 +300,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument[status.instrument_id]
+            instrument = self._instrument_id_instrument
 
         if not status.already_registered:
             self._measurement_consumer.register_asynchronous_instrument(
@@ -322,13 +322,13 @@ class Meter(APIMeter):
 
     def create_observable_up_down_counter(
         self, name, callbacks=None, unit="", description=""
-    ) -> APIObservableUpDownCounter:
+    ):
         with self._instrument_registration_lock:
             status = self._register_instrument(
                 name, _ObservableUpDownCounter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument[status.instrument_id] = (
+                self._instrument_id_instrument = (
                     _ObservableUpDownCounter(
                         name,
                         self._instrumentation_scope,
@@ -338,7 +338,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument[status.instrument_id]
+            instrument = self._instrument_id_instrument
 
         if not status.already_registered:
             self._measurement_consumer.register_asynchronous_instrument(
@@ -359,14 +359,14 @@ class Meter(APIMeter):
         return instrument
 
 
-def _get_exemplar_filter(exemplar_filter: str) -> ExemplarFilter:
+def _get_exemplar_filter(exemplar_filter):
     if exemplar_filter == "trace_based":
         return TraceBasedExemplarFilter()
     if exemplar_filter == "always_on":
         return AlwaysOnExemplarFilter()
     if exemplar_filter == "always_off":
         return AlwaysOffExemplarFilter()
-    msg = f"Unknown exemplar filter '{exemplar_filter}'."
+    msg = "Unknown exemplar filter '{}'.".format(exemplar_filter)
     raise ValueError(msg)
 
 
@@ -419,13 +419,11 @@ class MeterProvider(APIMeterProvider):
 
     def __init__(
         self,
-        metric_readers: Sequence[
-            "opentelemetry.sdk.metrics.export.MetricReader"
-        ] = (),
-        resource: Optional[Resource] = None,
-        exemplar_filter: Optional[ExemplarFilter] = None,
-        shutdown_on_exit: bool = True,
-        views: Sequence["opentelemetry.sdk.metrics.view.View"] = (),
+        metric_readers = (),
+        resource = None,
+        exemplar_filter = None,
+        shutdown_on_exit = True,
+        views = (),
     ):
         self._lock = Lock()
         self._meter_lock = Lock()
@@ -459,9 +457,9 @@ class MeterProvider(APIMeterProvider):
         for metric_reader in self._sdk_config.metric_readers:
             with self._all_metric_readers_lock:
                 if metric_reader in self._all_metric_readers:
-                    # pylint: disable=broad-exception-raised
+                    # pylint =broad-exception-raised
                     raise Exception(
-                        f"MetricReader {metric_reader} has been registered "
+                        "MetricReader {} has been registered ".format(metric_reader) +
                         "already in other MeterProvider instance"
                     )
 
@@ -472,7 +470,7 @@ class MeterProvider(APIMeterProvider):
             )
             metric_reader._set_meter_provider(self)
 
-    def force_flush(self, timeout_millis: float = 10_000) -> bool:
+    def force_flush(self, timeout_millis = 10000):
         deadline_ns = time_ns() + timeout_millis * 10**6
 
         metric_reader_error = {}
@@ -488,27 +486,27 @@ class MeterProvider(APIMeterProvider):
                     timeout_millis=(deadline_ns - current_ts) / 10**6
                 )
 
-            # pylint: disable=broad-exception-caught
+            # pylint =broad-exception-caught
             except Exception as error:
-                metric_reader_error[metric_reader] = error
+                metric_reader_error = error
 
         if metric_reader_error:
             metric_reader_error_string = "\n".join(
                 [
-                    f"{metric_reader.__class__.__name__}: {repr(error)}"
+                    "{}: {}".format(metric_reader.__class__.__name__, repr(error))
                     for metric_reader, error in metric_reader_error.items()
                 ]
             )
 
-            # pylint: disable=broad-exception-raised
+            # pylint =broad-exception-raised
             raise Exception(
                 "MeterProvider.force_flush failed because the following "
                 "metric readers failed during collect:\n"
-                f"{metric_reader_error_string}"
+                "{}".format(metric_reader_error_string)
             )
         return True
 
-    def shutdown(self, timeout_millis: float = 30_000):
+    def shutdown(self, timeout_millis = 30000):
         deadline_ns = time_ns() + timeout_millis * 10**6
 
         def _shutdown():
@@ -526,7 +524,7 @@ class MeterProvider(APIMeterProvider):
             current_ts = time_ns()
             try:
                 if current_ts >= deadline_ns:
-                    # pylint: disable=broad-exception-raised
+                    # pylint =broad-exception-raised
                     raise Exception(
                         "Didn't get to execute, deadline already exceeded"
                     )
@@ -534,9 +532,9 @@ class MeterProvider(APIMeterProvider):
                     timeout_millis=(deadline_ns - current_ts) / 10**6
                 )
 
-            # pylint: disable=broad-exception-caught
+            # pylint =broad-exception-caught
             except Exception as error:
-                metric_reader_error[metric_reader] = error
+                metric_reader_error = error
 
         if self._atexit_handler is not None:
             unregister(self._atexit_handler)
@@ -545,27 +543,27 @@ class MeterProvider(APIMeterProvider):
         if metric_reader_error:
             metric_reader_error_string = "\n".join(
                 [
-                    f"{metric_reader.__class__.__name__}: {repr(error)}"
+                    "{}: {}".format(metric_reader.__class__.__name__, repr(error))
                     for metric_reader, error in metric_reader_error.items()
                 ]
             )
 
-            # pylint: disable=broad-exception-raised
+            # pylint =broad-exception-raised
             raise Exception(
                 (
                     "MeterProvider.shutdown failed because the following "
                     "metric readers failed during shutdown:\n"
-                    f"{metric_reader_error_string}"
+                    "{}".format(metric_reader_error_string)
                 )
             )
 
     def get_meter(
         self,
-        name: str,
-        version: Optional[str] = None,
-        schema_url: Optional[str] = None,
-        attributes: Optional[Attributes] = None,
-    ) -> Meter:
+        name,
+        version = None,
+        schema_url = None,
+        attributes = None
+    ):
         if self._disabled:
             return NoOpMeter(name, version=version, schema_url=schema_url)
 
@@ -584,8 +582,8 @@ class MeterProvider(APIMeterProvider):
             if not self._meters.get(info):
                 # FIXME #2558 pass SDKConfig object to meter so that the meter
                 # has access to views.
-                self._meters[info] = Meter(
+                self._meters = Meter(
                     info,
                     self._measurement_consumer,
                 )
-            return self._meters[info]
+            return self._meters

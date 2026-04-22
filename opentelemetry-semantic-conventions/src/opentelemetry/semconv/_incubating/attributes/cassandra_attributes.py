@@ -15,32 +15,32 @@
 from enum import Enum
 from typing_extensions import Final
 
-CASSANDRA_CONSISTENCY_LEVEL: Final = "cassandra.consistency.level"
+CASSANDRA_CONSISTENCY_LEVEL = "cassandra.consistency.level"
 """
 The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
 """
 
-CASSANDRA_COORDINATOR_DC: Final = "cassandra.coordinator.dc"
+CASSANDRA_COORDINATOR_DC = "cassandra.coordinator.dc"
 """
 The data center of the coordinating node for a query.
 """
 
-CASSANDRA_COORDINATOR_ID: Final = "cassandra.coordinator.id"
+CASSANDRA_COORDINATOR_ID = "cassandra.coordinator.id"
 """
 The ID of the coordinating node for a query.
 """
 
-CASSANDRA_PAGE_SIZE: Final = "cassandra.page.size"
+CASSANDRA_PAGE_SIZE = "cassandra.page.size"
 """
 The fetch size used for paging, i.e. how many rows will be returned at once.
 """
 
-CASSANDRA_QUERY_IDEMPOTENT: Final = "cassandra.query.idempotent"
+CASSANDRA_QUERY_IDEMPOTENT = "cassandra.query.idempotent"
 """
 Whether or not the query is idempotent.
 """
 
-CASSANDRA_SPECULATIVE_EXECUTION_COUNT: Final = (
+CASSANDRA_SPECULATIVE_EXECUTION_COUNT = (
     "cassandra.speculative_execution.count"
 )
 """

@@ -17,7 +17,7 @@ from typing_extensions import Final
 
 from typing_extensions import deprecated
 
-STATE: Final = "state"
+STATE = "state"
 """
 Deprecated: Replaced by `db.client.connection.state`.
 """

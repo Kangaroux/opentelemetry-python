@@ -14,22 +14,22 @@
 
 from typing_extensions import Final
 
-ARTIFACT_ATTESTATION_FILENAME: Final = "artifact.attestation.filename"
+ARTIFACT_ATTESTATION_FILENAME = "artifact.attestation.filename"
 """
 The provenance filename of the built attestation which directly relates to the build artifact filename. This filename SHOULD accompany the artifact at publish time. See the [SLSA Relationship](https://slsa.dev/spec/v1.0/distributing-provenance#relationship-between-artifacts-and-attestations) specification for more information.
 """
 
-ARTIFACT_ATTESTATION_HASH: Final = "artifact.attestation.hash"
+ARTIFACT_ATTESTATION_HASH = "artifact.attestation.hash"
 """
 The full [hash value (see glossary)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf), of the built attestation. Some envelopes in the [software attestation space](https://github.com/in-toto/attestation/tree/main/spec) also refer to this as the **digest**.
 """
 
-ARTIFACT_ATTESTATION_ID: Final = "artifact.attestation.id"
+ARTIFACT_ATTESTATION_ID = "artifact.attestation.id"
 """
 The id of the build [software attestation](https://slsa.dev/attestation-model).
 """
 
-ARTIFACT_FILENAME: Final = "artifact.filename"
+ARTIFACT_FILENAME = "artifact.filename"
 """
 The human readable file name of the artifact, typically generated during build and release processes. Often includes the package name and version in the file name.
 Note: This file name can also act as the [Package Name](https://slsa.dev/spec/v1.0/terminology#package-model)
@@ -38,7 +38,7 @@ Additionally, the artifact [can be published](https://slsa.dev/spec/v1.0/termino
 for others, but that is not a guarantee.
 """
 
-ARTIFACT_HASH: Final = "artifact.hash"
+ARTIFACT_HASH = "artifact.hash"
 """
 The full [hash value (see glossary)](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-5.pdf), often found in checksum.txt on a release of the artifact and used to verify package integrity.
 Note: The specific algorithm used to create the cryptographic hash value is
@@ -51,12 +51,12 @@ hash values through an additional set of attribute extensions as they
 deem necessary.
 """
 
-ARTIFACT_PURL: Final = "artifact.purl"
+ARTIFACT_PURL = "artifact.purl"
 """
 The [Package URL](https://github.com/package-url/purl-spec) of the [package artifact](https://slsa.dev/spec/v1.0/terminology#package-model) provides a standard way to identify and locate the packaged artifact.
 """
 
-ARTIFACT_VERSION: Final = "artifact.version"
+ARTIFACT_VERSION = "artifact.version"
 """
 The version of the artifact.
 """

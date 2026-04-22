@@ -17,15 +17,15 @@ from typing_extensions import Final
 
 from opentelemetry.metrics import Counter, Histogram, Meter
 
-FAAS_COLDSTARTS: Final = "faas.coldstarts"
+FAAS_COLDSTARTS = "faas.coldstarts"
 """
 Number of invocation cold starts
-Instrument: counter
+Instrument
 Unit: {coldstart}
 """
 
 
-def create_faas_coldstarts(meter: Meter) -> Counter:
+def create_faas_coldstarts(meter):
     """Number of invocation cold starts"""
     return meter.create_counter(
         name=FAAS_COLDSTARTS,
@@ -34,15 +34,15 @@ def create_faas_coldstarts(meter: Meter) -> Counter:
     )
 
 
-FAAS_CPU_USAGE: Final = "faas.cpu_usage"
+FAAS_CPU_USAGE = "faas.cpu_usage"
 """
 Distribution of CPU usage per invocation
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_faas_cpu_usage(meter: Meter) -> Histogram:
+def create_faas_cpu_usage(meter):
     """Distribution of CPU usage per invocation"""
     return meter.create_histogram(
         name=FAAS_CPU_USAGE,
@@ -51,15 +51,15 @@ def create_faas_cpu_usage(meter: Meter) -> Histogram:
     )
 
 
-FAAS_ERRORS: Final = "faas.errors"
+FAAS_ERRORS = "faas.errors"
 """
 Number of invocation errors
-Instrument: counter
+Instrument
 Unit: {error}
 """
 
 
-def create_faas_errors(meter: Meter) -> Counter:
+def create_faas_errors(meter):
     """Number of invocation errors"""
     return meter.create_counter(
         name=FAAS_ERRORS,
@@ -68,15 +68,15 @@ def create_faas_errors(meter: Meter) -> Counter:
     )
 
 
-FAAS_INIT_DURATION: Final = "faas.init_duration"
+FAAS_INIT_DURATION = "faas.init_duration"
 """
 Measures the duration of the function's initialization, such as a cold start
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_faas_init_duration(meter: Meter) -> Histogram:
+def create_faas_init_duration(meter):
     """Measures the duration of the function's initialization, such as a cold start"""
     return meter.create_histogram(
         name=FAAS_INIT_DURATION,
@@ -85,15 +85,15 @@ def create_faas_init_duration(meter: Meter) -> Histogram:
     )
 
 
-FAAS_INVOCATIONS: Final = "faas.invocations"
+FAAS_INVOCATIONS = "faas.invocations"
 """
 Number of successful invocations
-Instrument: counter
+Instrument
 Unit: {invocation}
 """
 
 
-def create_faas_invocations(meter: Meter) -> Counter:
+def create_faas_invocations(meter):
     """Number of successful invocations"""
     return meter.create_counter(
         name=FAAS_INVOCATIONS,
@@ -102,15 +102,15 @@ def create_faas_invocations(meter: Meter) -> Counter:
     )
 
 
-FAAS_INVOKE_DURATION: Final = "faas.invoke_duration"
+FAAS_INVOKE_DURATION = "faas.invoke_duration"
 """
 Measures the duration of the function's logic execution
-Instrument: histogram
-Unit: s
+Instrument
+Unit
 """
 
 
-def create_faas_invoke_duration(meter: Meter) -> Histogram:
+def create_faas_invoke_duration(meter):
     """Measures the duration of the function's logic execution"""
     return meter.create_histogram(
         name=FAAS_INVOKE_DURATION,
@@ -119,15 +119,15 @@ def create_faas_invoke_duration(meter: Meter) -> Histogram:
     )
 
 
-FAAS_MEM_USAGE: Final = "faas.mem_usage"
+FAAS_MEM_USAGE = "faas.mem_usage"
 """
 Distribution of max memory usage per invocation
-Instrument: histogram
-Unit: By
+Instrument
+Unit
 """
 
 
-def create_faas_mem_usage(meter: Meter) -> Histogram:
+def create_faas_mem_usage(meter):
     """Distribution of max memory usage per invocation"""
     return meter.create_histogram(
         name=FAAS_MEM_USAGE,
@@ -136,15 +136,15 @@ def create_faas_mem_usage(meter: Meter) -> Histogram:
     )
 
 
-FAAS_NET_IO: Final = "faas.net_io"
+FAAS_NET_IO = "faas.net_io"
 """
 Distribution of net I/O usage per invocation
-Instrument: histogram
-Unit: By
+Instrument
+Unit
 """
 
 
-def create_faas_net_io(meter: Meter) -> Histogram:
+def create_faas_net_io(meter):
     """Distribution of net I/O usage per invocation"""
     return meter.create_histogram(
         name=FAAS_NET_IO,
@@ -153,15 +153,15 @@ def create_faas_net_io(meter: Meter) -> Histogram:
     )
 
 
-FAAS_TIMEOUTS: Final = "faas.timeouts"
+FAAS_TIMEOUTS = "faas.timeouts"
 """
 Number of invocation timeouts
-Instrument: counter
+Instrument
 Unit: {timeout}
 """
 
 
-def create_faas_timeouts(meter: Meter) -> Counter:
+def create_faas_timeouts(meter):
     """Number of invocation timeouts"""
     return meter.create_counter(
         name=FAAS_TIMEOUTS,

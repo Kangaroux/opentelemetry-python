@@ -11,8 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
-
 import abc
 import atexit
 import base64
@@ -120,11 +118,7 @@ class LogRecordLimits:
             the specified length will be truncated.
     """
 
-    def __init__(
-        self,
-        max_attributes: int | None = None,
-        max_attribute_length: int | None = None,
-    ):
+    def __init__(self, max_attributes=None, max_attribute_length=None):
         # attribute count
         global_max_attributes = self._from_env_if_absent(
             max_attributes, OTEL_ATTRIBUTE_COUNT_LIMIT
@@ -142,12 +136,12 @@ class LogRecordLimits:
         )
 
     def __repr__(self):
-        return f"{type(self).__name__}(max_attributes={self.max_attributes}, max_attribute_length={self.max_attribute_length})"
+        return "{}(max_attributes={}, max_attribute_length={})".format(
+            type(self).__name__, self.max_attributes, self.max_attribute_length
+        )
 
     @classmethod
-    def _from_env_if_absent(
-        cls, value: int | None, env_var: str, default: int | None = None
-    ) -> int | None:
+    def _from_env_if_absent(cls, value, env_var, default=None):
         err_msg = "{} must be a non-negative integer but got {}"
 
         # if no value is provided for the limit, try to load it from env
@@ -177,22 +171,21 @@ class LogLimits(LogRecordLimits):
     pass
 
 
-@dataclass(frozen=True)
 class ReadableLogRecord:
     """Readable LogRecord should be kept exactly in-sync with ReadWriteLogRecord, only difference is the frozen=True param."""
 
-    log_record: LogRecord
-    resource: Resource
-    instrumentation_scope: InstrumentationScope | None = None
-    limits: LogRecordLimits | None = None
+    log_record
+    resource
+    instrumentation_scope = None
+    limits = None
 
     @property
-    def dropped_attributes(self) -> int:
+    def dropped_attributes(self):
         if isinstance(self.log_record.attributes, BoundedAttributes):
             return self.log_record.attributes.dropped
         return 0
 
-    def to_json(self, indent: int | None = 4) -> str:
+    def to_json(self, indent=4):
         return json.dumps(
             {
                 "body": self.log_record.body,
@@ -213,12 +206,12 @@ class ReadableLogRecord:
                     self.log_record.observed_timestamp
                 ),
                 "trace_id": (
-                    f"0x{format_trace_id(self.log_record.trace_id)}"
+                    "0x{}".format(format_trace_id(self.log_record.trace_id))
                     if self.log_record.trace_id is not None
                     else ""
                 ),
                 "span_id": (
-                    f"0x{format_span_id(self.log_record.span_id)}"
+                    "0x{}".format(format_span_id(self.log_record.span_id))
                     if self.log_record.span_id is not None
                     else ""
                 ),
@@ -233,7 +226,6 @@ class ReadableLogRecord:
         )
 
 
-@dataclass
 class ReadWriteLogRecord:
     """A ReadWriteLogRecord instance represents an event being logged.
     ReadWriteLogRecord instances are created and emitted via `Logger`
@@ -241,10 +233,10 @@ class ReadWriteLogRecord:
     pertinent to the event being logged.
     """
 
-    log_record: LogRecord
-    resource: Resource | None = Resource.create({})
-    instrumentation_scope: InstrumentationScope | None = None
-    limits: LogRecordLimits = field(default_factory=LogRecordLimits)
+    log_record
+    resource = Resource.create({})
+    instrumentation_scope = None
+    limits = field(default_factory=LogRecordLimits)
 
     def __post_init__(self):
         self.log_record.attributes = BoundedAttributes(
@@ -263,25 +255,21 @@ class ReadWriteLogRecord:
                 stacklevel=2,
             )
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self, other):
         if not isinstance(other, ReadWriteLogRecord):
             return NotImplemented
         return self.__dict__ == other.__dict__
 
     @property
-    def dropped_attributes(self) -> int:
+    def dropped_attributes(self):
         if isinstance(self.log_record.attributes, BoundedAttributes):
             return self.log_record.attributes.dropped
         return 0
 
     @classmethod
     def _from_api_log_record(
-        cls,
-        *,
-        record: LogRecord,
-        resource: Resource,
-        instrumentation_scope: InstrumentationScope | None = None,
-    ) -> ReadWriteLogRecord:
+        cls, record, resource, instrumentation_scope=None
+    ):
         return cls(
             log_record=record,
             resource=resource,
@@ -313,10 +301,10 @@ class LogRecordProcessor(abc.ABC):
     try/except block. See ``SimpleLogRecordProcessor`` for a reference
     implementation::
 
-        def on_emit(self, log_record: ReadWriteLogRecord):
+        def on_emit(self, log_record):
             try:
                 self._exporter.export((log_record,))
-            except Exception:  # pylint: disable=broad-exception-caught
+            except Exception:  # pylint =broad-exception-caught
                 logger.exception("Exception while exporting logs.")
 
     The ``BatchLogRecordProcessor`` handles this implicitly since export
@@ -325,7 +313,7 @@ class LogRecordProcessor(abc.ABC):
     """
 
     @abc.abstractmethod
-    def on_emit(self, log_record: ReadWriteLogRecord):
+    def on_emit(self, log_record):
         """Emits the ``ReadWriteLogRecord``.
 
         Implementers should handle any exceptions raised during log processing
@@ -338,7 +326,7 @@ class LogRecordProcessor(abc.ABC):
         """Called when a :class:`opentelemetry.sdk._logs.Logger` is shutdown"""
 
     @abc.abstractmethod
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis=30000):
         """Export all the received logs to the configured Exporter that have not yet
         been exported.
 
@@ -352,7 +340,7 @@ class LogRecordProcessor(abc.ABC):
 
 
 # Temporary fix until https://github.com/PyCQA/pylint/issues/4098 is resolved
-# pylint:disable=no-member
+# pylint =no-member
 class SynchronousMultiLogRecordProcessor(LogRecordProcessor):
     """Implementation of class:`LogRecordProcessor` that forwards all received
     events to a list of log processors sequentially.
@@ -364,26 +352,24 @@ class SynchronousMultiLogRecordProcessor(LogRecordProcessor):
     def __init__(self):
         # use a tuple to avoid race conditions when adding a new log and
         # iterating through it on "emit".
-        self._log_record_processors = ()  # type: Tuple[LogRecordProcessor, ...]
+        self._log_record_processors = ()  # type
         self._lock = threading.Lock()
 
-    def add_log_record_processor(
-        self, log_record_processor: LogRecordProcessor
-    ) -> None:
+    def add_log_record_processor(self, log_record_processor):
         """Adds a Logprocessor to the list of log processors handled by this instance"""
         with self._lock:
             self._log_record_processors += (log_record_processor,)
 
-    def on_emit(self, log_record: ReadWriteLogRecord) -> None:
+    def on_emit(self, log_record):
         for lp in self._log_record_processors:
             lp.on_emit(log_record)
 
-    def shutdown(self) -> None:
+    def shutdown(self):
         """Shutdown the log processors one by one"""
         for lp in self._log_record_processors:
             lp.shutdown()
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis=30000):
         """Force flush the log processors one by one
 
         Args:
@@ -420,27 +406,20 @@ class ConcurrentMultiLogRecordProcessor(LogRecordProcessor):
             and thus defining how many log processors can work in parallel.
     """
 
-    def __init__(self, max_workers: int = 2):
+    def __init__(self, max_workers=2):
         # use a tuple to avoid race conditions when adding a new log and
         # iterating through it on "emit".
-        self._log_record_processors = ()  # type: Tuple[LogRecordProcessor, ...]
+        self._log_record_processors = ()  # type
         self._lock = threading.Lock()
         self._executor = concurrent.futures.ThreadPoolExecutor(
             max_workers=max_workers
         )
 
-    def add_log_record_processor(
-        self, log_record_processor: LogRecordProcessor
-    ):
+    def add_log_record_processor(self, log_record_processor):
         with self._lock:
             self._log_record_processors += (log_record_processor,)
 
-    def _submit_and_wait(
-        self,
-        func: Callable[[LogRecordProcessor], Callable[..., None]],
-        *args: Any,
-        **kwargs: Any,
-    ):
+    def _submit_and_wait(self, func, *args, **kwargs):
         futures = []
         for lp in self._log_record_processors:
             future = self._executor.submit(func(lp), *args, **kwargs)
@@ -448,13 +427,13 @@ class ConcurrentMultiLogRecordProcessor(LogRecordProcessor):
         for future in futures:
             future.result()
 
-    def on_emit(self, log_record: ReadWriteLogRecord):
+    def on_emit(self, log_record):
         self._submit_and_wait(lambda lp: lp.on_emit, log_record)
 
     def shutdown(self):
         self._submit_and_wait(lambda lp: lp.shutdown)
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis=30000):
         """Force flush the log processors in parallel.
 
         Args:
@@ -522,11 +501,7 @@ class LoggingHandler(logging.Handler):
     https://docs.python.org/3/library/logging.html
     """
 
-    def __init__(
-        self,
-        level: int = logging.NOTSET,
-        logger_provider: APILoggerProvider | None = None,
-    ) -> None:
+    def __init__(self, level=logging.NOTSET, logger_provider=None):
         super().__init__(level=level)
         self._logger_provider = logger_provider or get_logger_provider()
 
@@ -537,34 +512,30 @@ class LoggingHandler(logging.Handler):
         )
 
     @staticmethod
-    def _get_attributes(record: logging.LogRecord) -> _ExtendedAttributes:
+    def _get_attributes(record):
         attributes = {
             k: v for k, v in vars(record).items() if k not in _RESERVED_ATTRS
         }
 
         # Add standard code attributes for logs.
-        attributes[code_attributes.CODE_FILE_PATH] = record.pathname
-        attributes[code_attributes.CODE_FUNCTION_NAME] = record.funcName
-        attributes[code_attributes.CODE_LINE_NUMBER] = record.lineno
+        attributes = record.pathname
+        attributes = record.funcName
+        attributes = record.lineno
 
         if record.exc_info:
             exctype, value, tb = record.exc_info
             if exctype is not None:
-                attributes[exception_attributes.EXCEPTION_TYPE] = (
-                    exctype.__name__
-                )
+                attributes = exctype.__name__
             if value is not None and value.args:
-                attributes[exception_attributes.EXCEPTION_MESSAGE] = str(
-                    value.args[0]
-                )
+                attributes = str(value.args)
             if tb is not None:
                 # https://opentelemetry.io/docs/specs/semconv/exceptions/exceptions-spans/#stacktrace-representation
-                attributes[exception_attributes.EXCEPTION_STACKTRACE] = (
-                    "".join(traceback.format_exception(*record.exc_info))
+                attributes = "".join(
+                    traceback.format_exception(*record.exc_info)
                 )
         return attributes
 
-    def _translate(self, record: logging.LogRecord) -> LogRecord:
+    def _translate(self, record):
         timestamp = int(record.created * 1e9)
         observered_timestamp = time_ns()
         attributes = self._get_attributes(record)
@@ -608,7 +579,7 @@ class LoggingHandler(logging.Handler):
             attributes=attributes,
         )
 
-    def emit(self, record: logging.LogRecord) -> None:
+    def emit(self, record):
         """
         Emit a record. Skip emitting if logger is NoOp.
 
@@ -618,30 +589,28 @@ class LoggingHandler(logging.Handler):
         if not isinstance(logger, NoOpLogger):
             logger.emit(self._translate(record))
 
-    def flush(self) -> None:
+    def flush(self):
         """
         Flushes the logging output. Skip flushing if logging_provider has no force_flush method.
         """
         if hasattr(self._logger_provider, "force_flush") and callable(
-            self._logger_provider.force_flush  # type: ignore[reportAttributeAccessIssue]
+            self._logger_provider.force_flush  # type
         ):
             # This is done in a separate thread to avoid a potential deadlock, for
             # details see https://github.com/open-telemetry/opentelemetry-python/pull/4636.
-            thread = threading.Thread(target=self._logger_provider.force_flush)  # type: ignore[reportAttributeAccessIssue]
+            thread = threading.Thread(
+                target=self._logger_provider.force_flush
+            )  # type
             thread.start()
 
 
 class Logger(APILogger):
     def __init__(
         self,
-        resource: Resource,
-        multi_log_record_processor: Union[
-            SynchronousMultiLogRecordProcessor,
-            ConcurrentMultiLogRecordProcessor,
-        ],
-        instrumentation_scope: InstrumentationScope,
-        *,
-        logger_metrics: LoggerMetrics,
+        resource,
+        multi_log_record_processor,
+        instrumentation_scope,
+        logger_metrics,
     ):
         super().__init__(
             instrumentation_scope.name,
@@ -658,27 +627,26 @@ class Logger(APILogger):
     def resource(self):
         return self._resource
 
-    # pylint: disable=arguments-differ
+    # pylint =arguments-differ
     def emit(
         self,
-        record: LogRecord | None = None,
-        *,
-        timestamp: int | None = None,
-        observed_timestamp: int | None = None,
-        context: Context | None = None,
-        severity_number: SeverityNumber | None = None,
-        severity_text: str | None = None,
-        body: AnyValue | None = None,
-        attributes: _ExtendedAttributes | None = None,
-        event_name: str | None = None,
-    ) -> None:
+        record=None,
+        timestamp=None,
+        observed_timestamp=None,
+        context=None,
+        severity_number=None,
+        severity_text=None,
+        body=None,
+        attributes=None,
+        event_name=None,
+    ):
         """Emits the :class:`ReadWriteLogRecord` by setting instrumentation scope
         and forwarding to the processor.
         """
         # If a record is provided, use it directly
         if record is not None:
             if not isinstance(record, ReadWriteLogRecord):
-                # pylint:disable=protected-access
+                # pylint =protected-access
                 writable_record = ReadWriteLogRecord._from_api_log_record(
                     record=record,
                     resource=self._resource,
@@ -698,7 +666,7 @@ class Logger(APILogger):
                 attributes=attributes,
                 event_name=event_name,
             )
-            # pylint:disable=protected-access
+            # pylint =protected-access
             writable_record = ReadWriteLogRecord._from_api_log_record(
                 record=log_record,
                 resource=self._resource,
@@ -712,13 +680,10 @@ class Logger(APILogger):
 class LoggerProvider(APILoggerProvider):
     def __init__(
         self,
-        resource: Resource | None = None,
-        shutdown_on_exit: bool = True,
-        multi_log_record_processor: SynchronousMultiLogRecordProcessor
-        | ConcurrentMultiLogRecordProcessor
-        | None = None,
-        *,
-        meter_provider: MeterProvider | None = None,
+        resource=None,
+        shutdown_on_exit=True,
+        multi_log_record_processor=None,
+        meter_provider=None,
     ):
         if resource is None:
             self._resource = Resource.create({})
@@ -743,12 +708,8 @@ class LoggerProvider(APILoggerProvider):
         return self._resource
 
     def _get_logger_no_cache(
-        self,
-        name: str,
-        version: str | None = None,
-        schema_url: str | None = None,
-        attributes: _ExtendedAttributes | None = None,
-    ) -> Logger:
+        self, name, version=None, schema_url=None, attributes=None
+    ):
         return Logger(
             self._resource,
             self._multi_log_record_processor,
@@ -761,29 +722,18 @@ class LoggerProvider(APILoggerProvider):
             logger_metrics=self._logger_metrics,
         )
 
-    def _get_logger_cached(
-        self,
-        name: str,
-        version: str | None = None,
-        schema_url: str | None = None,
-    ) -> Logger:
+    def _get_logger_cached(self, name, version=None, schema_url=None):
         with self._logger_cache_lock:
             key = (name, version, schema_url)
             if key in self._logger_cache:
-                return self._logger_cache[key]
+                return self._logger_cache
 
-            self._logger_cache[key] = self._get_logger_no_cache(
+            self._logger_cache = self._get_logger_no_cache(
                 name, version, schema_url
             )
-            return self._logger_cache[key]
+            return self._logger_cache
 
-    def get_logger(
-        self,
-        name: str,
-        version: str | None = None,
-        schema_url: str | None = None,
-        attributes: _ExtendedAttributes | None = None,
-    ) -> APILogger:
+    def get_logger(self, name, version=None, schema_url=None, attributes=None):
         if self._disabled:
             return NoOpLogger(
                 name,
@@ -795,9 +745,7 @@ class LoggerProvider(APILoggerProvider):
             return self._get_logger_cached(name, version, schema_url)
         return self._get_logger_no_cache(name, version, schema_url, attributes)
 
-    def add_log_record_processor(
-        self, log_record_processor: LogRecordProcessor
-    ):
+    def add_log_record_processor(self, log_record_processor):
         """Registers a new :class:`LogRecordProcessor` for this `LoggerProvider` instance.
 
         The log processors are invoked in the same order they are registered.
@@ -813,7 +761,7 @@ class LoggerProvider(APILoggerProvider):
             atexit.unregister(self._at_exit_handler)
             self._at_exit_handler = None
 
-    def force_flush(self, timeout_millis: int = 30000) -> bool:
+    def force_flush(self, timeout_millis=30000):
         """Force flush the log processors.
 
         Args:
@@ -875,7 +823,7 @@ _STD_TO_OTEL = {
 }
 
 
-def std_to_otel(levelno: int) -> SeverityNumber:
+def std_to_otel(levelno):
     """
     Map python log levelno as defined in https://docs.python.org/3/library/logging.html#logging-levels
     to OTel log severity number as defined here: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md#field-severitynumber
@@ -884,4 +832,4 @@ def std_to_otel(levelno: int) -> SeverityNumber:
         return SeverityNumber.UNSPECIFIED
     if levelno > 53:
         return SeverityNumber.FATAL4
-    return _STD_TO_OTEL[levelno]
+    return _STD_TO_OTEL

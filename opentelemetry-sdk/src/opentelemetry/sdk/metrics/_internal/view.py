@@ -35,8 +35,8 @@ _logger = getLogger(__name__)
 
 
 def _default_reservoir_factory(
-    aggregation_type: Type[_Aggregation],
-) -> ExemplarReservoirBuilder:
+    aggregation_type
+):
     """Default reservoir factory per aggregation."""
     if issubclass(aggregation_type, _ExplicitBucketHistogramAggregation):
         return AlignedHistogramBucketExemplarReservoir
@@ -105,19 +105,17 @@ class View:
 
     def __init__(
         self,
-        instrument_type: Optional[Type[Instrument]] = None,
-        instrument_name: Optional[str] = None,
-        meter_name: Optional[str] = None,
-        meter_version: Optional[str] = None,
-        meter_schema_url: Optional[str] = None,
-        name: Optional[str] = None,
-        description: Optional[str] = None,
-        attribute_keys: Optional[Set[str]] = None,
-        aggregation: Optional[Aggregation] = None,
-        exemplar_reservoir_factory: Optional[
-            Callable[[Type[_Aggregation]], ExemplarReservoirBuilder]
-        ] = None,
-        instrument_unit: Optional[str] = None,
+        instrument_type = None,
+        instrument_name = None,
+        meter_name = None,
+        meter_version = None,
+        meter_schema_url = None,
+        name = None,
+        description = None,
+        attribute_keys = None,
+        aggregation = None,
+        exemplar_reservoir_factory = None,
+        instrument_unit = None
     ):
         if (
             instrument_type
@@ -128,10 +126,10 @@ class View:
             is meter_schema_url
             is None
         ):
-            # pylint: disable=broad-exception-raised
+            # pylint =broad-exception-raised
             raise Exception(
                 "Some instrument selection "
-                f"criteria must be provided for View {name}"
+                "criteria must be provided for View {}".format(name)
             )
 
         if (
@@ -139,9 +137,9 @@ class View:
             and instrument_name is not None
             and ("*" in instrument_name or "?" in instrument_name)
         ):
-            # pylint: disable=broad-exception-raised
+            # pylint =broad-exception-raised
             raise Exception(
-                f"View {name} declared with wildcard "
+                "View {} declared with wildcard ".format(name) +
                 "characters in instrument_name"
             )
 
@@ -162,9 +160,9 @@ class View:
             exemplar_reservoir_factory or _default_reservoir_factory
         )
 
-    # pylint: disable=too-many-return-statements
-    # pylint: disable=too-many-branches
-    def _match(self, instrument: Instrument) -> bool:
+    # pylint =too-many-return-statements
+    # pylint =too-many-branches
+    def _match(self, instrument):
         if self._instrument_type is not None:
             if not isinstance(instrument, self._instrument_type):
                 return False
