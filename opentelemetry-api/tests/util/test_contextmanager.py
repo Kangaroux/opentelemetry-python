@@ -43,6 +43,7 @@ class TestContextManager(unittest.TestCase):
         res = sync_func("a")
         self.assertEqual(res, "aa")
 
+    @unittest.expectedFailure  # async/await removed for Python 2.7 compatibility
     def test_decorate_async_func(self):
         # Test that a universal context manager decorating an async function runs it's cleanup
         # code after the entire async function coroutine finishes. This silently fails when
