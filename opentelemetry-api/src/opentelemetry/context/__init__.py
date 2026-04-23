@@ -56,14 +56,23 @@ def _load_runtime_context():
             configured_context,
             default_context,
         )
-        return next(  # type: ignore
-            iter(  # type: ignore
-                entry_points(  # type: ignore
-                    group="opentelemetry_context",
-                    name=default_context,
+        try:
+            return next(  # type: ignore
+                iter(  # type: ignore
+                    entry_points(  # type: ignore
+                        group="opentelemetry_context",
+                        name=default_context,
+                    )
                 )
+            ).load()()
+        except Exception:  # pylint =broad-exception-caught
+            # Entry points not registered (e.g. PYTHONPATH-based install
+            # on Python 2.7 where Hatchling cannot run).  Fall back to
+            # direct import of the default context implementation.
+            from opentelemetry.context.contextvars_context import (
+                ContextVarsRuntimeContext,
             )
-        ).load()()
+            return ContextVarsRuntimeContext()
 
 
 _RUNTIME_CONTEXT = _load_runtime_context()

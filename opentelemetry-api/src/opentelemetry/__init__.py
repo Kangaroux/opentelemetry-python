@@ -14,9 +14,17 @@
 
 """OpenTelemetry namespace package."""
 
+# Python 2.7 compatibility -- must run before any other submodule imports.
+import opentelemetry._compat  # noqa: F401
+
 try:
     __import__("pkg_resources").declare_namespace(__name__)
 except ImportError:
-    from pkgutil import extend_path
+    pass
 
-    __path__ = extend_path(__path__, __name__)
+# Always extend __path__ via pkgutil so that PYTHONPATH-based installs
+# (where pkg_resources.declare_namespace cannot discover peer directories)
+# merge the namespace correctly.
+from pkgutil import extend_path
+
+__path__ = extend_path(__path__, __name__)
