@@ -39,8 +39,8 @@ from opentelemetry.sdk.trace import TracerProvider
 
 # Create a custom reservoir factory with specified parameters
 def custom_reservoir_factory(
-    aggregationType: Type[_Aggregation],
-) -> ExemplarReservoirBuilder:
+    aggregationType
+):
     if issubclass(aggregationType, _ExplicitBucketHistogramAggregation):
         return AlignedHistogramBucketExemplarReservoir
     else:
@@ -49,7 +49,7 @@ def custom_reservoir_factory(
         # _ExplicitBucketHistogramAggregation
         return lambda **kwargs: SimpleFixedSizeExemplarReservoir(
             size=10,
-            **{k: v for k, v in kwargs.items() if k != "size"},
+            **dict((k, v) for k, v in kwargs.items() if k != "size")
         )
 
 
@@ -65,7 +65,7 @@ change_reservoir_factory_view = View(
 exporter = ConsoleMetricExporter()
 
 # Create a metric reader with stdout exporter
-reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1_000)
+reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1000)
 provider = MeterProvider(
     metric_readers=[
         reader,

@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +12,6 @@ from __future__ import unicode_literals
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
 from math import ceil, log2
 
 
@@ -39,7 +32,7 @@ class Buckets(object):
         # determined by the corresponding mapping _map_to_index function and
         # the value of the index depends on the value passed to _map_to_index.
 
-        # Index of the 0th position in self._counts: self._counts is the
+        # Index of the 0th position in self._counts: self._counts[0] is the
         # count in the bucket with index self.__index_base.
         self.__index_base = 0
 
@@ -81,7 +74,7 @@ class Buckets(object):
 
     def get_offset_counts(self):
         bias = self.__index_base - self.__index_start
-        return self._counts + self._counts
+        return self._counts[-bias:] + self._counts[:-bias]
 
     def grow(self, needed, max_size):
         size = len(self._counts)
@@ -103,8 +96,8 @@ class Buckets(object):
         new_positive_limit = new_size - bias
 
         tmp = [0] * new_size
-        tmp = self._counts
-        tmp = self._counts
+        tmp[new_positive_limit:] = self._counts[old_positive_limit:]
+        tmp[0:old_positive_limit] = self._counts[0:old_positive_limit]
         self._counts = tmp
 
     @property
@@ -128,7 +121,7 @@ class Buckets(object):
 
         key -= bias
 
-        return self._counts
+        return self._counts[key]
 
     def downscale(self, amount):
         """
@@ -142,11 +135,11 @@ class Buckets(object):
 
             # [0, 1, 2, 3, 4] Original backing array
 
-            self._counts = self._counts
+            self._counts = self._counts[::-1]
             # [4, 3, 2, 1, 0]
 
             self._counts = (
-                self._counts + self._counts
+                self._counts[:bias][::-1] + self._counts[bias:][::-1]
             )
             # [3, 4, 0, 1, 2] This is a rotation of the backing array.
 
@@ -166,8 +159,8 @@ class Buckets(object):
 
             while index < each and inpos < size:
                 if outpos != inpos:
-                    self._counts += self._counts
-                    self._counts = 0
+                    self._counts[outpos] += self._counts[inpos]
+                    self._counts[inpos] = 0
 
                 inpos += 1
                 pos += 1
@@ -180,7 +173,7 @@ class Buckets(object):
         self.__index_base = self.__index_start
 
     def increment_bucket(self, bucket_index, increment = 1):
-        self._counts += increment
+        self._counts[bucket_index] += increment
 
     def copy_empty(self):
         copy = Buckets()

@@ -45,7 +45,7 @@ Example::
 
     def set_header_into_requests_request(request,
                                             key, value):
-        request.headers = value
+        request.headers[key] = value
 
     def example_route():
         context = PROPAGATOR.extract(

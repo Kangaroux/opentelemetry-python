@@ -227,7 +227,7 @@ class TraceState(typing.Mapping):
                 if key in self._dict:
                     _logger.warning("Duplicate key: %s found.", key)
                     continue
-                self._dict = value
+                self._dict[key] = value
             else:
                 _logger.warning(
                     "Invalid key/value pair (%s, %s) found.", key, value
@@ -237,7 +237,7 @@ class TraceState(typing.Mapping):
         return item in self._dict
 
     def __getitem__(self, key):
-        return self._dict
+        return self._dict[key]
 
     def __iter__(self):
         return iter(self._dict)
@@ -374,7 +374,7 @@ class TraceState(typing.Mapping):
                 # duplicate keys are not legal in header
                 if key in pairs:
                     return cls()
-                pairs = value
+                pairs[key] = value
         return cls(list(pairs.items()))
 
     @classmethod
@@ -477,7 +477,7 @@ class SpanContext(tuple):
         )
 
     def __repr__(self):
-        return "{}(trace_id=0x{}, span_id=0x{}, trace_flags=0x{}, trace_state={}, is_remote={})".format(
+        return "{}(trace_id=0x{}, span_id=0x{}, trace_flags=0x{:02x}, trace_state={!r}, is_remote={})".format(
             type(self).__name__,
             format_trace_id(self.trace_id),
             format_span_id(self.span_id),

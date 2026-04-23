@@ -17,7 +17,7 @@ from __future__ import unicode_literals
 # limitations under the License.
 
 # TODO: make pylint use 3p opentracing module for type inference
-# pylint:disable=no-member
+# pylint =no-member
 
 from builtins import str
 from future import standard_library
@@ -45,7 +45,7 @@ from opentelemetry.test.mock_textmap import (
 
 
 class TestShim(TestCase):
-    # pylint: disable=too-many-public-methods
+    # pylint =too-many-public-methods
 
     def setUp(self):
         """Create an OpenTelemetry tracer and a shim before every test case."""
@@ -392,7 +392,7 @@ class TestShim(TestCase):
                 "ChildSpan", references=[ref]
             ) as child:
                 self.assertEqual(
-                    child.span.unwrap().links[0].context,
+                    child.span.unwrap().links.context,
                     parent.context.unwrap(),
                 )
 
@@ -406,7 +406,7 @@ class TestShim(TestCase):
             "FollowingSpan", references=[ref]
         ) as child:
             self.assertEqual(
-                child.span.unwrap().links[0].context,
+                child.span.unwrap().links.context,
                 parent.context.unwrap(),
             )
             self.assertEqual(
@@ -432,8 +432,8 @@ class TestShim(TestCase):
         with self.shim.start_active_span("TestSetTag", tags=tags) as scope:
             scope.span.set_tag("baz", "qux")
 
-            self.assertEqual(scope.span.unwrap().attributes["foo"], "bar")
-            self.assertEqual(scope.span.unwrap().attributes["baz"], "qux")
+            self.assertEqual(scope.span.unwrap().attributes, "bar")
+            self.assertEqual(scope.span.unwrap().attributes, "qux")
 
     def test_span_tracer(self):
         """Test the `tracer` property on `Span` objects."""
@@ -446,17 +446,17 @@ class TestShim(TestCase):
 
         with self.shim.start_span("TestSpan12") as span:
             span.log_kv({"foo": "bar"})
-            self.assertEqual(span.unwrap().events[0].attributes["foo"], "bar")
+            self.assertEqual(span.unwrap().events.attributes, "bar")
             # Verify timestamp was generated automatically.
-            self.assertIsNotNone(span.unwrap().events[0].timestamp)
+            self.assertIsNotNone(span.unwrap().events.timestamp)
 
             # Test explicit timestamp.
             now = time.time()
             span.log_kv({"foo": "bar"}, now)
             result = util.time_seconds_from_ns(
-                span.unwrap().events[1].timestamp
+                span.unwrap().events.timestamp
             )
-            self.assertEqual(span.unwrap().events[1].attributes["foo"], "bar")
+            self.assertEqual(span.unwrap().events.attributes, "bar")
             # Tolerate inaccuracies of less than a microsecond. See Note:
             # https://open-telemetry.github.io/opentelemetry-python/shim/opentracing_shim/opentracing_shim.html
             # TODO: This seems to work consistently, but we should find out the
@@ -470,9 +470,9 @@ class TestShim(TestCase):
             with self.assertWarns(DeprecationWarning):
                 span.log(event="foo", payload="bar")
 
-        self.assertEqual(span.unwrap().events[0].attributes["event"], "foo")
-        self.assertEqual(span.unwrap().events[0].attributes["payload"], "bar")
-        self.assertIsNotNone(span.unwrap().events[0].timestamp)
+        self.assertEqual(span.unwrap().events.attributes, "foo")
+        self.assertEqual(span.unwrap().events.attributes, "bar")
+        self.assertIsNotNone(span.unwrap().events.timestamp)
 
     def test_log_event(self):
         """Test the deprecated `log_event` method on `Span` objects."""
@@ -481,9 +481,9 @@ class TestShim(TestCase):
             with self.assertWarns(DeprecationWarning):
                 span.log_event("foo", "bar")
 
-        self.assertEqual(span.unwrap().events[0].attributes["event"], "foo")
-        self.assertEqual(span.unwrap().events[0].attributes["payload"], "bar")
-        self.assertIsNotNone(span.unwrap().events[0].timestamp)
+        self.assertEqual(span.unwrap().events.attributes, "foo")
+        self.assertEqual(span.unwrap().events.attributes, "bar")
+        self.assertIsNotNone(span.unwrap().events.timestamp)
 
     def test_span_context(self):
         """Test construction of `SpanContextShim` objects."""
@@ -503,7 +503,7 @@ class TestShim(TestCase):
         # Raise an exception while a span is active.
         with self.assertRaises(Exception) as exc_ctx:
             with self.shim.start_active_span("TestName") as scope:
-                # pylint: disable=broad-exception-raised
+                # pylint =broad-exception-raised
                 raise Exception("bad thing")
 
         ex = exc_ctx.exception
@@ -511,18 +511,18 @@ class TestShim(TestCase):
             traceback.format_exception(type(ex), value=ex, tb=ex.__traceback__)
         )
         # Verify exception details have been added to span.
-        exc_event = scope.span.unwrap().events[0]
+        exc_event = scope.span.unwrap().events
 
         self.assertEqual(exc_event.name, "exception")
         self.assertEqual(
-            exc_event.attributes["exception.message"], "bad thing"
+            exc_event.attributes, "bad thing"
         )
         self.assertEqual(
-            exc_event.attributes["exception.type"], Exception.__name__
+            exc_event.attributes, Exception.__name__
         )
         # cannot get the whole stacktrace so just assert exception part is contained
         self.assertIn(
-            expected_stack, exc_event.attributes["exception.stacktrace"]
+            expected_stack, exc_event.attributes
         )
 
     def test_inject_http_headers(self):
@@ -536,9 +536,9 @@ class TestShim(TestCase):
         headers = {}
         self.shim.inject(context, opentracing.Format.HTTP_HEADERS, headers)
         self.assertEqual(
-            headers[MockTextMapPropagator.TRACE_ID_KEY], str(1220)
+            headers, str(1220)
         )
-        self.assertEqual(headers[MockTextMapPropagator.SPAN_ID_KEY], str(7478))
+        self.assertEqual(headers, str(7478))
 
     def test_inject_text_map(self):
         """Test `inject()` method for Format.TEXT_MAP."""
@@ -552,10 +552,10 @@ class TestShim(TestCase):
         text_map = {}
         self.shim.inject(context, opentracing.Format.TEXT_MAP, text_map)
         self.assertEqual(
-            text_map[MockTextMapPropagator.TRACE_ID_KEY], str(1220)
+            text_map, str(1220)
         )
         self.assertEqual(
-            text_map[MockTextMapPropagator.SPAN_ID_KEY], str(7478)
+            text_map, str(7478)
         )
 
     def test_inject_binary(self):
@@ -623,7 +623,7 @@ class TestShim(TestCase):
         baggage = span_context_shim.baggage
 
         with self.assertRaises(ValueError):
-            baggage[1] = 3
+            baggage = 3
 
         span_shim = SpanShim(Mock(), span_context_shim, Mock())
 

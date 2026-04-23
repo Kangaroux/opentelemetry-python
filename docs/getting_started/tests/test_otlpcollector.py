@@ -23,7 +23,7 @@ class TestOTLPCollector(unittest.TestCase):
     def test_otlpcollector(self):
         """Test that OTLP collector example outputs 'Hello world!'"""
         dirpath = os.path.dirname(os.path.realpath(__file__))
-        test_script = f"{dirpath}/../otlpcollector_example.py"
+        test_script = "{}/../otlpcollector_example.py".format(dirpath)
 
         # Run the script with a short timeout since it will retry forever
         with subprocess.Popen(

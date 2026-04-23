@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 from collections.abc import Iterable
 from contextlib import contextmanager
 from typing import Any, Generator, Optional, Union
@@ -21,19 +19,19 @@ from typing import Any, Generator, Optional, Union
 
 # pylint: disable-next=too-many-public-methods
 class CodeWriter:
-    def __init__(self, indent_size: int = 4) -> None:
+    def __init__(self, indent_size = 4):
         """
         Initializes a new CodeWriter instance.
 
         Args:
             indent_size: Number of spaces for each indentation level (default: 4)
         """
-        self._lines: list[str] = []
-        self._indent_level: int = 0
-        self._indent_size: int = indent_size
+        self._lines = []
+        self._indent_level = 0
+        self._indent_size = indent_size
 
     @contextmanager
-    def indent(self) -> Generator[CodeWriter, None, None]:
+    def indent(self):
         """
         Context manager to increase indentation level for a block of code.
         """
@@ -43,7 +41,7 @@ class CodeWriter:
         finally:
             self._indent_level -= 1
 
-    def writeln(self, line: str = "") -> CodeWriter:
+    def writeln(self, line = ""):
         """
         Writes a line of code with proper indentation. If the line is empty, it writes a blank line.
 
@@ -56,10 +54,10 @@ class CodeWriter:
             self._lines.append("")
             return self
         indent = " " * (self._indent_level * self._indent_size)
-        self._lines.append(f"{indent}{line}")
+        self._lines.append("{}{}".format(indent, line))
         return self
 
-    def writemany(self, *lines: str) -> CodeWriter:
+    def writemany(self, *lines):
         """
         Writes multiple lines of code with proper indentation.
 
@@ -72,7 +70,7 @@ class CodeWriter:
             self.writeln(line)
         return self
 
-    def comment(self, content: Union[str, Iterable[str]]) -> CodeWriter:
+    def comment(self, content):
         """
         Writes a comment line or block. If content is a string, it writes a single comment line.
 
@@ -82,13 +80,13 @@ class CodeWriter:
             The CodeWriter instance
         """
         if isinstance(content, str):
-            self.writeln(f"# {content}" if content else "#")
+            self.writeln("# {}".format(content) if content else "#")
             return self
         for line in content:
-            self.writeln(f"# {line}" if line else "#")
+            self.writeln("# {}".format(line) if line else "#")
         return self
 
-    def docstring(self, content: Union[str, Iterable[str]]) -> CodeWriter:
+    def docstring(self, content):
         """
         Writes a docstring. If content is a string, it writes a single-line docstring. If content is an iterable of strings, it writes a multi-line docstring.
 
@@ -98,7 +96,7 @@ class CodeWriter:
             The CodeWriter instance
         """
         if isinstance(content, str):
-            self.writeln(f'"""{content}"""')
+            self.writeln('"""{}"""'.format(content))
             return self
         self.writeln('"""')
         for line in content:
@@ -106,7 +104,7 @@ class CodeWriter:
         self.writeln('"""')
         return self
 
-    def import_(self, module: str, *items: str) -> CodeWriter:
+    def import_(self, module, *items):
         """
         Writes an import statement. If items are provided, it writes a from-import statement.
         Otherwise, it writes a regular import statement.
@@ -118,13 +116,13 @@ class CodeWriter:
             The CodeWriter instance
         """
         if items:
-            self.writeln(f"from {module} import {', '.join(items)}")
+            self.writeln("from {} import {}".format(module, ', '.join(items)))
         else:
-            self.writeln(f"import {module}")
+            self.writeln("import {}".format(module))
         return self
 
     @contextmanager
-    def block(self, header: str) -> Generator[CodeWriter, None, None]:
+    def block(self, header):
         """
         Create a generic code block with a header (e.g. if, for, while, try, etc.)
 
@@ -138,10 +136,10 @@ class CodeWriter:
     @contextmanager
     def class_(
         self,
-        name: str,
-        bases: Optional[Iterable[str]] = None,
-        decorators: Optional[Iterable[str]] = None,
-    ) -> Generator[CodeWriter, None, None]:
+        name,
+        bases = None,
+        decorators = None
+    ):
         """
         Generate a class definition with optional base classes and decorators.
 
@@ -152,10 +150,10 @@ class CodeWriter:
         """
         if decorators is not None:
             for dec in decorators:
-                self.writeln(f"@{dec}")
+                self.writeln("@{}".format(dec))
 
-        bases_str = f"({', '.join(bases)})" if bases else ""
-        self.writeln(f"class {name}{bases_str}:")
+        bases_str = "({})".format(', '.join(bases)) if bases else ""
+        self.writeln("class {}{}:".format(name, bases_str))
 
         with self.indent():
             yield self
@@ -163,13 +161,13 @@ class CodeWriter:
     @contextmanager
     def dataclass(
         self,
-        name: str,
-        bases: Optional[Iterable[str]] = None,
-        decorators: Optional[Iterable[str]] = None,
-        frozen: bool = False,
-        slots: bool = False,
-        decorator_name: str = "dataclasses.dataclass",
-    ) -> Generator[CodeWriter, None, None]:
+        name,
+        bases = None,
+        decorators = None,
+        frozen = False,
+        slots = False,
+        decorator_name = "dataclasses.dataclass"
+    ):
         """
         Generate a dataclass definition with optional base classes, decorators and dataclass parameters.
 
@@ -188,7 +186,7 @@ class CodeWriter:
             dc_params.append("slots=True")
 
         dc_decorator = (
-            f"{decorator_name}({', '.join(dc_params)})"
+            "{}({})".format(decorator_name, ', '.join(dc_params))
             if dc_params
             else decorator_name
         )
@@ -199,10 +197,10 @@ class CodeWriter:
         all_decorators.append(dc_decorator)
 
         for dec in all_decorators:
-            self.writeln(f"@{dec}")
+            self.writeln("@{}".format(dec))
 
-        bases_str = f"({', '.join(bases)})" if bases else ""
-        self.writeln(f"class {name}{bases_str}:")
+        bases_str = "({})".format(', '.join(bases)) if bases else ""
+        self.writeln("class {}{}:".format(name, bases_str))
 
         with self.indent():
             yield self
@@ -210,41 +208,41 @@ class CodeWriter:
     @contextmanager
     def enum(
         self,
-        name: str,
-        enum_type: str = "enum.Enum",
-        bases: Optional[Iterable[str]] = None,
-        decorators: Optional[Iterable[str]] = None,
-    ) -> Generator[CodeWriter, None, None]:
+        name,
+        enum_type = "enum.Enum",
+        bases = None,
+        decorators = None
+    ):
         """
         Generate an enum definition with optional base classes and decorators.
 
         Args:
             name: The name of the enum
-            enum_type: The base enum type to inherit from (default: "enum.Enum")
+            enum_type: The base enum type to inherit from (default)
             bases: Optional iterable of additional base class names
             decorators: Optional iterable of decorator names
         """
         if decorators is not None:
             for dec in decorators:
-                self.writeln(f"@{dec}")
+                self.writeln("@{}".format(dec))
 
         all_bases = [enum_type]
         if bases is not None:
             all_bases.extend(bases)
 
         bases_str = ", ".join(all_bases)
-        self.writeln(f"class {name}({bases_str}):")
+        self.writeln("class {}({}):".format(name, bases_str))
 
         with self.indent():
             yield self
 
     def field(
         self,
-        name: str,
-        type_hint: str,
-        default: Any = None,
-        default_factory: Optional[str] = None,
-    ) -> CodeWriter:
+        name,
+        type_hint,
+        default = None,
+        default_factory = None
+    ):
         """
         Write a dataclass field with optional default value or default factory.
 
@@ -256,15 +254,15 @@ class CodeWriter:
         """
         if default_factory:
             self.writeln(
-                f"{name}: {type_hint} = dataclasses.field(default_factory={default_factory})"
+                "{}: {} = dataclasses.field(default_factory={})".format(name, type_hint, default_factory)
             )
         elif default is not None:
-            self.writeln(f"{name}: {type_hint} = {default}")
+            self.writeln("{}: {} = {}".format(name, type_hint, default))
         else:
-            self.writeln(f"{name}: {type_hint}")
+            self.writeln("{}: {}".format(name, type_hint))
         return self
 
-    def enum_member(self, name: str, value: Any) -> CodeWriter:
+    def enum_member(self, name, value):
         """
         Write an enum member with a specific value.
 
@@ -272,17 +270,17 @@ class CodeWriter:
             name: The name of the enum member
             value: The value of the enum member
         """
-        self.writeln(f"{name} = {value}")
+        self.writeln("{} = {}".format(name, value))
         return self
 
     @contextmanager
     def function(
         self,
-        name: str,
-        params: Union[Iterable[str], str],
-        decorators: Optional[Iterable[str]] = None,
-        return_type: Optional[str] = None,
-    ) -> Generator[CodeWriter, None, None]:
+        name,
+        params,
+        decorators = None,
+        return_type = None
+    ):
         """
         Create a function definition with optional decorators and return type.
 
@@ -294,11 +292,11 @@ class CodeWriter:
         """
         if decorators is not None:
             for dec in decorators:
-                self.writeln(f"@{dec}")
+                self.writeln("@{}".format(dec))
 
         params_str = params if isinstance(params, str) else ", ".join(params)
-        return_annotation = f" -> {return_type}" if return_type else ""
-        self.writeln(f"def {name}({params_str}){return_annotation}:")
+        return_annotation = " -> {}".format(return_type) if return_type else ""
+        self.writeln("def {}({}){}:".format(name, params_str, return_annotation))
 
         with self.indent():
             yield self
@@ -306,11 +304,11 @@ class CodeWriter:
     @contextmanager
     def method(
         self,
-        name: str,
-        params: Union[Iterable[str], str],
-        decorators: Optional[Iterable[str]] = None,
-        return_type: Optional[str] = None,
-    ) -> Generator[CodeWriter, None, None]:
+        name,
+        params,
+        decorators = None,
+        return_type = None
+    ):
         """
         Create a method definition within a class with optional decorators and return type.
 
@@ -326,31 +324,31 @@ class CodeWriter:
             yield self
 
     @contextmanager
-    def if_(self, condition: str) -> Generator[CodeWriter, None, None]:
+    def if_(self, condition):
         """
         Create an if block
 
         Args:
             condition: The condition for the if statement
         """
-        self.writeln(f"if {condition}:")
+        self.writeln("if {}:".format(condition))
         with self.indent():
             yield self
 
     @contextmanager
-    def elif_(self, condition: str) -> Generator[CodeWriter, None, None]:
+    def elif_(self, condition):
         """
         Create an elif block
 
         Args:
             condition: The condition for the elif statement
         """
-        self.writeln(f"elif {condition}:")
+        self.writeln("elif {}:".format(condition))
         with self.indent():
             yield self
 
     @contextmanager
-    def else_(self) -> Generator[CodeWriter, None, None]:
+    def else_(self):
         """
         Create an else block
         """
@@ -360,8 +358,8 @@ class CodeWriter:
 
     @contextmanager
     def for_(
-        self, var: str, iterable: str
-    ) -> Generator[CodeWriter, None, None]:
+        self, var, iterable
+    ):
         """
         Create a for loop
 
@@ -369,25 +367,25 @@ class CodeWriter:
             var: The loop variable
             iterable: The iterable to loop over
         """
-        self.writeln(f"for {var} in {iterable}:")
+        self.writeln("for {} in {}:".format(var, iterable))
         with self.indent():
             yield self
 
     @contextmanager
-    def while_(self, condition: str) -> Generator[CodeWriter, None, None]:
+    def while_(self, condition):
         """
         Create a while loop
 
         Args:
             condition: The condition for the while loop
         """
-        self.writeln(f"while {condition}:")
+        self.writeln("while {}:".format(condition))
         with self.indent():
             yield self
 
     def assignment(
-        self, var: str, value: str, type_hint: Optional[str] = None
-    ) -> CodeWriter:
+        self, var, value, type_hint = None
+    ):
         """
         Write a variable assignment with optional type hint
 
@@ -399,12 +397,12 @@ class CodeWriter:
             The CodeWriter instance
         """
         if type_hint:
-            self.writeln(f"{var}: {type_hint} = {value}")
+            self.writeln("{}: {} = {}".format(var, type_hint, value))
         else:
-            self.writeln(f"{var} = {value}")
+            self.writeln("{} = {}".format(var, value))
         return self
 
-    def return_(self, value: Optional[str] = None) -> CodeWriter:
+    def return_(self, value = None):
         """
         Write a return statement with an optional return value
 
@@ -414,12 +412,12 @@ class CodeWriter:
             The CodeWriter instance
         """
         if value:
-            self.writeln(f"return {value}")
+            self.writeln("return {}".format(value))
         else:
             self.writeln("return")
         return self
 
-    def pass_(self) -> CodeWriter:
+    def pass_(self):
         """
         Write a pass statement
 
@@ -429,7 +427,7 @@ class CodeWriter:
         self.writeln("pass")
         return self
 
-    def blank_line(self, count: int = 1) -> CodeWriter:
+    def blank_line(self, count = 1):
         """
         Write one or more blank lines
 
@@ -441,7 +439,7 @@ class CodeWriter:
         self._lines.extend([""] * count)
         return self
 
-    def to_string(self) -> str:
+    def to_string(self):
         """
         Get the generated code as a single string with newline characters separating lines.
 
@@ -450,7 +448,7 @@ class CodeWriter:
         """
         return "\n".join(self._lines)
 
-    def to_lines(self) -> list[str]:
+    def to_lines(self):
         """
         Get the generated code as a list of lines
 

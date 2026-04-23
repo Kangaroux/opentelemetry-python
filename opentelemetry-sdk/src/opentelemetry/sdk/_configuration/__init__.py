@@ -190,7 +190,9 @@ def _get_exporter_entry_point(exporter_name, signal_type):
         return exporter_name
 
     # Checking env vars for OTLP protocol (grpc/http).
-    otlp_protocol = environ.get(_PROTOCOL_ENV_BY_SIGNAL_TYPE) or environ.get(
+    otlp_protocol = environ.get(
+        _PROTOCOL_ENV_BY_SIGNAL_TYPE[signal_type]
+    ) or environ.get(
         OTEL_EXPORTER_OTLP_PROTOCOL
     )
 
@@ -210,7 +212,7 @@ def _get_exporter_entry_point(exporter_name, signal_type):
                 )
             )
 
-        return _EXPORTER_BY_OTLP_PROTOCOL
+        return _EXPORTER_BY_OTLP_PROTOCOL[otlp_protocol]
 
     # grpc/http already specified by exporter_name, only add a warning in case
     # of a conflict.
@@ -400,7 +402,7 @@ def _import_exporters(
         trace_exporter_names, "opentelemetry_traces_exporter"
     ):
         if issubclass(exporter_impl, SpanExporter):
-            trace_exporters = exporter_impl
+            trace_exporters[exporter_name] = exporter_impl
         else:
             raise RuntimeError(
                 "{} is not a trace exporter".format(exporter_name)
@@ -415,7 +417,7 @@ def _import_exporters(
         # The metric exporter components may be push MetricExporter or pull exporters which
         # subclass MetricReader directly
         if issubclass(exporter_impl, (MetricExporter, MetricReader)):
-            metric_exporters = exporter_impl
+            metric_exporters[exporter_name] = exporter_impl
         else:
             raise RuntimeError(
                 "{} is not a metric exporter".format(exporter_name)
@@ -428,7 +430,7 @@ def _import_exporters(
         log_exporter_names, "opentelemetry_logs_exporter"
     ):
         if issubclass(exporter_impl, LogRecordExporter):
-            log_exporters = exporter_impl
+            log_exporters[exporter_name] = exporter_impl
         else:
             raise RuntimeError(
                 "{} is not a log exporter".format(exporter_name)
@@ -530,7 +532,7 @@ def _initialize_components(
     if auto_instrumentation_version:
         resource_attributes[
             ResourceAttributes.TELEMETRY_AUTO_VERSION
-        ] = (  # type
+        ] = (  # type: ignore[reportIndexIssue]
             auto_instrumentation_version
         )
     if tracer_configurator is None:

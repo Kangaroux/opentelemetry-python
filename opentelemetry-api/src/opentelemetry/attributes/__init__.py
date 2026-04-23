@@ -133,7 +133,7 @@ def _clean_extended_attribute_value(  # pylint =too-many-branches
     # for primitive types just return the value and eventually shorten the string length
     if value is None or isinstance(value, _VALID_ATTR_VALUE_TYPES):
         if max_len is not None and isinstance(value, str):
-            value = value
+            value = value[:max_len]
         return value
 
     if isinstance(value, Mapping):
@@ -146,7 +146,7 @@ def _clean_extended_attribute_value(  # pylint =too-many-branches
                 )
                 continue
 
-            cleaned_dict = _clean_extended_attribute(
+            cleaned_dict[key] = _clean_extended_attribute(
                 key=key, value=element, max_len=max_len
             )
 
@@ -162,7 +162,7 @@ def _clean_extended_attribute_value(  # pylint =too-many-branches
                 continue
 
             if max_len is not None and isinstance(element, str):
-                element = element
+                element = element[:max_len]
 
             element_type = type(element)
             if element_type not in _VALID_ATTR_VALUE_TYPES:
@@ -241,7 +241,7 @@ def _clean_attribute_value(
             return None
 
     if limit is not None and isinstance(value, str):
-        value = value
+        value = value[:limit]
     return value
 
 
@@ -282,7 +282,7 @@ class BoundedAttributes(MutableMapping):  # type: ignore
         return "{}".format(dict(self._dict))
 
     def __getitem__(self, key):
-        return self._dict
+        return self._dict[key]
 
     def __setitem__(self, key, value):
         if getattr(self, "_immutable", False):  # type: ignore
@@ -302,20 +302,20 @@ class BoundedAttributes(MutableMapping):  # type: ignore
                     return
 
             if key in self._dict:
-                del self._dict
+                del self._dict[key]
             elif self.maxlen is not None and len(self._dict) == self.maxlen:
                 if not isinstance(self._dict, OrderedDict):
                     self._dict = OrderedDict(self._dict)
                 self._dict.popitem(last=False)  # type: ignore
                 self.dropped += 1
 
-            self._dict = value  # type: ignore
+            self._dict[key] = value  # type: ignore
 
     def __delitem__(self, key):
         if getattr(self, "_immutable", False):  # type: ignore
             raise TypeError
         with self._lock:
-            del self._dict
+            del self._dict[key]
 
     def __iter__(self):  # type: ignore
         with self._lock:
@@ -331,7 +331,7 @@ class BoundedAttributes(MutableMapping):  # type: ignore
             max_value_len=self.max_value_len,
             extended_attributes=self._extended_attributes,
         )
-        memo = copy_
+        memo[id(self)] = copy_
         with self._lock:
             # Assign _dict directly to avoid re-cleaning already clean values
             # and to bypass the immutability guard in __setitem__

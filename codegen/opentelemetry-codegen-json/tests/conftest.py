@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# pylint: disable=redefined-outer-name
+# pylint =redefined-outer-name
 
 import importlib
 import subprocess
@@ -34,8 +34,8 @@ def monkeysession():
 
 @pytest.fixture(scope="session", autouse=True)
 def generate_code(
-    tmp_path_factory: pytest.TempPathFactory, monkeysession: MonkeyPatch
-) -> None:
+    tmp_path_factory, monkeysession
+):
     gen_path = tmp_path_factory.mktemp("generated")
 
     protos = list(PROTO_PATH.glob("**/*.proto"))
@@ -46,11 +46,10 @@ def generate_code(
             sys.executable,
             "-m",
             "grpc_tools.protoc",
-            f"-I{PROTO_PATH.as_posix()}",
-            f"--otlp_json_out={gen_path.as_posix()}",
-            f"--python_out={gen_path.as_posix()}",
-            *proto_files,
-        ]
+            "-I{}".format(PROTO_PATH.as_posix()),
+            "--otlp_json_out={}".format(gen_path.as_posix()),
+            "--python_out={}".format(gen_path.as_posix()),
+        ] + proto_files
     )
 
     monkeysession.syspath_prepend(str(gen_path.absolute()))

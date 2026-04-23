@@ -364,7 +364,8 @@ def _split_metrics_data(
             pb2.ResourceMetrics, pb2.ScopeMetrics, pb2.Metrics, and data points
     """
     if not max_export_batch_size:
-        return metrics_data
+        yield metrics_data
+        return
 
     batch_size = 0
     # Stores split metrics data as editable references

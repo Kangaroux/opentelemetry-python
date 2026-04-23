@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 import contextlib
 import functools
 import inspect
@@ -34,9 +32,9 @@ if TYPE_CHECKING:
 
 
 class _AgnosticContextManager(
-    contextlib._GeneratorContextManager,  # type: ignore[misc]
-    Generic[R],
-):  # pylint: disable=protected-access
+    contextlib._GeneratorContextManager,  # type
+    Generic,
+):  # pylint =protected-access
     """Context manager that can decorate both async and sync functions.
 
     This is an overridden version of the contextlib._GeneratorContextManager
@@ -53,7 +51,7 @@ class _AgnosticContextManager(
     https://github.com/open-telemetry/opentelemetry-python/pull/3633
     """
 
-    def __enter__(self) -> R:
+    def __enter__(self):
         """Reimplementing __enter__ to avoid the type error.
 
         The original __enter__ method returns Any type, but we want to return R.
@@ -62,26 +60,26 @@ class _AgnosticContextManager(
         try:
             return next(self.gen)  # type: ignore
         except StopIteration:
-            raise RuntimeError("generator didn't yield") from None
+            raise RuntimeError("generator didn't yield")
 
-    def __call__(self, func: V) -> V:  # pyright: ignore [reportIncompatibleMethodOverride]
+    def __call__(self, func):  # pyright: ignore [reportIncompatibleMethodOverride]
         if inspect.iscoroutinefunction(func):
 
             @functools.wraps(func)  # type: ignore
-            async def async_wrapper(*args: Pargs, **kwargs: Pkwargs) -> R:  # pyright: ignore [reportInvalidTypeVarUse]
+            def async_wrapper(*args, **kwargs):  # pyright: ignore [reportInvalidTypeVarUse]
                 with self._recreate_cm():  # type: ignore
-                    return await func(*args, **kwargs)  # type: ignore
+                    return func(*args, **kwargs)  # type: ignore
 
             return async_wrapper  # type: ignore
         return super().__call__(func)  # type: ignore
 
 
 def _agnosticcontextmanager(
-    func: "Callable[P, Iterator[R]]",
-) -> "Callable[P, _AgnosticContextManager[R]]":
+    func
+):
     @functools.wraps(func)
-    def helper(*args: Pargs, **kwargs: Pkwargs) -> _AgnosticContextManager[R]:  # pyright: ignore [reportInvalidTypeVarUse]
+    def helper(*args, **kwargs):  # pyright: ignore [reportInvalidTypeVarUse]
         return _AgnosticContextManager(func, args, kwargs)  # pyright: ignore [reportArgumentType]
 
     # Ignoring the type to keep the original signature of the function
-    return helper  # type: ignore[return-value]
+    return helper  # type: ignore

@@ -65,17 +65,17 @@ class _Synchronous:
         # pylint =no-member
         result = self._check_name_unit_description(name, unit, description)
 
-        if result is None:
+        if result["name"] is None:
             # pylint =broad-exception-raised
             raise Exception(_ERROR_MESSAGE.format(name))
 
-        if result is None:
+        if result["unit"] is None:
             # pylint =broad-exception-raised
             raise Exception(_ERROR_MESSAGE.format(unit))
 
-        name = result
-        unit = result
-        description = result
+        name = result["name"]
+        unit = result["unit"]
+        description = result["description"]
 
         self.name = name.lower()
         self.unit = unit
@@ -98,17 +98,17 @@ class _Asynchronous:
         # pylint =no-member
         result = self._check_name_unit_description(name, unit, description)
 
-        if result is None:
+        if result["name"] is None:
             # pylint =broad-exception-raised
             raise Exception(_ERROR_MESSAGE.format(name))
 
-        if result is None:
+        if result["unit"] is None:
             # pylint =broad-exception-raised
             raise Exception(_ERROR_MESSAGE.format(unit))
 
-        name = result
-        unit = result
-        description = result
+        name = result["name"]
+        unit = result["unit"]
+        description = result["description"]
 
         self.name = name.lower()
         self.unit = unit

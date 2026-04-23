@@ -47,7 +47,7 @@ def substitute_env_vars(text):
         EnvSubstitutionError: If a required environment variable is not found.
 
     Examples:
-        >>> os.environ = 'my-service'
+        >>> os.environ['SERVICE_NAME'] = 'my-service'
         >>> substitute_env_vars('name: ${SERVICE_NAME}')
         'name: my-service'
         >>> substitute_env_vars('name: ${MISSING:-default}')

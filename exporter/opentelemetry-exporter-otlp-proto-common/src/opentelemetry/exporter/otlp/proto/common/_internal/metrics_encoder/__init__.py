@@ -212,7 +212,7 @@ def _encode_resource_metrics(resource_metrics, resource_metrics_dict):
     # It is safe to assume that each entry in data.resource_metrics is
     # associated with an unique resource.
     scope_metrics_dict = {}
-    resource_metrics_dict = scope_metrics_dict
+    resource_metrics_dict[resource] = scope_metrics_dict
     for scope_metrics in resource_metrics.scope_metrics:
         instrumentation_scope = scope_metrics.scope
 
@@ -224,7 +224,7 @@ def _encode_resource_metrics(resource_metrics, resource_metrics_dict):
             schema_url=instrumentation_scope.schema_url,
         )
 
-        scope_metrics_dict = pb2_scope_metrics
+        scope_metrics_dict[instrumentation_scope] = pb2_scope_metrics
 
         for metric in scope_metrics.metrics:
             pb2_metric = pb2.Metric(

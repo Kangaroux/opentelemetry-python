@@ -32,9 +32,9 @@ if TYPE_CHECKING:
 
 
 class _AgnosticContextManager(
-    contextlib._GeneratorContextManager,  # type
-    Generic,
-):  # pylint =protected-access
+    contextlib._GeneratorContextManager,
+    Generic[R],
+):  # pylint: disable=protected-access
     """Context manager that can decorate both async and sync functions.
 
     This is an overridden version of the contextlib._GeneratorContextManager

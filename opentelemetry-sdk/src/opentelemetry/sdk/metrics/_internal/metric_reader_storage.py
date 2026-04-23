@@ -80,12 +80,12 @@ class MetricReaderStorage:
         # instrument, the mapping will never change
 
         if instrument in self._instrument_view_instrument_matches:
-            return self._instrument_view_instrument_matches
+            return self._instrument_view_instrument_matches[instrument]
 
         with self._lock:
             # double check if it was set before we held the lock
             if instrument in self._instrument_view_instrument_matches:
-                return self._instrument_view_instrument_matches
+                return self._instrument_view_instrument_matches[instrument]
 
             # not present, hold the lock and add a new mapping
             view_instrument_matches = []
@@ -105,7 +105,7 @@ class MetricReaderStorage:
                         ),
                     )
                 )
-            self._instrument_view_instrument_matches = (
+            self._instrument_view_instrument_matches[instrument] = (
                 view_instrument_matches
             )
 

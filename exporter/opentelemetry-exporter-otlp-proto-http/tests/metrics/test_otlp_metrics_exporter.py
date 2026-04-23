@@ -170,7 +170,7 @@ class TestOTLPMetricExporter(TestCase):
             OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: "https://metrics.endpoint.env",
             OTEL_EXPORTER_OTLP_METRICS_HEADERS: "metricsEnv1=val1,metricsEnv2=val2,metricEnv3===val3==,User-agent=metrics-user-agent",
             OTEL_EXPORTER_OTLP_METRICS_TIMEOUT: "40",
-            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_METRICS_CREDENTIAL_PROVIDER,
+            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_METRICS_CREDENTIAL_PROVIDER: "credential_provider",
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.http._common.entry_points")

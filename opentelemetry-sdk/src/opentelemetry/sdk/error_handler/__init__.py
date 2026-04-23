@@ -58,15 +58,7 @@ object is not parent of any registered error handler, then the default error
 handler will handle the exception. This default error handler will only log the
 exception to standard logging, the exception won't be raised any further.
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
-from builtins import super
-from future import standard_library
-standard_library.install_aliases()
-from builtins import object
 from abc import ABC, abstractmethod
 from logging import getLogger
 

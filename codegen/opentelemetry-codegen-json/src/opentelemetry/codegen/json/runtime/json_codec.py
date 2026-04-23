@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import annotations
-
 import abc
 import base64
 import json
@@ -30,33 +28,33 @@ class JsonMessage(abc.ABC):
     """
 
     @abc.abstractmethod
-    def to_dict(self) -> dict[str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary.
         """
 
     @classmethod
     @abc.abstractmethod
-    def from_dict(cls: type[M], data: dict[str, typing.Any]) -> M:
+    def from_dict(cls, data):
         """
         Create an instance from a dictionary.
         """
 
-    def to_json(self) -> str:
+    def to_json(self):
         """
         Serialize this message to a JSON string.
         """
         return json.dumps(self.to_dict())
 
     @classmethod
-    def from_json(cls: type[M], data: typing.Union[str, bytes]) -> M:
+    def from_json(cls, data):
         """
         Deserialize from a JSON string or bytes.
         """
         return cls.from_dict(json.loads(data))
 
 
-def encode_hex(value: typing.Optional[bytes]) -> str:
+def encode_hex(value):
     """
     Encode bytes as hex string.
 
@@ -68,7 +66,7 @@ def encode_hex(value: typing.Optional[bytes]) -> str:
     return value.hex() if value else ""
 
 
-def encode_base64(value: typing.Optional[bytes]) -> str:
+def encode_base64(value):
     """
     Encode bytes as base64 string.
     Standard Proto3 JSON mapping for bytes.
@@ -81,7 +79,7 @@ def encode_base64(value: typing.Optional[bytes]) -> str:
     return base64.b64encode(value).decode("utf-8") if value else ""
 
 
-def encode_int64(value: int) -> str:
+def encode_int64(value):
     """
     Encode 64 bit integers as strings.
     Required for int64, uint64, fixed64, sfixed64 and sint64 per Proto3 JSON spec.
@@ -94,7 +92,7 @@ def encode_int64(value: int) -> str:
     return str(value)
 
 
-def encode_float(value: float) -> typing.Union[float, str]:
+def encode_float(value):
     """
     Encode float/double values.
 
@@ -111,9 +109,9 @@ def encode_float(value: float) -> typing.Union[float, str]:
 
 
 def encode_repeated(
-    values: typing.Optional[list[T]],
-    map_fn: typing.Callable[[T], typing.Any],
-) -> list[typing.Any]:
+    values,
+    map_fn
+):
     """
     Helper to serialize repeated fields with a mapping function.
 
@@ -126,7 +124,7 @@ def encode_repeated(
     return [map_fn(v) for v in values] if values else []
 
 
-def decode_hex(value: typing.Optional[str], field_name: str) -> bytes:
+def decode_hex(value, field_name):
     """
     Decode hex string to bytes.
 
@@ -143,11 +141,11 @@ def decode_hex(value: typing.Optional[str], field_name: str) -> bytes:
         return bytes.fromhex(value)
     except ValueError as error:
         raise ValueError(
-            f"Invalid hex string for field '{field_name}': {error}"
-        ) from None
+            "Invalid hex string for field '{}': {}".format(field_name, error)
+        )
 
 
-def decode_base64(value: typing.Optional[str], field_name: str) -> bytes:
+def decode_base64(value, field_name):
     """
     Decode base64 string to bytes.
 
@@ -164,13 +162,13 @@ def decode_base64(value: typing.Optional[str], field_name: str) -> bytes:
         return base64.b64decode(value)
     except Exception as error:
         raise ValueError(
-            f"Invalid base64 string for field '{field_name}': {error}"
-        ) from None
+            "Invalid base64 string for field '{}': {}".format(field_name, error)
+        )
 
 
 def decode_int64(
-    value: typing.Optional[typing.Union[int, str]], field_name: str
-) -> int:
+    value, field_name
+):
     """
     Parse int64 from number or string.
 
@@ -187,13 +185,13 @@ def decode_int64(
         return int(value)
     except (ValueError, TypeError):
         raise ValueError(
-            f"Invalid int64 value for field '{field_name}': {value}"
-        ) from None
+            "Invalid int64 value for field '{}': {}".format(field_name, value)
+        )
 
 
 def decode_float(
-    value: typing.Optional[typing.Union[float, int, str]], field_name: str
-) -> float:
+    value, field_name
+):
     """
     Parse float/double from number or string, handling special values.
 
@@ -216,15 +214,15 @@ def decode_float(
         return float(value)
     except (ValueError, TypeError):
         raise ValueError(
-            f"Invalid float value for field '{field_name}': {value}"
-        ) from None
+            "Invalid float value for field '{}': {}".format(field_name, value)
+        )
 
 
 def decode_repeated(
-    values: typing.Optional[list[typing.Any]],
-    item_parser: typing.Callable[[typing.Any], T],
-    field_name: str,
-) -> list[T]:
+    values,
+    item_parser,
+    field_name
+):
     """
     Parse a list of values using the provided item parser function.
 
@@ -242,10 +240,10 @@ def decode_repeated(
 
 
 def validate_type(
-    value: typing.Any,
-    expected_types: typing.Union[type, tuple[type, ...]],
-    field_name: str,
-) -> None:
+    value,
+    expected_types,
+    field_name
+):
     """
     Validate that a value is of the expected type(s).
     Raises TypeError if validation fails.
@@ -257,6 +255,6 @@ def validate_type(
     """
     if not isinstance(value, expected_types):
         raise TypeError(
-            f"Field '{field_name}' expected {expected_types}, "
-            f"got {type(value).__name__}"
+            "Field '{}' expected {}, ".format(field_name, expected_types) +
+            "got {}".format(type(value).__name__)
         )

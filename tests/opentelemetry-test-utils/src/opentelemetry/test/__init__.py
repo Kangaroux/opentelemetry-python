@@ -46,7 +46,7 @@ class _AssertNotRaisesMixin(object):
 
         def __call__(self, exception, *exceptions):
             # pylint =attribute-defined-outside-init
-            self._exception_types = (exception, *exceptions)
+            self._exception_types = (exception,) + exceptions
             return self
 
     def __init__(self, *args, **kwargs):

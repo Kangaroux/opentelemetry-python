@@ -15,8 +15,6 @@
 # AUTO-GENERATED from "opentelemetry/proto/resource/v1/resource.proto"
 # DO NOT EDIT MANUALLY
 
-from __future__ import annotations
-
 import builtins
 import dataclasses
 import functools
@@ -39,11 +37,11 @@ class Resource(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message Resource
     """
 
-    attributes: builtins.list[opentelemetry.proto_json.common.v1.common.KeyValue] = dataclasses.field(default_factory=builtins.list)
-    dropped_attributes_count: typing.Optional[builtins.int] = 0
-    entity_refs: builtins.list[opentelemetry.proto_json.common.v1.common.EntityRef] = dataclasses.field(default_factory=builtins.list)
+    attributes = dataclasses.field(default_factory=builtins.list)
+    dropped_attributes_count = 0
+    entity_refs = dataclasses.field(default_factory=builtins.list)
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -52,15 +50,15 @@ class Resource(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.attributes:
-            _result["attributes"] = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
         if self.dropped_attributes_count:
-            _result["droppedAttributesCount"] = self.dropped_attributes_count
+            _result = self.dropped_attributes_count
         if self.entity_refs:
-            _result["entityRefs"] = opentelemetry.proto_json._json_codec.encode_repeated(self.entity_refs, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.entity_refs, lambda _v: _v.to_dict())
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "Resource":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -73,12 +71,15 @@ class Resource(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("attributes")) is not None:
-            _args["attributes"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
-        if (_value := data.get("droppedAttributesCount")) is not None:
+        _value = data.get("attributes")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
+        _value = data.get("droppedAttributesCount")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "dropped_attributes_count")
-            _args["dropped_attributes_count"] = _value
-        if (_value := data.get("entityRefs")) is not None:
-            _args["entity_refs"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.EntityRef.from_dict(_v), "entity_refs")
+            _args = _value
+        _value = data.get("entityRefs")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.EntityRef.from_dict(_v), "entity_refs")
 
         return cls(**_args)

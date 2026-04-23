@@ -118,7 +118,7 @@ class TestOTLPHTTPLogExporter(unittest.TestCase):
             OTEL_EXPORTER_OTLP_LOGS_ENDPOINT: "https://logs.endpoint.env",
             OTEL_EXPORTER_OTLP_LOGS_HEADERS: "logsEnv1=val1,logsEnv2=val2,logsEnv3===val3==,User-agent=LogsUserAgent",
             OTEL_EXPORTER_OTLP_LOGS_TIMEOUT: "40",
-            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER,
+            _OTEL_PYTHON_EXPORTER_OTLP_HTTP_LOGS_CREDENTIAL_PROVIDER: "credential_provider",
         },
     )
     @patch("opentelemetry.exporter.otlp.proto.http._common.entry_points")

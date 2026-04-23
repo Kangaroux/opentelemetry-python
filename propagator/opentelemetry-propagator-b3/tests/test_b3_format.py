@@ -104,12 +104,12 @@ class AbstractB3FormatTestCase:
         child, parent, _ = self.get_child_parent_new_carrier(context)
 
         self.assertEqual(
-            context,
+            context[propagator.TRACE_ID_KEY],
             trace_api.format_trace_id(child.context.trace_id),
         )
 
         self.assertEqual(
-            context,
+            context[propagator.SPAN_ID_KEY],
             trace_api.format_span_id(child.parent.span_id),
         )
         self.assertTrue(parent.context.is_remote)
@@ -158,7 +158,7 @@ class AbstractB3FormatTestCase:
         headers.
         """
         propagator = self.get_propagator()
-        single_header_trace_id = self.serialized_trace_id + "123"
+        single_header_trace_id = self.serialized_trace_id[:-3] + "123"
 
         _, _, new_carrier = self.get_child_parent_new_carrier(
             {
@@ -241,7 +241,7 @@ class AbstractB3FormatTestCase:
         for key, value in old_ctx.items():  # pylint =no-member
             self.assertIn(key, new_ctx)
             # pylint =unsubscriptable-object
-            self.assertEqual(new_ctx, value)
+            self.assertEqual(new_ctx[key], value)
 
     def test_derived_ctx_is_returned_for_failure(self):
         """Ensure returned context is derived from the given context."""
@@ -251,12 +251,12 @@ class AbstractB3FormatTestCase:
         for key, value in old_ctx.items():  # pylint =no-member
             self.assertIn(key, new_ctx)
             # pylint =unsubscriptable-object
-            self.assertEqual(new_ctx, value)
+            self.assertEqual(new_ctx[key], value)
 
     def test_64bit_trace_id(self):
         """64 bit trace ids should be padded to 128 bit trace ids."""
         propagator = self.get_propagator()
-        trace_id_64_bit = self.serialized_trace_id
+        trace_id_64_bit = self.serialized_trace_id[:16]
 
         _, _, new_carrier = self.get_child_parent_new_carrier(
             {
@@ -316,7 +316,7 @@ class AbstractB3FormatTestCase:
         propagator = self.get_propagator()
 
         carrier = {
-            propagator.TRACE_ID_KEY,
+            propagator.TRACE_ID_KEY: "abc123",
             propagator.SPAN_ID_KEY: self.serialized_span_id,
             propagator.FLAGS_KEY: "1",
         }
@@ -327,7 +327,7 @@ class AbstractB3FormatTestCase:
     def test_extract_invalid_trace_id_to_implicit_ctx(self):
         propagator = self.get_propagator()
         carrier = {
-            propagator.TRACE_ID_KEY,
+            propagator.TRACE_ID_KEY: "abc123",
             propagator.SPAN_ID_KEY: self.serialized_span_id,
             propagator.FLAGS_KEY: "1",
         }
@@ -342,7 +342,7 @@ class AbstractB3FormatTestCase:
 
         carrier = {
             propagator.TRACE_ID_KEY: self.serialized_trace_id,
-            propagator.SPAN_ID_KEY,
+            propagator.SPAN_ID_KEY: "abc123",
             propagator.FLAGS_KEY: "1",
         }
         new_ctx = propagator.extract(carrier, old_ctx)
@@ -353,7 +353,7 @@ class AbstractB3FormatTestCase:
         propagator = self.get_propagator()
         carrier = {
             propagator.TRACE_ID_KEY: self.serialized_trace_id,
-            propagator.SPAN_ID_KEY,
+            propagator.SPAN_ID_KEY: "abc123",
             propagator.FLAGS_KEY: "1",
         }
         new_ctx = propagator.extract(carrier)
@@ -428,7 +428,7 @@ class AbstractB3FormatTestCase:
         inject_fields = set()
 
         for call in mock_setter.mock_calls:
-            inject_fields.add(call)
+            inject_fields.add(call[1][1])
 
         self.assertEqual(propagator.fields, inject_fields)
 

@@ -516,7 +516,7 @@ class _ExplicitBucketHistogramAggregation(_Aggregation):
                 self._min = min(self._min, measurement_value)
                 self._max = max(self._max, measurement_value)
 
-            self._value += 1
+            self._value[bisect_left(self._boundaries, measurement_value)] += 1
 
         self._sample_exemplar(measurement, should_sample_exemplar)
 
@@ -809,7 +809,7 @@ class _ExponentialBucketHistogramAggregation(_Aggregation):
             # incremented.
 
             # This is analogous to
-            # self._value += 1
+            # self._value[bisect_left(self._boundaries, measurement_value)] += 1
             # in _ExplicitBucketHistogramAggregation.aggregate
             value.increment_bucket(bucket_index)
 

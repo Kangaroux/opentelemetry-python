@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 
 
-def fix_typealias_import(file_path: str) -> None:
+def fix_typealias_import(file_path):
     """Fix TypeAlias import for Python 3.9 compatibility.
 
     TypeAlias is only available in the typing module from Python 3.10+.
@@ -16,7 +16,7 @@ def fix_typealias_import(file_path: str) -> None:
     content = path.read_text()
 
     if "from typing import" not in content or "TypeAlias" not in content:
-        print(f"No TypeAlias import found in {file_path}")
+        print("No TypeAlias import found in {}".format(file_path))
         return
 
     # Find the typing import line
@@ -24,7 +24,7 @@ def fix_typealias_import(file_path: str) -> None:
     match = re.search(pattern, content)
 
     if not match or "TypeAlias" not in match.group(1):
-        print(f"TypeAlias not in typing import in {file_path}")
+        print("TypeAlias not in typing import in {}".format(file_path))
         return
 
     # Remove TypeAlias from typing import
@@ -33,22 +33,22 @@ def fix_typealias_import(file_path: str) -> None:
         for imp in match.group(1).split(", ")
         if "TypeAlias" not in imp
     ]
-    new_typing_import = f"from typing import {', '.join(imports)}"
+    new_typing_import = "from typing import {}".format(', '.join(imports))
 
     # Replace the old import and add typing_extensions import
     old_import = match.group(0)
     new_imports = (
-        f"{new_typing_import}\n\nfrom typing_extensions import TypeAlias"
+        "{}\n\nfrom typing_extensions import TypeAlias".format(new_typing_import)
     )
 
     content = content.replace(old_import, new_imports, 1)
     path.write_text(content)
-    print(f"Fixed TypeAlias import for Python 3.9 in {file_path}")
+    print("Fixed TypeAlias import for Python 3.9 in {}".format(file_path))
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: fix_typealias.py <path_to_models.py>", file=sys.stderr)
+        sys.stderr.write("Usage: fix_typealias.py <path_to_models.py>\n")
         sys.exit(1)
 
-    fix_typealias_import(sys.argv[1])
+    fix_typealias_import(sys.argv)

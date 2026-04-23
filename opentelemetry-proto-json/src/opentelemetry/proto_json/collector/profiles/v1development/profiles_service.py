@@ -15,8 +15,6 @@
 # AUTO-GENERATED from "opentelemetry/proto/collector/profiles/v1development/profiles_service.proto"
 # DO NOT EDIT MANUALLY
 
-from __future__ import annotations
-
 import builtins
 import dataclasses
 import functools
@@ -39,10 +37,10 @@ class ExportProfilesServiceRequest(opentelemetry.proto_json._json_codec.JsonMess
     Generated from protobuf message ExportProfilesServiceRequest
     """
 
-    resource_profiles: builtins.list[opentelemetry.proto_json.profiles.v1development.profiles.ResourceProfiles] = dataclasses.field(default_factory=builtins.list)
-    dictionary: typing.Optional[opentelemetry.proto_json.profiles.v1development.profiles.ProfilesDictionary] = None
+    resource_profiles = dataclasses.field(default_factory=builtins.list)
+    dictionary = None
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -51,13 +49,13 @@ class ExportProfilesServiceRequest(opentelemetry.proto_json._json_codec.JsonMess
         """
         _result = {}
         if self.resource_profiles:
-            _result["resourceProfiles"] = opentelemetry.proto_json._json_codec.encode_repeated(self.resource_profiles, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.resource_profiles, lambda _v: _v.to_dict())
         if self.dictionary:
-            _result["dictionary"] = self.dictionary.to_dict()
+            _result = self.dictionary.to_dict()
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "ExportProfilesServiceRequest":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -70,10 +68,12 @@ class ExportProfilesServiceRequest(opentelemetry.proto_json._json_codec.JsonMess
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("resourceProfiles")) is not None:
-            _args["resource_profiles"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.profiles.v1development.profiles.ResourceProfiles.from_dict(_v), "resource_profiles")
-        if (_value := data.get("dictionary")) is not None:
-            _args["dictionary"] = opentelemetry.proto_json.profiles.v1development.profiles.ProfilesDictionary.from_dict(_value)
+        _value = data.get("resourceProfiles")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.profiles.v1development.profiles.ResourceProfiles.from_dict(_v), "resource_profiles")
+        _value = data.get("dictionary")
+        if _value is not None:
+            _args = opentelemetry.proto_json.profiles.v1development.profiles.ProfilesDictionary.from_dict(_value)
 
         return cls(**_args)
 
@@ -85,9 +85,9 @@ class ExportProfilesServiceResponse(opentelemetry.proto_json._json_codec.JsonMes
     Generated from protobuf message ExportProfilesServiceResponse
     """
 
-    partial_success: typing.Optional[ExportProfilesPartialSuccess] = None
+    partial_success = None
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -96,11 +96,11 @@ class ExportProfilesServiceResponse(opentelemetry.proto_json._json_codec.JsonMes
         """
         _result = {}
         if self.partial_success:
-            _result["partialSuccess"] = self.partial_success.to_dict()
+            _result = self.partial_success.to_dict()
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "ExportProfilesServiceResponse":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -113,8 +113,9 @@ class ExportProfilesServiceResponse(opentelemetry.proto_json._json_codec.JsonMes
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("partialSuccess")) is not None:
-            _args["partial_success"] = ExportProfilesPartialSuccess.from_dict(_value)
+        _value = data.get("partialSuccess")
+        if _value is not None:
+            _args = ExportProfilesPartialSuccess.from_dict(_value)
 
         return cls(**_args)
 
@@ -126,10 +127,10 @@ class ExportProfilesPartialSuccess(opentelemetry.proto_json._json_codec.JsonMess
     Generated from protobuf message ExportProfilesPartialSuccess
     """
 
-    rejected_profiles: typing.Optional[builtins.int] = 0
-    error_message: typing.Optional[builtins.str] = ""
+    rejected_profiles = 0
+    error_message = ""
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -138,13 +139,13 @@ class ExportProfilesPartialSuccess(opentelemetry.proto_json._json_codec.JsonMess
         """
         _result = {}
         if self.rejected_profiles:
-            _result["rejectedProfiles"] = opentelemetry.proto_json._json_codec.encode_int64(self.rejected_profiles)
+            _result = opentelemetry.proto_json._json_codec.encode_int64(self.rejected_profiles)
         if self.error_message:
-            _result["errorMessage"] = self.error_message
+            _result = self.error_message
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "ExportProfilesPartialSuccess":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -157,10 +158,12 @@ class ExportProfilesPartialSuccess(opentelemetry.proto_json._json_codec.JsonMess
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("rejectedProfiles")) is not None:
-            _args["rejected_profiles"] = opentelemetry.proto_json._json_codec.decode_int64(_value, "rejected_profiles")
-        if (_value := data.get("errorMessage")) is not None:
+        _value = data.get("rejectedProfiles")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_int64(_value, "rejected_profiles")
+        _value = data.get("errorMessage")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "error_message")
-            _args["error_message"] = _value
+            _args = _value
 
         return cls(**_args)

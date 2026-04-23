@@ -49,6 +49,14 @@ class _MetricsHistogramAdvisory(object):
     def __init__(self, explicit_bucket_boundaries = None):
         self.explicit_bucket_boundaries = explicit_bucket_boundaries
 
+    def __eq__(self, other):
+        if not isinstance(other, _MetricsHistogramAdvisory):
+            return NotImplemented
+        return self.explicit_bucket_boundaries == other.explicit_bucket_boundaries
+
+    def __hash__(self):
+        return hash(tuple(self.explicit_bucket_boundaries) if self.explicit_bucket_boundaries else None)
+
 
 class CallbackOptions(object):
     """Options for the callback
@@ -99,21 +107,21 @@ class Instrument(ABC):
         result = {}
 
         if _name_regex.fullmatch(name) is not None:
-            result = name
+            result["name"] = name
         else:
-            result = None
+            result["name"] = None
 
         if unit is None:
             unit = ""
         if _unit_regex.fullmatch(unit) is not None:
-            result = unit
+            result["unit"] = unit
         else:
-            result = None
+            result["unit"] = None
 
         if description is None:
-            result = ""
+            result["description"] = ""
         else:
-            result = description
+            result["description"] = description
 
         return result
 

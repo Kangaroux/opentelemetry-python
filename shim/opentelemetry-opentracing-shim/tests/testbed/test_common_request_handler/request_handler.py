@@ -21,7 +21,7 @@ standard_library.install_aliases()
 from builtins import object
 from opentracing.ext import tags
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..utils import get_logger
 
 logger = get_logger(__name__)
@@ -47,10 +47,10 @@ class RequestHandler(object):
 
         span.set_tag(tags.SPAN_KIND, tags.SPAN_KIND_RPC_CLIENT)
 
-        request_context["span"] = span
+        request_context = span
 
     def after_request(self, request, request_context):
-        # pylint: disable=no-self-use
+        # pylint =no-self-use
         logger.info("After request %s", request)
 
         span = request_context.get("span")

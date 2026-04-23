@@ -12,15 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 
-from builtins import str
-from builtins import next
-from future import standard_library
-standard_library.install_aliases()
 import logging
 import typing
 from contextvars import Token
@@ -123,7 +115,7 @@ def set_value(
     if context is None:
         context = get_current()
     new_values = context.copy()
-    new_values = value
+    new_values[key] = value
     return Context(new_values)
 
 

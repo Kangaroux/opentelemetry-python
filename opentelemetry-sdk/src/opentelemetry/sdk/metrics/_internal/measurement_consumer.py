@@ -81,7 +81,7 @@ class SynchronousMeasurementConsumer(MeasurementConsumer):
 
     def collect(self, metric_reader, timeout_millis=10000):
         with self._lock:
-            metric_reader_storage = self._reader_storages
+            metric_reader_storage = self._reader_storages[metric_reader]
             # for now, just use the defaults
             callback_options = CallbackOptions()
             deadline_ns = time_ns() + (timeout_millis * 1e6)
@@ -115,6 +115,6 @@ class SynchronousMeasurementConsumer(MeasurementConsumer):
                         measurement, should_sample_exemplar
                     )
 
-            result = self._reader_storages.collect()
+            result = self._reader_storages[metric_reader].collect()
 
         return result

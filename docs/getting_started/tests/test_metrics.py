@@ -23,7 +23,7 @@ class TestMetrics(unittest.TestCase):
     def test_metrics(self):
         """Test that metrics example produces expected values"""
         # Run the metrics example
-        test_script = f"{os.path.dirname(os.path.realpath(__file__))}/../metrics_example.py"
+        test_script = "{}/../metrics_example.py".format(os.path.dirname(os.path.realpath(__file__)))
 
         result = subprocess.run(
             [sys.executable, test_script],
@@ -40,21 +40,21 @@ class TestMetrics(unittest.TestCase):
         output_data = json.loads(result.stdout)
 
         # Get the metrics from the JSON structure
-        metrics = output_data["resource_metrics"][0]["scope_metrics"][0][
+        metrics = output_data[
             "metrics"
         ]
 
         # Create a lookup dict for easier testing
-        metrics_by_name = {metric["name"]: metric for metric in metrics}
+        metrics_by_name = {metric: metric for metric in metrics}
 
         # Test Counter: should be 1 (called counter.add(1))
-        counter_value = metrics_by_name["counter"]["data"]["data_points"][0][
+        counter_value = metrics_by_name[
             "value"
         ]
         self.assertEqual(counter_value, 1, "Counter should have value 1")
 
         # Test UpDownCounter: should be -4 (1 + (-5) = -4)
-        updown_value = metrics_by_name["updown_counter"]["data"][
+        updown_value = metrics_by_name[
             "data_points"
         ][0]["value"]
         self.assertEqual(
@@ -62,22 +62,22 @@ class TestMetrics(unittest.TestCase):
         )
 
         # Test Histogram: should have count=1, sum=99.9
-        histogram_data = metrics_by_name["histogram"]["data"]["data_points"][0]
+        histogram_data = metrics_by_name
         self.assertEqual(
-            histogram_data["count"], 1, "Histogram should have count 1"
+            histogram_data, 1, "Histogram should have count 1"
         )
         self.assertEqual(
-            histogram_data["sum"], 99.9, "Histogram should have sum 99.9"
+            histogram_data, 99.9, "Histogram should have sum 99.9"
         )
 
         # Test Gauge: should be 1 (last value set)
-        gauge_value = metrics_by_name["gauge"]["data"]["data_points"][0][
+        gauge_value = metrics_by_name[
             "value"
         ]
         self.assertEqual(gauge_value, 1, "Gauge should have value 1")
 
         # Test Observable Counter: should be 1 (from callback)
-        obs_counter_value = metrics_by_name["observable_counter"]["data"][
+        obs_counter_value = metrics_by_name[
             "data_points"
         ][0]["value"]
         self.assertEqual(
@@ -85,7 +85,7 @@ class TestMetrics(unittest.TestCase):
         )
 
         # Test Observable UpDownCounter: should be -10 (from callback)
-        obs_updown_value = metrics_by_name["observable_updown_counter"][
+        obs_updown_value = metrics_by_name[
             "data"
         ]["data_points"][0]["value"]
         self.assertEqual(
@@ -95,7 +95,7 @@ class TestMetrics(unittest.TestCase):
         )
 
         # Test Observable Gauge: should be 9 (from callback)
-        obs_gauge_value = metrics_by_name["observable_gauge"]["data"][
+        obs_gauge_value = metrics_by_name[
             "data_points"
         ][0]["value"]
         self.assertEqual(

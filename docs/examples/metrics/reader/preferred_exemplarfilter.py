@@ -39,7 +39,7 @@ exporter = ConsoleMetricExporter()
 
 reader = PeriodicExportingMetricReader(
     exporter,
-    export_interval_millis=5_000,
+    export_interval_millis=5000,
 )
 
 # Set up the MeterProvider with the ExemplarFilter

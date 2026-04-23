@@ -12,17 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 
 
 class TestThreads(OpenTelemetryTestCase):
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)
 
@@ -33,7 +33,7 @@ class TestThreads(OpenTelemetryTestCase):
         spans = self.tracer.finished_spans()
         self.assertEqual(len(spans), 2)
         self.assertNamesEqual(spans, ["child", "parent"])
-        self.assertIsChildOf(spans[0], spans[1])
+        self.assertIsChildOf(spans, spans)
 
     def parent_task(self, message):
         with self.tracer.start_active_span("parent") as scope:
@@ -45,4 +45,4 @@ class TestThreads(OpenTelemetryTestCase):
     def child_task(self, message, span):
         with self.tracer.scope_manager.activate(span, False):
             with self.tracer.start_active_span("child"):
-                return f"{message}::response"
+                return "{}::response".format(message)

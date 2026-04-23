@@ -22,7 +22,7 @@ CarrierT = typing.TypeVar("CarrierT")
 CarrierValT = typing.Union
 
 
-class Getter(abc.ABC, typing.Generic):
+class Getter(abc.ABC, typing.Generic[CarrierT]):
     """This class implements a Getter that enables extracting propagated
     fields from a carrier.
     """
@@ -55,7 +55,7 @@ class Getter(abc.ABC, typing.Generic):
         """
 
 
-class Setter(abc.ABC, typing.Generic):
+class Setter(abc.ABC, typing.Generic[CarrierT]):
     """This class implements a Setter that enables injecting propagated
     fields into a carrier.
     """

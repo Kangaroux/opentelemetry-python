@@ -29,7 +29,7 @@ def observable_counter_func(options):
 
 
 def observable_up_down_counter_func(
-    options,
+    options
 ):
     yield Observation(-10, {})
 

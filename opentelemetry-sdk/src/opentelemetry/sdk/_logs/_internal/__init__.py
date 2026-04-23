@@ -20,7 +20,6 @@ import logging
 import threading
 import traceback
 import warnings
-from dataclasses import dataclass, field
 from os import environ
 from threading import Lock
 from time import time_ns
@@ -171,13 +170,26 @@ class LogLimits(LogRecordLimits):
     pass
 
 
-class ReadableLogRecord:
+class ReadableLogRecord(object):
     """Readable LogRecord should be kept exactly in-sync with ReadWriteLogRecord, only difference is the frozen=True param."""
 
-    log_record
-    resource
-    instrumentation_scope = None
-    limits = None
+    def __init__(self, log_record=None, resource=None, instrumentation_scope=None, limits=None):
+        object.__setattr__(self, 'log_record', log_record)
+        object.__setattr__(self, 'resource', resource)
+        object.__setattr__(self, 'instrumentation_scope', instrumentation_scope)
+        object.__setattr__(self, 'limits', limits)
+
+    def __setattr__(self, name, value):
+        raise AttributeError("cannot assign to field '{}'".format(name))
+
+    def __eq__(self, other):
+        if not isinstance(other, ReadableLogRecord):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "ReadableLogRecord(log_record={}, resource={}, instrumentation_scope={}, limits={})".format(
+            self.log_record, self.resource, self.instrumentation_scope, self.limits)
 
     @property
     def dropped_attributes(self):
@@ -226,19 +238,21 @@ class ReadableLogRecord:
         )
 
 
-class ReadWriteLogRecord:
+class ReadWriteLogRecord(object):
     """A ReadWriteLogRecord instance represents an event being logged.
     ReadWriteLogRecord instances are created and emitted via `Logger`
     every time something is logged. They contain all the information
     pertinent to the event being logged.
     """
 
-    log_record
-    resource = Resource.create({})
-    instrumentation_scope = None
-    limits = field(default_factory=LogRecordLimits)
+    def __init__(self, log_record=None, resource=None, instrumentation_scope=None, limits=None):
+        self.log_record = log_record
+        self.resource = resource if resource is not None else Resource.create({})
+        self.instrumentation_scope = instrumentation_scope
+        self.limits = limits if limits is not None else LogRecordLimits()
+        self._post_init()
 
-    def __post_init__(self):
+    def _post_init(self):
         self.log_record.attributes = BoundedAttributes(
             maxlen=self.limits.max_attributes,
             attributes=self.log_record.attributes
@@ -518,19 +532,19 @@ class LoggingHandler(logging.Handler):
         }
 
         # Add standard code attributes for logs.
-        attributes = record.pathname
-        attributes = record.funcName
-        attributes = record.lineno
+        attributes[code_attributes.CODE_FILE_PATH] = record.pathname
+        attributes[code_attributes.CODE_FUNCTION_NAME] = record.funcName
+        attributes[code_attributes.CODE_LINE_NUMBER] = record.lineno
 
         if record.exc_info:
             exctype, value, tb = record.exc_info
             if exctype is not None:
-                attributes = exctype.__name__
+                attributes[exception_attributes.EXCEPTION_TYPE] = exctype.__name__
             if value is not None and value.args:
-                attributes = str(value.args)
+                attributes[exception_attributes.EXCEPTION_MESSAGE] = str(value.args[0])
             if tb is not None:
                 # https://opentelemetry.io/docs/specs/semconv/exceptions/exceptions-spans/#stacktrace-representation
-                attributes = "".join(
+                attributes[exception_attributes.EXCEPTION_STACKTRACE] = "".join(
                     traceback.format_exception(*record.exc_info)
                 )
         return attributes
@@ -726,12 +740,12 @@ class LoggerProvider(APILoggerProvider):
         with self._logger_cache_lock:
             key = (name, version, schema_url)
             if key in self._logger_cache:
-                return self._logger_cache
+                return self._logger_cache[key]
 
-            self._logger_cache = self._get_logger_no_cache(
+            self._logger_cache[key] = self._get_logger_no_cache(
                 name, version, schema_url
             )
-            return self._logger_cache
+            return self._logger_cache[key]
 
     def get_logger(self, name, version=None, schema_url=None, attributes=None):
         if self._disabled:
@@ -832,4 +846,4 @@ def std_to_otel(levelno):
         return SeverityNumber.UNSPECIFIED
     if levelno > 53:
         return SeverityNumber.FATAL4
-    return _STD_TO_OTEL
+    return _STD_TO_OTEL[levelno]

@@ -2,7 +2,6 @@
 #   filename:  schema.json
 #   timestamp: 2026-03-11T13:56:48+00:00
 
-from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional, Union
 
@@ -13,8 +12,10 @@ AlwaysOnSampler = Optional
 
 
 class AttributeLimits:
-    attribute_value_length_limit = None
-    attribute_count_limit = None
+
+    def __init__(self, attribute_value_length_limit=None, attribute_count_limit=None):
+        self.attribute_value_length_limit = attribute_value_length_limit
+        self.attribute_count_limit = attribute_count_limit
 
 
 Value = List
@@ -47,20 +48,24 @@ BaggagePropagator = Optional
 
 
 class Base2ExponentialBucketHistogramAggregation:
-    max_scale = None
-    max_size = None
-    record_min_max = None
+
+    def __init__(self, max_scale=None, max_size=None, record_min_max=None):
+        self.max_scale = max_scale
+        self.max_size = max_size
+        self.record_min_max = record_min_max
 
 
 class CardinalityLimits:
-    default = None
-    counter = None
-    gauge = None
-    histogram = None
-    observable_counter = None
-    observable_gauge = None
-    observable_up_down_counter = None
-    up_down_counter = None
+
+    def __init__(self, default=None, counter=None, gauge=None, histogram=None, observable_counter=None, observable_gauge=None, observable_up_down_counter=None, up_down_counter=None):
+        self.default = default
+        self.counter = counter
+        self.gauge = gauge
+        self.histogram = histogram
+        self.observable_counter = observable_counter
+        self.observable_gauge = observable_gauge
+        self.observable_up_down_counter = observable_up_down_counter
+        self.up_down_counter = up_down_counter
 
 
 ConsoleExporter = Optional
@@ -88,18 +93,24 @@ ExperimentalComposableAlwaysOnSampler = Optional
 
 
 class ExperimentalComposableProbabilitySampler:
-    ratio = None
+
+    def __init__(self, ratio=None):
+        self.ratio = ratio
 
 
 class ExperimentalComposableRuleBasedSamplerRuleAttributePatterns:
-    key
-    included = None
-    excluded = None
+
+    def __init__(self, key=None, included=None, excluded=None):
+        self.key = key
+        self.included = included
+        self.excluded = excluded
 
 
 class ExperimentalComposableRuleBasedSamplerRuleAttributeValues:
-    key
-    values
+
+    def __init__(self, key=None, values=None):
+        self.key = key
+        self.values = values
 
 
 ExperimentalContainerResourceDetector = Optional
@@ -109,15 +120,19 @@ ExperimentalHostResourceDetector = Optional
 
 
 class ExperimentalHttpClientInstrumentation:
-    request_captured_headers = None
-    response_captured_headers = None
-    known_methods = None
+
+    def __init__(self, request_captured_headers=None, response_captured_headers=None, known_methods=None):
+        self.request_captured_headers = request_captured_headers
+        self.response_captured_headers = response_captured_headers
+        self.known_methods = known_methods
 
 
 class ExperimentalHttpServerInstrumentation:
-    request_captured_headers = None
-    response_captured_headers = None
-    known_methods = None
+
+    def __init__(self, request_captured_headers=None, response_captured_headers=None, known_methods=None):
+        self.request_captured_headers = request_captured_headers
+        self.response_captured_headers = response_captured_headers
+        self.known_methods = known_methods
 
 
 ExperimentalLanguageSpecificInstrumentation = Dict[
@@ -126,20 +141,28 @@ ExperimentalLanguageSpecificInstrumentation = Dict[
 
 
 class ExperimentalMeterConfig:
-    enabled = None
+
+    def __init__(self, enabled=None):
+        self.enabled = enabled
 
 
 class ExperimentalMeterMatcherAndConfig:
-    name
-    config
+
+    def __init__(self, name=None, config=None):
+        self.name = name
+        self.config = config
 
 
 class ExperimentalOtlpFileExporter:
-    output_stream = None
+
+    def __init__(self, output_stream=None):
+        self.output_stream = output_stream
 
 
 class ExperimentalProbabilitySampler:
-    ratio = None
+
+    def __init__(self, ratio=None):
+        self.ratio = ratio
 
 
 ExperimentalProcessResourceDetector = Optional
@@ -157,9 +180,11 @@ class ExperimentalPrometheusTranslationStrategy(Enum):
 
 
 class ExperimentalSemconvConfig:
-    version = None
-    experimental = None
-    dual_emit = None
+
+    def __init__(self, version=None, experimental=None, dual_emit=None):
+        self.version = version
+        self.experimental = experimental
+        self.dual_emit = dual_emit
 
 
 ExperimentalServiceResourceDetector = Optional
@@ -172,21 +197,29 @@ class ExperimentalSpanParent(Enum):
 
 
 class ExperimentalTracerConfig:
-    enabled = None
+
+    def __init__(self, enabled=None):
+        self.enabled = enabled
 
 
 class ExperimentalTracerMatcherAndConfig:
-    name
-    config
+
+    def __init__(self, name=None, config=None):
+        self.name = name
+        self.config = config
 
 
 class ExperimentalUrlSanitization:
-    sensitive_query_parameters = None
+
+    def __init__(self, sensitive_query_parameters=None):
+        self.sensitive_query_parameters = sensitive_query_parameters
 
 
 class ExplicitBucketHistogramAggregation:
-    boundaries = None
-    record_min_max = None
+
+    def __init__(self, boundaries=None, record_min_max=None):
+        self.boundaries = boundaries
+        self.record_min_max = record_min_max
 
 
 class ExporterDefaultHistogramAggregation(Enum):
@@ -201,21 +234,27 @@ class ExporterTemporalityPreference(Enum):
 
 
 class GrpcTls:
-    ca_file = None
-    key_file = None
-    cert_file = None
-    insecure = None
+
+    def __init__(self, ca_file=None, key_file=None, cert_file=None, insecure=None):
+        self.ca_file = ca_file
+        self.key_file = key_file
+        self.cert_file = cert_file
+        self.insecure = insecure
 
 
 class HttpTls:
-    ca_file = None
-    key_file = None
-    cert_file = None
+
+    def __init__(self, ca_file=None, key_file=None, cert_file=None):
+        self.ca_file = ca_file
+        self.key_file = key_file
+        self.cert_file = cert_file
 
 
 class IncludeExclude:
-    included = None
-    excluded = None
+
+    def __init__(self, included=None, excluded=None):
+        self.included = included
+        self.excluded = excluded
 
 
 class InstrumentType(Enum):
@@ -232,36 +271,44 @@ LastValueAggregation = Optional
 
 
 class LogRecordLimits:
-    attribute_value_length_limit = None
-    attribute_count_limit = None
+
+    def __init__(self, attribute_value_length_limit=None, attribute_count_limit=None):
+        self.attribute_value_length_limit = attribute_value_length_limit
+        self.attribute_count_limit = attribute_count_limit
 
 
 class NameStringValuePair:
-    name
-    value
+
+    def __init__(self, name=None, value=None):
+        self.name = name
+        self.value = value
 
 
 OpenCensusMetricProducer = Optional
 
 
 class OtlpGrpcExporter:
-    endpoint = None
-    tls = None
-    headers = None
-    headers_list = None
-    compression = None
-    timeout = None
+
+    def __init__(self, endpoint=None, tls=None, headers=None, headers_list=None, compression=None, timeout=None):
+        self.endpoint = endpoint
+        self.tls = tls
+        self.headers = headers
+        self.headers_list = headers_list
+        self.compression = compression
+        self.timeout = timeout
 
 
 class OtlpGrpcMetricExporter:
-    endpoint = None
-    tls = None
-    headers = None
-    headers_list = None
-    compression = None
-    timeout = None
-    temporality_preference = None
-    default_histogram_aggregation    = None
+
+    def __init__(self, endpoint=None, tls=None, headers=None, headers_list=None, compression=None, timeout=None, temporality_preference=None, default_histogram_aggregation=None):
+        self.endpoint = endpoint
+        self.tls = tls
+        self.headers = headers
+        self.headers_list = headers_list
+        self.compression = compression
+        self.timeout = timeout
+        self.temporality_preference = temporality_preference
+        self.default_histogram_aggregation = default_histogram_aggregation
 
 
 class OtlpHttpEncoding(Enum):
@@ -270,25 +317,29 @@ class OtlpHttpEncoding(Enum):
 
 
 class OtlpHttpExporter:
-    endpoint = None
-    tls = None
-    headers = None
-    headers_list = None
-    compression = None
-    timeout = None
-    encoding = None
+
+    def __init__(self, endpoint=None, tls=None, headers=None, headers_list=None, compression=None, timeout=None, encoding=None):
+        self.endpoint = endpoint
+        self.tls = tls
+        self.headers = headers
+        self.headers_list = headers_list
+        self.compression = compression
+        self.timeout = timeout
+        self.encoding = encoding
 
 
 class OtlpHttpMetricExporter:
-    endpoint = None
-    tls = None
-    headers = None
-    headers_list = None
-    compression = None
-    timeout = None
-    encoding = None
-    temporality_preference = None
-    default_histogram_aggregation    = None
+
+    def __init__(self, endpoint=None, tls=None, headers=None, headers_list=None, compression=None, timeout=None, encoding=None, temporality_preference=None, default_histogram_aggregation=None):
+        self.endpoint = endpoint
+        self.tls = tls
+        self.headers = headers
+        self.headers_list = headers_list
+        self.compression = compression
+        self.timeout = timeout
+        self.encoding = encoding
+        self.temporality_preference = temporality_preference
+        self.default_histogram_aggregation = default_histogram_aggregation
 
 
 class SeverityNumber(Enum):
@@ -319,10 +370,12 @@ class SeverityNumber(Enum):
 
 
 class SpanExporter:
-    otlp_http = None
-    otlp_grpc = None
-    otlp_file_development = None
-    console = None
+
+    def __init__(self, otlp_http=None, otlp_grpc=None, otlp_file_development=None, console=None):
+        self.otlp_http = otlp_http
+        self.otlp_grpc = otlp_grpc
+        self.otlp_file_development = otlp_file_development
+        self.console = console
 
 
 class SpanKind(Enum):
@@ -334,12 +387,14 @@ class SpanKind(Enum):
 
 
 class SpanLimits:
-    attribute_value_length_limit = None
-    attribute_count_limit = None
-    event_count_limit = None
-    link_count_limit = None
-    event_attribute_count_limit = None
-    link_attribute_count_limit = None
+
+    def __init__(self, attribute_value_length_limit=None, attribute_count_limit=None, event_count_limit=None, link_count_limit=None, event_attribute_count_limit=None, link_attribute_count_limit=None):
+        self.attribute_value_length_limit = attribute_value_length_limit
+        self.attribute_count_limit = attribute_count_limit
+        self.event_count_limit = event_count_limit
+        self.link_count_limit = link_count_limit
+        self.event_attribute_count_limit = event_attribute_count_limit
+        self.link_attribute_count_limit = link_attribute_count_limit
 
 
 SumAggregation = Optional
@@ -349,293 +404,379 @@ TraceContextPropagator = Optional
 
 
 class TraceIdRatioBasedSampler:
-    ratio = None
+
+    def __init__(self, ratio=None):
+        self.ratio = ratio
 
 
 class ViewSelector:
-    instrument_name = None
-    instrument_type = None
-    unit = None
-    meter_name = None
-    meter_version = None
-    meter_schema_url = None
+
+    def __init__(self, instrument_name=None, instrument_type=None, unit=None, meter_name=None, meter_version=None, meter_schema_url=None):
+        self.instrument_name = instrument_name
+        self.instrument_type = instrument_type
+        self.unit = unit
+        self.meter_name = meter_name
+        self.meter_version = meter_version
+        self.meter_schema_url = meter_schema_url
 
 
 class Aggregation:
-    default = None
-    drop = None
-    explicit_bucket_histogram = (
-        None
-    )
-    base2_exponential_bucket_histogram    = None
-    last_value = None
-    sum = None
+
+    def __init__(self, default=None, drop=None, explicit_bucket_histogram=None, base2_exponential_bucket_histogram=None, last_value=None, sum=None):
+        self.default = default
+        self.drop = drop
+        self.explicit_bucket_histogram = explicit_bucket_histogram
+        self.base2_exponential_bucket_histogram = base2_exponential_bucket_histogram
+        self.last_value = last_value
+        self.sum = sum
 
 
 class AttributeNameValue:
-    name
-    value
-    type = None
+
+    def __init__(self, name=None, value=None, type=None):
+        self.name = name
+        self.value = value
+        self.type = type
 
 
 class BatchSpanProcessor:
-    exporter
-    schedule_delay = None
-    export_timeout = None
-    max_queue_size = None
-    max_export_batch_size = None
+
+    def __init__(self, exporter=None, schedule_delay=None, export_timeout=None, max_queue_size=None, max_export_batch_size=None):
+        self.exporter = exporter
+        self.schedule_delay = schedule_delay
+        self.export_timeout = export_timeout
+        self.max_queue_size = max_queue_size
+        self.max_export_batch_size = max_export_batch_size
 
 
 class ConsoleMetricExporter:
-    temporality_preference = None
-    default_histogram_aggregation    = None
+
+    def __init__(self, temporality_preference=None, default_histogram_aggregation=None):
+        self.temporality_preference = temporality_preference
+        self.default_histogram_aggregation = default_histogram_aggregation
 
 
 class ExperimentalCodeInstrumentation:
-    semconv = None
+
+    def __init__(self, semconv=None):
+        self.semconv = semconv
 
 
 class ExperimentalDbInstrumentation:
-    semconv = None
+
+    def __init__(self, semconv=None):
+        self.semconv = semconv
 
 
 class ExperimentalGenAiInstrumentation:
-    semconv = None
+
+    def __init__(self, semconv=None):
+        self.semconv = semconv
 
 
 class ExperimentalHttpInstrumentation:
-    semconv = None
-    client = None
-    server = None
+
+    def __init__(self, semconv=None, client=None, server=None):
+        self.semconv = semconv
+        self.client = client
+        self.server = server
 
 
 class ExperimentalLoggerConfig:
-    enabled = None
-    minimum_severity = None
-    trace_based = None
+
+    def __init__(self, enabled=None, minimum_severity=None, trace_based=None):
+        self.enabled = enabled
+        self.minimum_severity = minimum_severity
+        self.trace_based = trace_based
 
 
 class ExperimentalLoggerMatcherAndConfig:
-    name
-    config
+
+    def __init__(self, name=None, config=None):
+        self.name = name
+        self.config = config
 
 
 class ExperimentalMessagingInstrumentation:
-    semconv = None
+
+    def __init__(self, semconv=None):
+        self.semconv = semconv
 
 
 class ExperimentalMeterConfigurator:
-    default_config = None
-    meters = None
+
+    def __init__(self, default_config=None, meters=None):
+        self.default_config = default_config
+        self.meters = meters
 
 
 class ExperimentalOtlpFileMetricExporter:
-    output_stream = None
-    temporality_preference = None
-    default_histogram_aggregation    = None
+
+    def __init__(self, output_stream=None, temporality_preference=None, default_histogram_aggregation=None):
+        self.output_stream = output_stream
+        self.temporality_preference = temporality_preference
+        self.default_histogram_aggregation = default_histogram_aggregation
 
 
 class ExperimentalPrometheusMetricExporter:
-    host = None
-    port = None
-    without_scope_info = None
-    without_target_info_development = None
-    with_resource_constant_labels = None
-    translation_strategy    = None
+
+    def __init__(self, host=None, port=None, without_scope_info=None, without_target_info_development=None, with_resource_constant_labels=None, translation_strategy=None):
+        self.host = host
+        self.port = port
+        self.without_scope_info = without_scope_info
+        self.without_target_info_development = without_target_info_development
+        self.with_resource_constant_labels = with_resource_constant_labels
+        self.translation_strategy = translation_strategy
 
 
 class ExperimentalResourceDetector:
-    container = None
-    host = None
-    process = None
-    service = None
+
+    def __init__(self, container=None, host=None, process=None, service=None):
+        self.container = container
+        self.host = host
+        self.process = process
+        self.service = service
 
 
 class ExperimentalRpcInstrumentation:
-    semconv = None
+
+    def __init__(self, semconv=None):
+        self.semconv = semconv
 
 
 class ExperimentalSanitization:
-    url = None
+
+    def __init__(self, url=None):
+        self.url = url
 
 
 class ExperimentalTracerConfigurator:
-    default_config = None
-    tracers = None
+
+    def __init__(self, default_config=None, tracers=None):
+        self.default_config = default_config
+        self.tracers = tracers
 
 
 class LogRecordExporter:
-    otlp_http = None
-    otlp_grpc = None
-    otlp_file_development = None
-    console = None
+
+    def __init__(self, otlp_http=None, otlp_grpc=None, otlp_file_development=None, console=None):
+        self.otlp_http = otlp_http
+        self.otlp_grpc = otlp_grpc
+        self.otlp_file_development = otlp_file_development
+        self.console = console
 
 
 class MetricProducer:
-    opencensus = None
+
+    def __init__(self, opencensus=None):
+        self.opencensus = opencensus
 
 
 class PullMetricExporter:
-    prometheus_development = (
-        None
-    )
+
+    def __init__(self, prometheus_development=None):
+        self.prometheus_development = prometheus_development
 
 
 class PullMetricReader:
-    exporter
-    producers = None
-    cardinality_limits = None
+
+    def __init__(self, exporter=None, producers=None, cardinality_limits=None):
+        self.exporter = exporter
+        self.producers = producers
+        self.cardinality_limits = cardinality_limits
 
 
 class PushMetricExporter:
-    otlp_http = None
-    otlp_grpc = None
-    otlp_file_development = None
-    console = None
+
+    def __init__(self, otlp_http=None, otlp_grpc=None, otlp_file_development=None, console=None):
+        self.otlp_http = otlp_http
+        self.otlp_grpc = otlp_grpc
+        self.otlp_file_development = otlp_file_development
+        self.console = console
 
 
 class SimpleLogRecordProcessor:
-    exporter
+
+    def __init__(self, exporter=None):
+        self.exporter = exporter
 
 
 class SimpleSpanProcessor:
-    exporter
+
+    def __init__(self, exporter=None):
+        self.exporter = exporter
 
 
 class SpanProcessor:
-    batch = None
-    simple = None
+
+    def __init__(self, batch=None, simple=None):
+        self.batch = batch
+        self.simple = simple
 
 
 class TextMapPropagator:
-    tracecontext = None
-    baggage = None
-    b3 = None
-    b3multi = None
+
+    def __init__(self, tracecontext=None, baggage=None, b3=None, b3multi=None):
+        self.tracecontext = tracecontext
+        self.baggage = baggage
+        self.b3 = b3
+        self.b3multi = b3multi
 
 
 class ViewStream:
-    name = None
-    description = None
-    aggregation = None
-    aggregation_cardinality_limit = None
-    attribute_keys = None
+
+    def __init__(self, name=None, description=None, aggregation=None, aggregation_cardinality_limit=None, attribute_keys=None):
+        self.name = name
+        self.description = description
+        self.aggregation = aggregation
+        self.aggregation_cardinality_limit = aggregation_cardinality_limit
+        self.attribute_keys = attribute_keys
 
 
 class BatchLogRecordProcessor:
-    exporter
-    schedule_delay = None
-    export_timeout = None
-    max_queue_size = None
-    max_export_batch_size = None
+
+    def __init__(self, exporter=None, schedule_delay=None, export_timeout=None, max_queue_size=None, max_export_batch_size=None):
+        self.exporter = exporter
+        self.schedule_delay = schedule_delay
+        self.export_timeout = export_timeout
+        self.max_queue_size = max_queue_size
+        self.max_export_batch_size = max_export_batch_size
 
 
 class ExperimentalGeneralInstrumentation:
-    http = None
-    code = None
-    db = None
-    gen_ai = None
-    messaging = None
-    rpc = None
-    sanitization = None
-    stability_opt_in_list = None
+
+    def __init__(self, http=None, code=None, db=None, gen_ai=None, messaging=None, rpc=None, sanitization=None, stability_opt_in_list=None):
+        self.http = http
+        self.code = code
+        self.db = db
+        self.gen_ai = gen_ai
+        self.messaging = messaging
+        self.rpc = rpc
+        self.sanitization = sanitization
+        self.stability_opt_in_list = stability_opt_in_list
 
 
 class ExperimentalInstrumentation:
-    general = None
-    cpp = None
-    dotnet = None
-    erlang = None
-    go = None
-    java = None
-    js = None
-    php = None
-    python = None
-    ruby = None
-    rust = None
-    swift = None
+
+    def __init__(self, general=None, cpp=None, dotnet=None, erlang=None, go=None, java=None, js=None, php=None, python=None, ruby=None, rust=None, swift=None):
+        self.general = general
+        self.cpp = cpp
+        self.dotnet = dotnet
+        self.erlang = erlang
+        self.go = go
+        self.java = java
+        self.js = js
+        self.php = php
+        self.python = python
+        self.ruby = ruby
+        self.rust = rust
+        self.swift = swift
 
 
 class ExperimentalLoggerConfigurator:
-    default_config = None
-    loggers = None
+
+    def __init__(self, default_config=None, loggers=None):
+        self.default_config = default_config
+        self.loggers = loggers
 
 
 class ExperimentalResourceDetection:
-    attributes = None
-    detectors = None
+
+    def __init__(self, attributes=None, detectors=None):
+        self.attributes = attributes
+        self.detectors = detectors
 
 
 class LogRecordProcessor:
-    batch = None
-    simple = None
+
+    def __init__(self, batch=None, simple=None):
+        self.batch = batch
+        self.simple = simple
 
 
 class PeriodicMetricReader:
-    exporter
-    interval = None
-    timeout = None
-    producers = None
-    cardinality_limits = None
+
+    def __init__(self, exporter=None, interval=None, timeout=None, producers=None, cardinality_limits=None):
+        self.exporter = exporter
+        self.interval = interval
+        self.timeout = timeout
+        self.producers = producers
+        self.cardinality_limits = cardinality_limits
 
 
 class Propagator:
-    composite = None
-    composite_list = None
+
+    def __init__(self, composite=None, composite_list=None):
+        self.composite = composite
+        self.composite_list = composite_list
 
 
 class Resource:
-    attributes = None
-    detection_development = None
-    schema_url = None
-    attributes_list = None
+
+    def __init__(self, attributes=None, detection_development=None, schema_url=None, attributes_list=None):
+        self.attributes = attributes
+        self.detection_development = detection_development
+        self.schema_url = schema_url
+        self.attributes_list = attributes_list
 
 
 class View:
-    selector
-    stream
+
+    def __init__(self, selector=None, stream=None):
+        self.selector = selector
+        self.stream = stream
 
 
 class LoggerProvider:
-    processors
-    limits = None
-    logger_configurator_development    = None
+
+    def __init__(self, processors=None, limits=None, logger_configurator_development=None):
+        self.processors = processors
+        self.limits = limits
+        self.logger_configurator_development = logger_configurator_development
 
 
 class MetricReader:
-    periodic = None
-    pull = None
+
+    def __init__(self, periodic=None, pull=None):
+        self.periodic = periodic
+        self.pull = pull
 
 
 class MeterProvider:
-    readers
-    views = None
-    exemplar_filter = None
-    meter_configurator_development = (
-        None
-    )
+
+    def __init__(self, readers=None, views=None, exemplar_filter=None, meter_configurator_development=None):
+        self.readers = readers
+        self.views = views
+        self.exemplar_filter = exemplar_filter
+        self.meter_configurator_development = meter_configurator_development
 
 
 class OpenTelemetryConfiguration:
-    file_format
-    disabled = None
-    log_level = None
-    attribute_limits = None
-    logger_provider = None
-    meter_provider = None
-    propagator = None
-    tracer_provider = None
-    resource = None
-    instrumentation_development = None
-    distribution = None
+
+    def __init__(self, file_format=None, disabled=None, log_level=None, attribute_limits=None, logger_provider=None, meter_provider=None, propagator=None, tracer_provider=None, resource=None, instrumentation_development=None, distribution=None):
+        self.file_format = file_format
+        self.disabled = disabled
+        self.log_level = log_level
+        self.attribute_limits = attribute_limits
+        self.logger_provider = logger_provider
+        self.meter_provider = meter_provider
+        self.propagator = propagator
+        self.tracer_provider = tracer_provider
+        self.resource = resource
+        self.instrumentation_development = instrumentation_development
+        self.distribution = distribution
 
 
 class ExperimentalComposableParentThresholdSampler:
-    root
+
+    def __init__(self, root=None):
+        self.root = root
 
 
 class ExperimentalComposableRuleBasedSampler:
-    rules = None
+
+    def __init__(self, rules=None):
+        self.rules = rules
 
 
 class ExperimentalComposableRuleBasedSamplerRule:
@@ -645,47 +786,58 @@ class ExperimentalComposableRuleBasedSamplerRule:
 
     """
 
-    sampler
-    attribute_values    = None
-    attribute_patterns    = None
-    span_kinds = None
-    parent = None
+    def __init__(self, sampler=None, attribute_values=None, attribute_patterns=None, span_kinds=None, parent=None):
+        self.sampler = sampler
+        self.attribute_values = attribute_values
+        self.attribute_patterns = attribute_patterns
+        self.span_kinds = span_kinds
+        self.parent = parent
 
 
 class ExperimentalComposableSampler:
-    always_off = None
-    always_on = None
-    parent_threshold    = None
-    probability = None
-    rule_based = None
+
+    def __init__(self, always_off=None, always_on=None, parent_threshold=None, probability=None, rule_based=None):
+        self.always_off = always_off
+        self.always_on = always_on
+        self.parent_threshold = parent_threshold
+        self.probability = probability
+        self.rule_based = rule_based
 
 
 class ExperimentalJaegerRemoteSampler:
-    endpoint
-    initial_sampler
-    interval = None
+
+    def __init__(self, endpoint=None, initial_sampler=None, interval=None):
+        self.endpoint = endpoint
+        self.initial_sampler = initial_sampler
+        self.interval = interval
 
 
 class ParentBasedSampler:
-    root = None
-    remote_parent_sampled = None
-    remote_parent_not_sampled = None
-    local_parent_sampled = None
-    local_parent_not_sampled = None
+
+    def __init__(self, root=None, remote_parent_sampled=None, remote_parent_not_sampled=None, local_parent_sampled=None, local_parent_not_sampled=None):
+        self.root = root
+        self.remote_parent_sampled = remote_parent_sampled
+        self.remote_parent_not_sampled = remote_parent_not_sampled
+        self.local_parent_sampled = local_parent_sampled
+        self.local_parent_not_sampled = local_parent_not_sampled
 
 
 class Sampler:
-    always_off = None
-    always_on = None
-    composite_development = None
-    jaeger_remote_development = None
-    parent_based = None
-    probability_development = None
-    trace_id_ratio_based = None
+
+    def __init__(self, always_off=None, always_on=None, composite_development=None, jaeger_remote_development=None, parent_based=None, probability_development=None, trace_id_ratio_based=None):
+        self.always_off = always_off
+        self.always_on = always_on
+        self.composite_development = composite_development
+        self.jaeger_remote_development = jaeger_remote_development
+        self.parent_based = parent_based
+        self.probability_development = probability_development
+        self.trace_id_ratio_based = trace_id_ratio_based
 
 
 class TracerProvider:
-    processors
-    limits = None
-    sampler = None
-    tracer_configurator_development    = None
+
+    def __init__(self, processors=None, limits=None, sampler=None, tracer_configurator_development=None):
+        self.processors = processors
+        self.limits = limits
+        self.sampler = sampler
+        self.tracer_configurator_development = tracer_configurator_development

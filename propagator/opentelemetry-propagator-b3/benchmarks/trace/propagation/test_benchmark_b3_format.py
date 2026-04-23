@@ -40,7 +40,7 @@ def test_inject_empty_context(benchmark):
             benchmark(
                 FORMAT.inject,
                 {
-                    FORMAT.TRACE_ID_KEY,
+                    FORMAT.TRACE_ID_KEY: "bdb5b63237ed38aea578af665aa5aa60",
                     FORMAT.SPAN_ID_KEY: "00000000000000000c32d953d73ad225",
                     FORMAT.SAMPLED_KEY: "1",
                 },

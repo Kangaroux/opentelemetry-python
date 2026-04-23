@@ -20,17 +20,17 @@ from builtins import range
 from future import standard_library
 standard_library.install_aliases()
 import time
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 
 
 class TestThreads(OpenTelemetryTestCase):
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)
 
@@ -50,9 +50,9 @@ class TestThreads(OpenTelemetryTestCase):
         self.assertNamesEqual(spans, ["task1", "task2", "parent"])
 
         for idx in range(2):
-            self.assertSameTrace(spans[idx], spans[-1])
-            self.assertIsChildOf(spans[idx], spans[-1])
-            self.assertTrue(spans[idx].end_time <= spans[-1].end_time)
+            self.assertSameTrace(spans, spans)
+            self.assertIsChildOf(spans, spans)
+            self.assertTrue(spans.end_time <= spans.end_time)
 
     # Fire away a few subtasks, passing a parent Span whose lifetime
     # is not tied at all to the children.

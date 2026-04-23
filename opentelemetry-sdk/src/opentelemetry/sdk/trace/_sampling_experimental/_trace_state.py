@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import dataclass
 from typing import List, Optional, Sequence
 
 from opentelemetry.trace import TraceState
@@ -31,15 +30,25 @@ _TRACE_STATE_SIZE_LIMIT = 256
 _MAX_VALUE_LENGTH = 14  # 56 bits, 4 bits per hex digit
 
 
-class OtelTraceState:
+class OtelTraceState(object):
     """Marshals OpenTelemetry tracestate for sampling parameters.
 
     https://opentelemetry.io/docs/specs/otel/trace/tracestate-probability-sampling/
     """
 
-    random_value
-    threshold
-    rest
+    def __init__(self, random_value=None, threshold=None, rest=None):
+        self.random_value = random_value
+        self.threshold = threshold
+        self.rest = rest
+
+    def __eq__(self, other):
+        if not isinstance(other, OtelTraceState):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "OtelTraceState(random_value={}, threshold={}, rest={})".format(
+            self.random_value, self.threshold, self.rest)
 
     @staticmethod
     def invalid():
@@ -62,11 +71,11 @@ class OtelTraceState:
         rest = None
         for member in members:
             if member.startswith("th:"):
-                threshold = _parse_th(member, INVALID_THRESHOLD)
+                threshold = _parse_th(member[len("th:") :], INVALID_THRESHOLD)
                 continue
             if member.startswith("rv:"):
                 random_value = _parse_rv(
-                    member, INVALID_RANDOM_VALUE
+                    member[len("rv:") :], INVALID_RANDOM_VALUE
                 )
                 continue
             if rest is None:
@@ -101,7 +110,7 @@ class OtelTraceState:
             delim_idx = res.rfind(";")
             if delim_idx == -1:
                 break
-            res = res
+            res = res[:delim_idx]
         return res
 
 
@@ -133,8 +142,8 @@ def _parse_rv(value, default):
 def serialize_th(threshold):
     if not threshold:
         return "0"
-    return "{}".format(threshold).rstrip("0")
+    return "{:014x}".format(threshold).rstrip("0")
 
 
 def _serialize_rv(random_value):
-    return "{}".format(random_value)
+    return "{:014x}".format(random_value)

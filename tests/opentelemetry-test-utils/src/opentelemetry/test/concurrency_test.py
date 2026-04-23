@@ -73,10 +73,9 @@ class ConcurrencyTestBase(unittest.TestCase):
         results = [None] * num_threads
 
         def thread_start(idx):
-            nonlocal results
             # Get all threads here before releasing them to create contention
             barrier.wait()
-            results = func_to_test()
+            results[idx] = func_to_test()
 
         threads = [
             threading.Thread(target=partial(thread_start, i))

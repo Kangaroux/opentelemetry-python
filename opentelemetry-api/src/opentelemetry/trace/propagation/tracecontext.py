@@ -51,7 +51,7 @@ class TraceContextTextMapPropagator(textmap.TextMapPropagator):
         if not header:
             return context
 
-        match = re.search(self._TRACEPARENT_HEADER_FORMAT_RE, header)
+        match = re.search(self._TRACEPARENT_HEADER_FORMAT_RE, header[0])
         if not match:
             return context
 
@@ -100,7 +100,7 @@ class TraceContextTextMapPropagator(textmap.TextMapPropagator):
         span_context = span.get_span_context()
         if span_context == trace.INVALID_SPAN_CONTEXT:
             return
-        traceparent_string = "00-{}-{}-{}".format(format_trace_id(span_context.trace_id), format_span_id(span_context.span_id), span_context.trace_flags)
+        traceparent_string = "00-{}-{}-{:02x}".format(format_trace_id(span_context.trace_id), format_span_id(span_context.span_id), span_context.trace_flags)
         setter.set(carrier, self._TRACEPARENT_HEADER_NAME, traceparent_string)
         if span_context.trace_state:
             tracestate_string = span_context.trace_state.to_header()

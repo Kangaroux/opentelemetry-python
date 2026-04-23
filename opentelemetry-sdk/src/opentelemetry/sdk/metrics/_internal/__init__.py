@@ -95,7 +95,7 @@ class Meter(APIMeter):
                 name, _Counter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument = (
+                self._instrument_id_instrument[status.instrument_id] = (
                     _Counter(
                         name,
                         self._instrumentation_scope,
@@ -104,7 +104,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument
+            instrument = self._instrument_id_instrument[status.instrument_id]
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -127,7 +127,7 @@ class Meter(APIMeter):
                 name, _UpDownCounter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument = (
+                self._instrument_id_instrument[status.instrument_id] = (
                     _UpDownCounter(
                         name,
                         self._instrumentation_scope,
@@ -136,7 +136,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument
+            instrument = self._instrument_id_instrument[status.instrument_id]
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -163,7 +163,7 @@ class Meter(APIMeter):
                 name, _ObservableCounter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument = (
+                self._instrument_id_instrument[status.instrument_id] = (
                     _ObservableCounter(
                         name,
                         self._instrumentation_scope,
@@ -173,7 +173,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument
+            instrument = self._instrument_id_instrument[status.instrument_id]
 
         if not status.already_registered:
             self._measurement_consumer.register_asynchronous_instrument(
@@ -231,7 +231,7 @@ class Meter(APIMeter):
                 explicit_bucket_boundaries_advisory,
             )
             if not status.already_registered:
-                self._instrument_id_instrument = (
+                self._instrument_id_instrument[status.instrument_id] = (
                     _Histogram(
                         name,
                         self._instrumentation_scope,
@@ -241,7 +241,7 @@ class Meter(APIMeter):
                         explicit_bucket_boundaries_advisory,
                     )
                 )
-            instrument = self._instrument_id_instrument
+            instrument = self._instrument_id_instrument[status.instrument_id]
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -260,14 +260,14 @@ class Meter(APIMeter):
         with self._instrument_registration_lock:
             status = self._register_instrument(name, _Gauge, unit, description)
             if not status.already_registered:
-                self._instrument_id_instrument = _Gauge(
+                self._instrument_id_instrument[status.instrument_id] = _Gauge(
                     name,
                     self._instrumentation_scope,
                     self._measurement_consumer,
                     unit,
                     description,
                 )
-            instrument = self._instrument_id_instrument
+            instrument = self._instrument_id_instrument[status.instrument_id]
 
         if status.conflict:
             # FIXME #2558 go through all views here and check if this
@@ -290,7 +290,7 @@ class Meter(APIMeter):
                 name, _ObservableGauge, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument = (
+                self._instrument_id_instrument[status.instrument_id] = (
                     _ObservableGauge(
                         name,
                         self._instrumentation_scope,
@@ -300,7 +300,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument
+            instrument = self._instrument_id_instrument[status.instrument_id]
 
         if not status.already_registered:
             self._measurement_consumer.register_asynchronous_instrument(
@@ -328,7 +328,7 @@ class Meter(APIMeter):
                 name, _ObservableUpDownCounter, unit, description
             )
             if not status.already_registered:
-                self._instrument_id_instrument = (
+                self._instrument_id_instrument[status.instrument_id] = (
                     _ObservableUpDownCounter(
                         name,
                         self._instrumentation_scope,
@@ -338,7 +338,7 @@ class Meter(APIMeter):
                         description,
                     )
                 )
-            instrument = self._instrument_id_instrument
+            instrument = self._instrument_id_instrument[status.instrument_id]
 
         if not status.already_registered:
             self._measurement_consumer.register_asynchronous_instrument(
@@ -488,7 +488,7 @@ class MeterProvider(APIMeterProvider):
 
             # pylint =broad-exception-caught
             except Exception as error:
-                metric_reader_error = error
+                metric_reader_error[metric_reader] = error
 
         if metric_reader_error:
             metric_reader_error_string = "\n".join(
@@ -534,7 +534,7 @@ class MeterProvider(APIMeterProvider):
 
             # pylint =broad-exception-caught
             except Exception as error:
-                metric_reader_error = error
+                metric_reader_error[metric_reader] = error
 
         if self._atexit_handler is not None:
             unregister(self._atexit_handler)
@@ -582,8 +582,8 @@ class MeterProvider(APIMeterProvider):
             if not self._meters.get(info):
                 # FIXME #2558 pass SDKConfig object to meter so that the meter
                 # has access to views.
-                self._meters = Meter(
+                self._meters[info] = Meter(
                     info,
                     self._measurement_consumer,
                 )
-            return self._meters
+            return self._meters[info]

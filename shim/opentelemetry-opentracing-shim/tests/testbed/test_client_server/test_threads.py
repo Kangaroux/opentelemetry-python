@@ -26,7 +26,7 @@ from threading import Thread
 import opentracing
 from opentracing.ext import tags
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 from ..utils import await_until, get_logger, get_one_by_tag
@@ -75,7 +75,7 @@ class Client(object):
 
 
 class TestThreads(OpenTelemetryTestCase):
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
         self.queue = Queue()
         self.server = Server(tracer=self.tracer, queue=self.queue)

@@ -15,8 +15,6 @@
 # AUTO-GENERATED from "opentelemetry/proto/trace/v1/trace.proto"
 # DO NOT EDIT MANUALLY
 
-from __future__ import annotations
-
 import builtins
 import dataclasses
 import enum
@@ -52,9 +50,9 @@ class TracesData(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message TracesData
     """
 
-    resource_spans: builtins.list[ResourceSpans] = dataclasses.field(default_factory=builtins.list)
+    resource_spans = dataclasses.field(default_factory=builtins.list)
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -63,11 +61,11 @@ class TracesData(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.resource_spans:
-            _result["resourceSpans"] = opentelemetry.proto_json._json_codec.encode_repeated(self.resource_spans, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.resource_spans, lambda _v: _v.to_dict())
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "TracesData":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -80,8 +78,9 @@ class TracesData(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("resourceSpans")) is not None:
-            _args["resource_spans"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: ResourceSpans.from_dict(_v), "resource_spans")
+        _value = data.get("resourceSpans")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: ResourceSpans.from_dict(_v), "resource_spans")
 
         return cls(**_args)
 
@@ -93,11 +92,11 @@ class ResourceSpans(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message ResourceSpans
     """
 
-    resource: typing.Optional[opentelemetry.proto_json.resource.v1.resource.Resource] = None
-    scope_spans: builtins.list[ScopeSpans] = dataclasses.field(default_factory=builtins.list)
-    schema_url: typing.Optional[builtins.str] = ""
+    resource = None
+    scope_spans = dataclasses.field(default_factory=builtins.list)
+    schema_url = ""
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -106,15 +105,15 @@ class ResourceSpans(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.resource:
-            _result["resource"] = self.resource.to_dict()
+            _result = self.resource.to_dict()
         if self.scope_spans:
-            _result["scopeSpans"] = opentelemetry.proto_json._json_codec.encode_repeated(self.scope_spans, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.scope_spans, lambda _v: _v.to_dict())
         if self.schema_url:
-            _result["schemaUrl"] = self.schema_url
+            _result = self.schema_url
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "ResourceSpans":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -127,13 +126,16 @@ class ResourceSpans(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("resource")) is not None:
-            _args["resource"] = opentelemetry.proto_json.resource.v1.resource.Resource.from_dict(_value)
-        if (_value := data.get("scopeSpans")) is not None:
-            _args["scope_spans"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: ScopeSpans.from_dict(_v), "scope_spans")
-        if (_value := data.get("schemaUrl")) is not None:
+        _value = data.get("resource")
+        if _value is not None:
+            _args = opentelemetry.proto_json.resource.v1.resource.Resource.from_dict(_value)
+        _value = data.get("scopeSpans")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: ScopeSpans.from_dict(_v), "scope_spans")
+        _value = data.get("schemaUrl")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "schema_url")
-            _args["schema_url"] = _value
+            _args = _value
 
         return cls(**_args)
 
@@ -145,11 +147,11 @@ class ScopeSpans(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message ScopeSpans
     """
 
-    scope: typing.Optional[opentelemetry.proto_json.common.v1.common.InstrumentationScope] = None
-    spans: builtins.list[Span] = dataclasses.field(default_factory=builtins.list)
-    schema_url: typing.Optional[builtins.str] = ""
+    scope = None
+    spans = dataclasses.field(default_factory=builtins.list)
+    schema_url = ""
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -158,15 +160,15 @@ class ScopeSpans(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.scope:
-            _result["scope"] = self.scope.to_dict()
+            _result = self.scope.to_dict()
         if self.spans:
-            _result["spans"] = opentelemetry.proto_json._json_codec.encode_repeated(self.spans, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.spans, lambda _v: _v.to_dict())
         if self.schema_url:
-            _result["schemaUrl"] = self.schema_url
+            _result = self.schema_url
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "ScopeSpans":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -179,13 +181,16 @@ class ScopeSpans(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("scope")) is not None:
-            _args["scope"] = opentelemetry.proto_json.common.v1.common.InstrumentationScope.from_dict(_value)
-        if (_value := data.get("spans")) is not None:
-            _args["spans"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: Span.from_dict(_v), "spans")
-        if (_value := data.get("schemaUrl")) is not None:
+        _value = data.get("scope")
+        if _value is not None:
+            _args = opentelemetry.proto_json.common.v1.common.InstrumentationScope.from_dict(_value)
+        _value = data.get("spans")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: Span.from_dict(_v), "spans")
+        _value = data.get("schemaUrl")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "schema_url")
-            _args["schema_url"] = _value
+            _args = _value
 
         return cls(**_args)
 
@@ -217,12 +222,12 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
         Generated from protobuf message Event
         """
 
-        time_unix_nano: typing.Optional[builtins.int] = 0
-        name: typing.Optional[builtins.str] = ""
-        attributes: builtins.list[opentelemetry.proto_json.common.v1.common.KeyValue] = dataclasses.field(default_factory=builtins.list)
-        dropped_attributes_count: typing.Optional[builtins.int] = 0
+        time_unix_nano = 0
+        name = ""
+        attributes = dataclasses.field(default_factory=builtins.list)
+        dropped_attributes_count = 0
 
-        def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+        def to_dict(self):
             """
             Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -231,17 +236,17 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
             """
             _result = {}
             if self.time_unix_nano:
-                _result["timeUnixNano"] = opentelemetry.proto_json._json_codec.encode_int64(self.time_unix_nano)
+                _result = opentelemetry.proto_json._json_codec.encode_int64(self.time_unix_nano)
             if self.name:
-                _result["name"] = self.name
+                _result = self.name
             if self.attributes:
-                _result["attributes"] = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
+                _result = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
             if self.dropped_attributes_count:
-                _result["droppedAttributesCount"] = self.dropped_attributes_count
+                _result = self.dropped_attributes_count
             return _result
 
         @builtins.classmethod
-        def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "Span.Event":
+        def from_dict(cls, data):
             """
             Create from a dictionary with lowerCamelCase keys.
 
@@ -254,16 +259,20 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
             opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
             _args = {}
 
-            if (_value := data.get("timeUnixNano")) is not None:
-                _args["time_unix_nano"] = opentelemetry.proto_json._json_codec.decode_int64(_value, "time_unix_nano")
-            if (_value := data.get("name")) is not None:
+            _value = data.get("timeUnixNano")
+            if _value is not None:
+                _args = opentelemetry.proto_json._json_codec.decode_int64(_value, "time_unix_nano")
+            _value = data.get("name")
+            if _value is not None:
                 opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "name")
-                _args["name"] = _value
-            if (_value := data.get("attributes")) is not None:
-                _args["attributes"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
-            if (_value := data.get("droppedAttributesCount")) is not None:
+                _args = _value
+            _value = data.get("attributes")
+            if _value is not None:
+                _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
+            _value = data.get("droppedAttributesCount")
+            if _value is not None:
                 opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "dropped_attributes_count")
-                _args["dropped_attributes_count"] = _value
+                _args = _value
 
             return cls(**_args)
 
@@ -274,14 +283,14 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
         Generated from protobuf message Link
         """
 
-        trace_id: typing.Optional[builtins.bytes] = b""
-        span_id: typing.Optional[builtins.bytes] = b""
-        trace_state: typing.Optional[builtins.str] = ""
-        attributes: builtins.list[opentelemetry.proto_json.common.v1.common.KeyValue] = dataclasses.field(default_factory=builtins.list)
-        dropped_attributes_count: typing.Optional[builtins.int] = 0
-        flags: typing.Optional[builtins.int] = 0
+        trace_id = b""
+        span_id = b""
+        trace_state = ""
+        attributes = dataclasses.field(default_factory=builtins.list)
+        dropped_attributes_count = 0
+        flags = 0
 
-        def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+        def to_dict(self):
             """
             Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -290,21 +299,21 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
             """
             _result = {}
             if self.trace_id:
-                _result["traceId"] = opentelemetry.proto_json._json_codec.encode_hex(self.trace_id)
+                _result = opentelemetry.proto_json._json_codec.encode_hex(self.trace_id)
             if self.span_id:
-                _result["spanId"] = opentelemetry.proto_json._json_codec.encode_hex(self.span_id)
+                _result = opentelemetry.proto_json._json_codec.encode_hex(self.span_id)
             if self.trace_state:
-                _result["traceState"] = self.trace_state
+                _result = self.trace_state
             if self.attributes:
-                _result["attributes"] = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
+                _result = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
             if self.dropped_attributes_count:
-                _result["droppedAttributesCount"] = self.dropped_attributes_count
+                _result = self.dropped_attributes_count
             if self.flags:
-                _result["flags"] = self.flags
+                _result = self.flags
             return _result
 
         @builtins.classmethod
-        def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "Span.Link":
+        def from_dict(cls, data):
             """
             Create from a dictionary with lowerCamelCase keys.
 
@@ -317,42 +326,48 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
             opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
             _args = {}
 
-            if (_value := data.get("traceId")) is not None:
-                _args["trace_id"] = opentelemetry.proto_json._json_codec.decode_hex(_value, "trace_id")
-            if (_value := data.get("spanId")) is not None:
-                _args["span_id"] = opentelemetry.proto_json._json_codec.decode_hex(_value, "span_id")
-            if (_value := data.get("traceState")) is not None:
+            _value = data.get("traceId")
+            if _value is not None:
+                _args = opentelemetry.proto_json._json_codec.decode_hex(_value, "trace_id")
+            _value = data.get("spanId")
+            if _value is not None:
+                _args = opentelemetry.proto_json._json_codec.decode_hex(_value, "span_id")
+            _value = data.get("traceState")
+            if _value is not None:
                 opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "trace_state")
-                _args["trace_state"] = _value
-            if (_value := data.get("attributes")) is not None:
-                _args["attributes"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
-            if (_value := data.get("droppedAttributesCount")) is not None:
+                _args = _value
+            _value = data.get("attributes")
+            if _value is not None:
+                _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
+            _value = data.get("droppedAttributesCount")
+            if _value is not None:
                 opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "dropped_attributes_count")
-                _args["dropped_attributes_count"] = _value
-            if (_value := data.get("flags")) is not None:
+                _args = _value
+            _value = data.get("flags")
+            if _value is not None:
                 opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "flags")
-                _args["flags"] = _value
+                _args = _value
 
             return cls(**_args)
 
-    trace_id: typing.Optional[builtins.bytes] = b""
-    span_id: typing.Optional[builtins.bytes] = b""
-    trace_state: typing.Optional[builtins.str] = ""
-    parent_span_id: typing.Optional[builtins.bytes] = b""
-    flags: typing.Optional[builtins.int] = 0
-    name: typing.Optional[builtins.str] = ""
-    kind: typing.Union[Span.SpanKind, builtins.int, None] = 0
-    start_time_unix_nano: typing.Optional[builtins.int] = 0
-    end_time_unix_nano: typing.Optional[builtins.int] = 0
-    attributes: builtins.list[opentelemetry.proto_json.common.v1.common.KeyValue] = dataclasses.field(default_factory=builtins.list)
-    dropped_attributes_count: typing.Optional[builtins.int] = 0
-    events: builtins.list[Span.Event] = dataclasses.field(default_factory=builtins.list)
-    dropped_events_count: typing.Optional[builtins.int] = 0
-    links: builtins.list[Span.Link] = dataclasses.field(default_factory=builtins.list)
-    dropped_links_count: typing.Optional[builtins.int] = 0
-    status: typing.Optional[Status] = None
+    trace_id = b""
+    span_id = b""
+    trace_state = ""
+    parent_span_id = b""
+    flags = 0
+    name = ""
+    kind = 0
+    start_time_unix_nano = 0
+    end_time_unix_nano = 0
+    attributes = dataclasses.field(default_factory=builtins.list)
+    dropped_attributes_count = 0
+    events = dataclasses.field(default_factory=builtins.list)
+    dropped_events_count = 0
+    links = dataclasses.field(default_factory=builtins.list)
+    dropped_links_count = 0
+    status = None
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -361,41 +376,41 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.trace_id:
-            _result["traceId"] = opentelemetry.proto_json._json_codec.encode_hex(self.trace_id)
+            _result = opentelemetry.proto_json._json_codec.encode_hex(self.trace_id)
         if self.span_id:
-            _result["spanId"] = opentelemetry.proto_json._json_codec.encode_hex(self.span_id)
+            _result = opentelemetry.proto_json._json_codec.encode_hex(self.span_id)
         if self.trace_state:
-            _result["traceState"] = self.trace_state
+            _result = self.trace_state
         if self.parent_span_id:
-            _result["parentSpanId"] = opentelemetry.proto_json._json_codec.encode_hex(self.parent_span_id)
+            _result = opentelemetry.proto_json._json_codec.encode_hex(self.parent_span_id)
         if self.flags:
-            _result["flags"] = self.flags
+            _result = self.flags
         if self.name:
-            _result["name"] = self.name
+            _result = self.name
         if self.kind:
-            _result["kind"] = builtins.int(self.kind)
+            _result = builtins.int(self.kind)
         if self.start_time_unix_nano:
-            _result["startTimeUnixNano"] = opentelemetry.proto_json._json_codec.encode_int64(self.start_time_unix_nano)
+            _result = opentelemetry.proto_json._json_codec.encode_int64(self.start_time_unix_nano)
         if self.end_time_unix_nano:
-            _result["endTimeUnixNano"] = opentelemetry.proto_json._json_codec.encode_int64(self.end_time_unix_nano)
+            _result = opentelemetry.proto_json._json_codec.encode_int64(self.end_time_unix_nano)
         if self.attributes:
-            _result["attributes"] = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
         if self.dropped_attributes_count:
-            _result["droppedAttributesCount"] = self.dropped_attributes_count
+            _result = self.dropped_attributes_count
         if self.events:
-            _result["events"] = opentelemetry.proto_json._json_codec.encode_repeated(self.events, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.events, lambda _v: _v.to_dict())
         if self.dropped_events_count:
-            _result["droppedEventsCount"] = self.dropped_events_count
+            _result = self.dropped_events_count
         if self.links:
-            _result["links"] = opentelemetry.proto_json._json_codec.encode_repeated(self.links, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.links, lambda _v: _v.to_dict())
         if self.dropped_links_count:
-            _result["droppedLinksCount"] = self.dropped_links_count
+            _result = self.dropped_links_count
         if self.status:
-            _result["status"] = self.status.to_dict()
+            _result = self.status.to_dict()
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "Span":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -408,45 +423,61 @@ class Span(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("traceId")) is not None:
-            _args["trace_id"] = opentelemetry.proto_json._json_codec.decode_hex(_value, "trace_id")
-        if (_value := data.get("spanId")) is not None:
-            _args["span_id"] = opentelemetry.proto_json._json_codec.decode_hex(_value, "span_id")
-        if (_value := data.get("traceState")) is not None:
+        _value = data.get("traceId")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_hex(_value, "trace_id")
+        _value = data.get("spanId")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_hex(_value, "span_id")
+        _value = data.get("traceState")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "trace_state")
-            _args["trace_state"] = _value
-        if (_value := data.get("parentSpanId")) is not None:
-            _args["parent_span_id"] = opentelemetry.proto_json._json_codec.decode_hex(_value, "parent_span_id")
-        if (_value := data.get("flags")) is not None:
+            _args = _value
+        _value = data.get("parentSpanId")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_hex(_value, "parent_span_id")
+        _value = data.get("flags")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "flags")
-            _args["flags"] = _value
-        if (_value := data.get("name")) is not None:
+            _args = _value
+        _value = data.get("name")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "name")
-            _args["name"] = _value
-        if (_value := data.get("kind")) is not None:
+            _args = _value
+        _value = data.get("kind")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "kind")
-            _args["kind"] = Span.SpanKind(_value)
-        if (_value := data.get("startTimeUnixNano")) is not None:
-            _args["start_time_unix_nano"] = opentelemetry.proto_json._json_codec.decode_int64(_value, "start_time_unix_nano")
-        if (_value := data.get("endTimeUnixNano")) is not None:
-            _args["end_time_unix_nano"] = opentelemetry.proto_json._json_codec.decode_int64(_value, "end_time_unix_nano")
-        if (_value := data.get("attributes")) is not None:
-            _args["attributes"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
-        if (_value := data.get("droppedAttributesCount")) is not None:
+            _args = Span.SpanKind(_value)
+        _value = data.get("startTimeUnixNano")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_int64(_value, "start_time_unix_nano")
+        _value = data.get("endTimeUnixNano")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_int64(_value, "end_time_unix_nano")
+        _value = data.get("attributes")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: opentelemetry.proto_json.common.v1.common.KeyValue.from_dict(_v), "attributes")
+        _value = data.get("droppedAttributesCount")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "dropped_attributes_count")
-            _args["dropped_attributes_count"] = _value
-        if (_value := data.get("events")) is not None:
-            _args["events"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: Span.Event.from_dict(_v), "events")
-        if (_value := data.get("droppedEventsCount")) is not None:
+            _args = _value
+        _value = data.get("events")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: Span.Event.from_dict(_v), "events")
+        _value = data.get("droppedEventsCount")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "dropped_events_count")
-            _args["dropped_events_count"] = _value
-        if (_value := data.get("links")) is not None:
-            _args["links"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: Span.Link.from_dict(_v), "links")
-        if (_value := data.get("droppedLinksCount")) is not None:
+            _args = _value
+        _value = data.get("links")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: Span.Link.from_dict(_v), "links")
+        _value = data.get("droppedLinksCount")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "dropped_links_count")
-            _args["dropped_links_count"] = _value
-        if (_value := data.get("status")) is not None:
-            _args["status"] = Status.from_dict(_value)
+            _args = _value
+        _value = data.get("status")
+        if _value is not None:
+            _args = Status.from_dict(_value)
 
         return cls(**_args)
 
@@ -468,10 +499,10 @@ class Status(opentelemetry.proto_json._json_codec.JsonMessage):
         STATUS_CODE_OK = 1
         STATUS_CODE_ERROR = 2
 
-    message: typing.Optional[builtins.str] = ""
-    code: typing.Union[Status.StatusCode, builtins.int, None] = 0
+    message = ""
+    code = 0
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -480,13 +511,13 @@ class Status(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.message:
-            _result["message"] = self.message
+            _result = self.message
         if self.code:
-            _result["code"] = builtins.int(self.code)
+            _result = builtins.int(self.code)
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "Status":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -499,11 +530,13 @@ class Status(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("message")) is not None:
+        _value = data.get("message")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "message")
-            _args["message"] = _value
-        if (_value := data.get("code")) is not None:
+            _args = _value
+        _value = data.get("code")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "code")
-            _args["code"] = Status.StatusCode(_value)
+            _args = Status.StatusCode(_value)
 
         return cls(**_args)

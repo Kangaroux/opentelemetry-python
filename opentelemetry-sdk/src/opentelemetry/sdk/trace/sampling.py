@@ -437,9 +437,9 @@ def _get_from_env_or_default():
         except (ValueError, TypeError):
             _logger.warning("Could not convert TRACES_SAMPLER_ARG to float.")
             rate = 1.0
-        return _KNOWN_SAMPLERS(rate)
+        return _KNOWN_SAMPLERS[trace_sampler](rate)
 
-    return _KNOWN_SAMPLERS
+    return _KNOWN_SAMPLERS[trace_sampler]
 
 
 def _get_parent_trace_state(

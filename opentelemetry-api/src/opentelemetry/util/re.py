@@ -93,7 +93,7 @@ def parse_env_headers(s, liberal = False):
             name, value = match_string.split("=", 1)
             name = unquote(name).strip().lower()
             value = unquote(value).strip()
-            headers = value
+            headers[name] = value
         else:
             # this is not url-encoded and does not match the spec but we decided to be
             # liberal in what we accept to match other languages SDKs behaviour
@@ -111,6 +111,6 @@ def parse_env_headers(s, liberal = False):
             name, value = liberal_match_string.split("=", 1)
             name = name.strip().lower()
             value = value.strip()
-            headers = value
+            headers[name] = value
 
     return headers

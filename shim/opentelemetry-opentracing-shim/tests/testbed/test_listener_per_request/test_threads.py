@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 
 from opentracing.ext import tags
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 from ..utils import get_one_by_tag
@@ -31,8 +31,8 @@ class Client:
         self.executor = ThreadPoolExecutor(max_workers=3)
 
     def _task(self, message, listener):
-        # pylint: disable=no-self-use
-        res = f"{message}::response"
+        # pylint =no-self-use
+        res = "{}::response".format(message)
         listener.on_response(res)
         return res
 
@@ -45,7 +45,7 @@ class Client:
 
 
 class TestThreads(OpenTelemetryTestCase):
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
 
     def test_main(self):

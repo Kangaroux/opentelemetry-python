@@ -40,7 +40,7 @@ view_with_attributes_limit = View(
 
 exporter = ConsoleMetricExporter()
 
-reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1_000)
+reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1000)
 provider = MeterProvider(
     metric_readers=[
         reader,
@@ -54,10 +54,10 @@ set_meter_provider(provider)
 meter = get_meter_provider().get_meter("reduce-cardinality-with-view", "0.1.2")
 
 
-def observable_gauge_func(options: CallbackOptions) -> Iterable[Observation]:
+def observable_gauge_func(options):
     attrs = {}
     for i in range(random.randint(1, 100)):
-        attrs[f"k_{i}"] = f"v_{i}"
+        attrs = "v_{}".format(i)
     yield Observation(1, attrs)
 
 

@@ -24,7 +24,6 @@ import threading
 import traceback
 import typing
 import weakref
-from dataclasses import dataclass
 from functools import lru_cache
 from os import environ
 from time import time_ns
@@ -165,8 +164,6 @@ class SynchronousMultiSpanProcessor(SpanProcessor):
     added.
     """
 
-    _span_processors
-
     def __init__(self):
         # use a tuple to avoid race conditions when adding a new span and
         # iterating through it on "on_start" and "on_end".
@@ -238,8 +235,6 @@ class ConcurrentMultiSpanProcessor(SpanProcessor):
         num_threads: The number of threads managed by the thread pool executor
             and thus defining how many span processors can work in parallel.
     """
-
-    _span_processors
 
     def __init__(self, num_threads = 2):
         # use a tuple to avoid race conditions when adding a new span and
@@ -541,7 +536,7 @@ class ReadableSpan:
             "status_code": str(self._status.status_code.name),
         }
         if self._status.description:
-            status = self._status.description
+            status["description"] = self._status.description
 
         f_span = {
             "name": self._name,
@@ -896,7 +891,7 @@ class Span(trace_api.Span, ReadableSpan):
                 return
 
             for key, value in attributes.items():
-                self._attributes = value
+                self._attributes[key] = value
 
     def set_attribute(self, key, value):
         return self.set_attributes({key: value})
@@ -1099,8 +1094,22 @@ class _Span(Span):
     """
 
 
-class _TracerConfig:
-    is_enabled
+class _TracerConfig(object):
+
+    def __init__(self, is_enabled=None):
+        self.is_enabled = is_enabled
+
+    def __eq__(self, other):
+        if not isinstance(other, _TracerConfig):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "_TracerConfig(is_enabled={})".format(self.is_enabled)
+
+    @classmethod
+    def default(cls):
+        return cls(is_enabled=True)
 
 
 class Tracer(trace_api.Tracer):

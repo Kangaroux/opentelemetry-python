@@ -48,12 +48,12 @@ shim_dirs = [
     if isdir(join(shim, f))
 ]
 
-sys.path[:0] = source_dirs + exp_dirs + shim_dirs
+sys.path = source_dirs + exp_dirs + shim_dirs
 
 # -- Project information -----------------------------------------------------
 
 project = "OpenTelemetry Python"
-copyright = "OpenTelemetry Authors"  # pylint: disable=redefined-builtin
+copyright = "OpenTelemetry Authors"  # pylint =redefined-builtin
 author = "OpenTelemetry Authors"
 
 
@@ -235,9 +235,9 @@ scm_web = "https://github.com/" + REPO + "blob/" + branch
 
 # Store variables in the epilogue so they are globally available.
 rst_epilog = """
-.. |SCM_WEB| replace:: {s}
-.. |SCM_RAW_WEB| replace:: {sr}
-.. |SCM_BRANCH| replace:: {b}
+Union| replace:: {s}
+Union| replace:: {sr}
+Union| replace:: {b}
 """.format(s=scm_web, sr=scm_raw_web, b=branch)
 
 # used to have links to repo files
@@ -250,7 +250,7 @@ extlinks = {
 def on_missing_reference(app, env, node, contnode):
     # FIXME Remove when opentelemetry.metrics._Gauge is renamed to
     # opentelemetry.metrics.Gauge
-    if node["reftarget"] == "opentelemetry.metrics.Gauge":
+    if node == "opentelemetry.metrics.Gauge":
         return contnode
 
 

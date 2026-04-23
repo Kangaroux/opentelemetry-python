@@ -96,7 +96,7 @@ class _ViewInstrumentMatch:
 
             for key, value in (measurement.attributes or {}).items():
                 if key in self._view._attribute_keys:
-                    attributes = value
+                    attributes[key] = value
         elif measurement.attributes is not None:
             attributes = measurement.attributes
         else:
@@ -127,9 +127,9 @@ class _ViewInstrumentMatch:
                             self._view._exemplar_reservoir_factory,
                             time_ns(),
                         )
-                    self._attributes_aggregation = aggregation
+                    self._attributes_aggregation[aggr_key] = aggregation
 
-        self._attributes_aggregation.aggregate(
+        self._attributes_aggregation[aggr_key].aggregate(
             measurement, should_sample_exemplar
         )
 

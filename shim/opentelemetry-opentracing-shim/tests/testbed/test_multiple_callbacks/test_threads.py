@@ -21,11 +21,11 @@ from future import standard_library
 standard_library.install_aliases()
 import random
 import time
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 from ..utils import RefCount, get_logger
@@ -35,7 +35,7 @@ logger = get_logger(__name__)
 
 
 class TestThreads(OpenTelemetryTestCase):
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)
 
@@ -58,8 +58,8 @@ class TestThreads(OpenTelemetryTestCase):
         self.assertNamesEqual(spans, ["task", "task", "task", "parent"])
 
         for idx in range(3):
-            self.assertSameTrace(spans[idx], spans[-1])
-            self.assertIsChildOf(spans[idx], spans[-1])
+            self.assertSameTrace(spans, spans)
+            self.assertIsChildOf(spans, spans)
 
     def task(self, interval, parent_span):
         logger.info("Starting task")

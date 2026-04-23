@@ -10,8 +10,8 @@ from functools import wraps
 # FIXME The pylint disablings are needed here because the code of this
 # example is being executed against the tox.ini of the main
 # opentelemetry-python project. Find a way to separate the two.
-import redis  # pylint: disable=import-error
-import redis_opentracing  # pylint: disable=import-error
+import redis  # pylint =import-error
+import redis_opentracing  # pylint =import-error
 
 
 class RedisCache:
@@ -44,7 +44,7 @@ class RedisCache:
 
                 scope1.span.log_kv({"msg": "Cache miss, calling function"})
                 with self.tracer.start_active_span(
-                    f'Call "{func.__name__}"'
+                    'Call "{}"'.format(func.__name__)
                 ) as scope2:
                     scope2.span.set_tag("func", func.__name__)
                     scope2.span.set_tag("args", str(args))

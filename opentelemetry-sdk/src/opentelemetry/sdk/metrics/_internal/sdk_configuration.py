@@ -14,7 +14,6 @@
 
 # pylint =unused-import
 
-from dataclasses import dataclass
 from typing import Sequence
 
 # This kind of import is needed to avoid Sphinx errors.
@@ -22,8 +21,19 @@ import opentelemetry.sdk.metrics
 import opentelemetry.sdk.resources
 
 
-class SdkConfiguration:
-    exemplar_filter
-    resource
-    metric_readers
-    views
+class SdkConfiguration(object):
+
+    def __init__(self, exemplar_filter=None, resource=None, metric_readers=None, views=None):
+        self.exemplar_filter = exemplar_filter
+        self.resource = resource
+        self.metric_readers = metric_readers
+        self.views = views
+
+    def __eq__(self, other):
+        if not isinstance(other, SdkConfiguration):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "SdkConfiguration(exemplar_filter={}, resource={}, metric_readers={}, views={})".format(
+            self.exemplar_filter, self.resource, self.metric_readers, self.views)

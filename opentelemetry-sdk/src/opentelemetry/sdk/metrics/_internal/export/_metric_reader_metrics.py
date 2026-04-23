@@ -18,8 +18,8 @@ class MetricReaderMetrics:
     ):
         meter = meter_provider.get_meter("opentelemetry-sdk")
 
-        count = _component_counter
-        _component_counter = count + 1
+        count = _component_counter[component_type]
+        _component_counter[component_type] = count + 1
 
         self._standard_attrs = {
             OTEL_COMPONENT_TYPE: component_type,

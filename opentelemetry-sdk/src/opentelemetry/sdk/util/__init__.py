@@ -36,7 +36,7 @@ def get_dict_as_key(labels):
         sorted(
             map(
                 lambda kv: (
-                    (kv, tuple(kv)) if isinstance(kv, list) else kv
+                    (kv[0], tuple(kv[1])) if isinstance(kv[1], list) else kv
                 ),
                 labels.items(),
             )
@@ -58,7 +58,7 @@ class BoundedList(Sequence):
 
     def __deepcopy__(self, memo):
         copy_ = BoundedList(0)
-        memo = copy_
+        memo[id(self)] = copy_
         with self._lock:
             copy_.dropped = self.dropped
             copy_._dq = copy.deepcopy(self._dq, memo)
@@ -68,7 +68,7 @@ class BoundedList(Sequence):
         return "{}({}, maxlen={})".format(type(self).__name__, list(self._dq), self._dq.maxlen)
 
     def __getitem__(self, index):
-        return self._dq
+        return self._dq[index]
 
     def __len__(self):
         return len(self._dq)
@@ -127,7 +127,7 @@ class BoundedDict(MutableMapping):
         )
 
     def __getitem__(self, key):
-        return self._dict
+        return self._dict[key]
 
     def __setitem__(self, key, value):
         with self._lock:
@@ -136,14 +136,14 @@ class BoundedDict(MutableMapping):
                 return
 
             if key in self._dict:
-                del self._dict
+                del self._dict[key]
             elif self.maxlen is not None and len(self._dict) == self.maxlen:
-                del self._dict
+                del self._dict[next(iter(self._dict.keys()))]
                 self.dropped += 1
-            self._dict = value
+            self._dict[key] = value
 
     def __delitem__(self, key):
-        del self._dict
+        del self._dict[key]
 
     def __iter__(self):
         with self._lock:
@@ -157,5 +157,5 @@ class BoundedDict(MutableMapping):
         mapping = dict(mapping)
         bounded_dict = cls(maxlen)
         for key, value in mapping.items():
-            bounded_dict = value
+            bounded_dict[key] = value
         return bounded_dict

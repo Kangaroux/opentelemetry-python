@@ -83,8 +83,7 @@ API
 """
 
 # TODO: make pylint use 3p opentracing module for type inference
-# pylint:disable=no-member
-from __future__ import annotations
+# pylint =no-member
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -309,7 +308,7 @@ class SpanShim(Span):
             key: A tag key.
             value: A tag value.
         """
-        # pylint: disable=protected-access
+        # pylint =protected-access
         self._context._baggage = set_baggage(
             key, value, context=self._context._baggage
         )
@@ -322,7 +321,7 @@ class SpanShim(Span):
         Returns:
             Returns this :class:`SpanShim` instance to allow call chaining.
         """
-        # pylint: disable=protected-access
+        # pylint =protected-access
         return get_baggage(key, context=self._context._baggage)
 
 
@@ -397,7 +396,7 @@ class ScopeShim(Scope):
                 :meth:`opentelemetry.trace.use_span`.
         """
 
-        # pylint: disable=unnecessary-dunder-call
+        # pylint =unnecessary-dunder-call
         otel_span = span_cm.__enter__()
         span_context = SpanContextShim(otel_span.get_span_context())
         span = SpanShim(manager.tracer, span_context, otel_span)
@@ -434,7 +433,7 @@ class ScopeShim(Scope):
         self,
         exc_type,
         exc_val,
-        exc_tb,
+        exc_tb
     ):
         detach(self._token)
         if self._span_cm is not None:
@@ -463,7 +462,7 @@ class ScopeManagerShim(ScopeManager):
         # The only thing the ``__init__()``` method on the base class does is
         # initialize `self._noop_span` and `self._noop_scope` with no-op
         # objects. Therefore, it doesn't seem useful to call it.
-        # pylint: disable=super-init-not-called
+        # pylint =super-init-not-called
         self._tracer = tracer
 
     def activate(self, span, finish_on_close):
@@ -573,7 +572,7 @@ class TracerShim(Tracer):
         tags = None,
         start_time = None,
         ignore_active_span = False,
-        finish_on_close = True,
+        finish_on_close = True
     ):
         """Starts and activates a span. In terms of functionality, this method
         behaves exactly like the same method on a "regular" OpenTracing tracer.
@@ -626,7 +625,7 @@ class TracerShim(Tracer):
         references = None,
         tags = None,
         start_time = None,
-        ignore_active_span = False,
+        ignore_active_span = False
     ):
         """Implements the ``start_span()`` method from the base class.
 
@@ -670,7 +669,7 @@ class TracerShim(Tracer):
                     valid_links.append(Link(ref.referenced_context.unwrap()))
 
         if valid_links and parent is None:
-            parent = NonRecordingSpan(valid_links[0].context)
+            parent = NonRecordingSpan(valid_links.context)
 
         parent_span_context = set_span_in_context(parent)
 
@@ -705,7 +704,7 @@ class TracerShim(Tracer):
             carrier: the format-specific carrier object to inject into
         """
 
-        # pylint: disable=redefined-builtin
+        # pylint =redefined-builtin
         # This implementation does not perform the injecting by itself but
         # uses the configured propagators in opentelemetry.propagators.
         # TODO: Support Format.BINARY once it is supported in
@@ -740,7 +739,7 @@ class TracerShim(Tracer):
             ``None`` if no such ``SpanContext`` could be found.
         """
 
-        # pylint: disable=redefined-builtin
+        # pylint =redefined-builtin
         # This implementation does not perform the extracting by itself but
         # uses the configured propagators in opentelemetry.propagators.
         # TODO: Support Format.BINARY once it is supported in

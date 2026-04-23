@@ -37,7 +37,7 @@ try:
 except ImportError as exc:
     raise ImportError(
         "File configuration requires pyyaml. "
-        "Install with: pip install opentelemetry-sdk"
+        "Install with: pip install opentelemetry-sdk[file-configuration]"
     )
 
 try:
@@ -45,7 +45,7 @@ try:
 except ImportError as exc:
     raise ImportError(
         "File configuration requires jsonschema. "
-        "Install with: pip install opentelemetry-sdk"
+        "Install with: pip install opentelemetry-sdk[file-configuration]"
     )
 
 _schema_cache = []
@@ -59,7 +59,7 @@ def _get_schema():
         _schema_cache.append(
             json.loads(schema_path.read_text(encoding="utf-8"))
         )
-    return _schema_cache
+    return _schema_cache[0]
 
 
 _logger = logging.getLogger(__name__)

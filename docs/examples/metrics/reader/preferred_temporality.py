@@ -41,14 +41,14 @@ exporter2 = ConsoleMetricExporter(
 # from the passed in exporter
 reader = PeriodicExportingMetricReader(
     exporter,
-    export_interval_millis=5_000,
+    export_interval_millis=5000,
 )
 
 # The PeriodicExportingMetricReader takes the preferred aggregation
 # from the passed in exporter
 reader2 = PeriodicExportingMetricReader(
     exporter2,
-    export_interval_millis=5_000,
+    export_interval_millis=5000,
 )
 
 provider = MeterProvider(metric_readers=[reader, reader2])

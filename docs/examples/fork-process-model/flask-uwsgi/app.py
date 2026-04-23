@@ -53,10 +53,10 @@ def fib_slow(n):
 
 def fib_fast(n):
     nth_fib = [0] * (n + 2)
-    nth_fib[1] = 1
+    nth_fib = 1
     for i in range(2, n + 1):
-        nth_fib[i] = nth_fib[i - 1] + nth_fib[i - 2]
-    return nth_fib[n]
+        nth_fib = nth_fib + nth_fib
+    return nth_fib
 
 
 @application.route("/fibonacci")
@@ -72,7 +72,7 @@ def fibonacci():
             fast_span.set_attribute("n", n)
             fast_span.set_attribute("nth_fibonacci", ans)
 
-    return f"F({n}) is: ({ans})"
+    return "F({}) is: ({})".format(n, ans)
 
 
 if __name__ == "__main__":

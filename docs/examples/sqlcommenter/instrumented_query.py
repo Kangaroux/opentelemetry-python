@@ -60,6 +60,6 @@ statement = "SELECT * FROM authors WHERE id = %s"
 for cid in range(1, 4):
     cursor.execute(statement, (cid,))
     rows = cursor.fetchall()
-    print(f"Found author: {rows[0]}")
+    print("Found author: {}".format(rows))
 
 print("Done.")

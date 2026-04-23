@@ -98,13 +98,13 @@ class OTLPMetricExporter(
         endpoint = None,
         insecure = None,
         credentials = None,
-        headers: Union | None = None,
+        headers = None,
         timeout = None,
         compression = None,
         preferred_temporality = None,
         preferred_aggregation = None,
         max_export_batch_size = None,
-        channel_options: Tuple | None = None
+        channel_options = None
     ):
         insecure_metrics = environ.get(OTEL_EXPORTER_OTLP_METRICS_INSECURE)
         if insecure is None and insecure_metrics is not None:

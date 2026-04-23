@@ -87,7 +87,7 @@ def _encode_resource_logs(
         sdk_instrumentation = readable_log.instrumentation_scope or None
         pb2_log = _encode_log(readable_log)
 
-        sdk_resource_logs.append(pb2_log)
+        sdk_resource_logs[sdk_resource][sdk_instrumentation].append(pb2_log)
 
     pb2_resource_logs = []
 

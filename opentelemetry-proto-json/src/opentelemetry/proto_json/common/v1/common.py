@@ -15,8 +15,6 @@
 # AUTO-GENERATED from "opentelemetry/proto/common/v1/common.proto"
 # DO NOT EDIT MANUALLY
 
-from __future__ import annotations
-
 import builtins
 import dataclasses
 import functools
@@ -38,15 +36,15 @@ class AnyValue(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message AnyValue
     """
 
-    string_value: typing.Optional[builtins.str] = None
-    bool_value: typing.Optional[builtins.bool] = None
-    int_value: typing.Optional[builtins.int] = None
-    double_value: typing.Optional[builtins.float] = None
-    array_value: typing.Optional[ArrayValue] = None
-    kvlist_value: typing.Optional[KeyValueList] = None
-    bytes_value: typing.Optional[builtins.bytes] = None
+    string_value = None
+    bool_value = None
+    int_value = None
+    double_value = None
+    array_value = None
+    kvlist_value = None
+    bytes_value = None
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -55,23 +53,23 @@ class AnyValue(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.bytes_value is not None:
-            _result["bytesValue"] = opentelemetry.proto_json._json_codec.encode_base64(self.bytes_value)
+            _result = opentelemetry.proto_json._json_codec.encode_base64(self.bytes_value)
         elif self.kvlist_value is not None:
-            _result["kvlistValue"] = self.kvlist_value.to_dict()
+            _result = self.kvlist_value.to_dict()
         elif self.array_value is not None:
-            _result["arrayValue"] = self.array_value.to_dict()
+            _result = self.array_value.to_dict()
         elif self.double_value is not None:
-            _result["doubleValue"] = opentelemetry.proto_json._json_codec.encode_float(self.double_value)
+            _result = opentelemetry.proto_json._json_codec.encode_float(self.double_value)
         elif self.int_value is not None:
-            _result["intValue"] = opentelemetry.proto_json._json_codec.encode_int64(self.int_value)
+            _result = opentelemetry.proto_json._json_codec.encode_int64(self.int_value)
         elif self.bool_value is not None:
-            _result["boolValue"] = self.bool_value
+            _result = self.bool_value
         elif self.string_value is not None:
-            _result["stringValue"] = self.string_value
+            _result = self.string_value
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "AnyValue":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -84,22 +82,29 @@ class AnyValue(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("bytesValue")) is not None:
-            _args["bytes_value"] = opentelemetry.proto_json._json_codec.decode_base64(_value, "bytes_value")
-        elif (_value := data.get("kvlistValue")) is not None:
-            _args["kvlist_value"] = KeyValueList.from_dict(_value)
-        elif (_value := data.get("arrayValue")) is not None:
-            _args["array_value"] = ArrayValue.from_dict(_value)
-        elif (_value := data.get("doubleValue")) is not None:
-            _args["double_value"] = opentelemetry.proto_json._json_codec.decode_float(_value, "double_value")
-        elif (_value := data.get("intValue")) is not None:
-            _args["int_value"] = opentelemetry.proto_json._json_codec.decode_int64(_value, "int_value")
-        elif (_value := data.get("boolValue")) is not None:
+        _value = data.get("bytesValue")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_base64(_value, "bytes_value")
+        _value = data.get("kvlistValue")
+        if _value is not None:
+            _args = KeyValueList.from_dict(_value)
+        _value = data.get("arrayValue")
+        if _value is not None:
+            _args = ArrayValue.from_dict(_value)
+        _value = data.get("doubleValue")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_float(_value, "double_value")
+        _value = data.get("intValue")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_int64(_value, "int_value")
+        _value = data.get("boolValue")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.bool, "bool_value")
-            _args["bool_value"] = _value
-        elif (_value := data.get("stringValue")) is not None:
+            _args = _value
+        _value = data.get("stringValue")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "string_value")
-            _args["string_value"] = _value
+            _args = _value
 
         return cls(**_args)
 
@@ -111,9 +116,9 @@ class ArrayValue(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message ArrayValue
     """
 
-    values: builtins.list[AnyValue] = dataclasses.field(default_factory=builtins.list)
+    values = dataclasses.field(default_factory=builtins.list)
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -122,11 +127,11 @@ class ArrayValue(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.values:
-            _result["values"] = opentelemetry.proto_json._json_codec.encode_repeated(self.values, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.values, lambda _v: _v.to_dict())
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "ArrayValue":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -139,8 +144,9 @@ class ArrayValue(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("values")) is not None:
-            _args["values"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: AnyValue.from_dict(_v), "values")
+        _value = data.get("values")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: AnyValue.from_dict(_v), "values")
 
         return cls(**_args)
 
@@ -152,9 +158,9 @@ class KeyValueList(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message KeyValueList
     """
 
-    values: builtins.list[KeyValue] = dataclasses.field(default_factory=builtins.list)
+    values = dataclasses.field(default_factory=builtins.list)
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -163,11 +169,11 @@ class KeyValueList(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.values:
-            _result["values"] = opentelemetry.proto_json._json_codec.encode_repeated(self.values, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.values, lambda _v: _v.to_dict())
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "KeyValueList":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -180,8 +186,9 @@ class KeyValueList(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("values")) is not None:
-            _args["values"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: KeyValue.from_dict(_v), "values")
+        _value = data.get("values")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: KeyValue.from_dict(_v), "values")
 
         return cls(**_args)
 
@@ -193,10 +200,10 @@ class KeyValue(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message KeyValue
     """
 
-    key: typing.Optional[builtins.str] = ""
-    value: typing.Optional[AnyValue] = None
+    key = ""
+    value = None
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -205,13 +212,13 @@ class KeyValue(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.key:
-            _result["key"] = self.key
+            _result = self.key
         if self.value:
-            _result["value"] = self.value.to_dict()
+            _result = self.value.to_dict()
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "KeyValue":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -224,11 +231,13 @@ class KeyValue(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("key")) is not None:
+        _value = data.get("key")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "key")
-            _args["key"] = _value
-        if (_value := data.get("value")) is not None:
-            _args["value"] = AnyValue.from_dict(_value)
+            _args = _value
+        _value = data.get("value")
+        if _value is not None:
+            _args = AnyValue.from_dict(_value)
 
         return cls(**_args)
 
@@ -240,12 +249,12 @@ class InstrumentationScope(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message InstrumentationScope
     """
 
-    name: typing.Optional[builtins.str] = ""
-    version: typing.Optional[builtins.str] = ""
-    attributes: builtins.list[KeyValue] = dataclasses.field(default_factory=builtins.list)
-    dropped_attributes_count: typing.Optional[builtins.int] = 0
+    name = ""
+    version = ""
+    attributes = dataclasses.field(default_factory=builtins.list)
+    dropped_attributes_count = 0
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -254,17 +263,17 @@ class InstrumentationScope(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.name:
-            _result["name"] = self.name
+            _result = self.name
         if self.version:
-            _result["version"] = self.version
+            _result = self.version
         if self.attributes:
-            _result["attributes"] = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
+            _result = opentelemetry.proto_json._json_codec.encode_repeated(self.attributes, lambda _v: _v.to_dict())
         if self.dropped_attributes_count:
-            _result["droppedAttributesCount"] = self.dropped_attributes_count
+            _result = self.dropped_attributes_count
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "InstrumentationScope":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -277,17 +286,21 @@ class InstrumentationScope(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("name")) is not None:
+        _value = data.get("name")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "name")
-            _args["name"] = _value
-        if (_value := data.get("version")) is not None:
+            _args = _value
+        _value = data.get("version")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "version")
-            _args["version"] = _value
-        if (_value := data.get("attributes")) is not None:
-            _args["attributes"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: KeyValue.from_dict(_v), "attributes")
-        if (_value := data.get("droppedAttributesCount")) is not None:
+            _args = _value
+        _value = data.get("attributes")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: KeyValue.from_dict(_v), "attributes")
+        _value = data.get("droppedAttributesCount")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.int, "dropped_attributes_count")
-            _args["dropped_attributes_count"] = _value
+            _args = _value
 
         return cls(**_args)
 
@@ -299,12 +312,12 @@ class EntityRef(opentelemetry.proto_json._json_codec.JsonMessage):
     Generated from protobuf message EntityRef
     """
 
-    schema_url: typing.Optional[builtins.str] = ""
-    type: typing.Optional[builtins.str] = ""
-    id_keys: builtins.list[builtins.str] = dataclasses.field(default_factory=builtins.list)
-    description_keys: builtins.list[builtins.str] = dataclasses.field(default_factory=builtins.list)
+    schema_url = ""
+    type = ""
+    id_keys = dataclasses.field(default_factory=builtins.list)
+    description_keys = dataclasses.field(default_factory=builtins.list)
 
-    def to_dict(self) -> builtins.dict[builtins.str, typing.Any]:
+    def to_dict(self):
         """
         Convert this message to a dictionary with lowerCamelCase keys.
 
@@ -313,17 +326,17 @@ class EntityRef(opentelemetry.proto_json._json_codec.JsonMessage):
         """
         _result = {}
         if self.schema_url:
-            _result["schemaUrl"] = self.schema_url
+            _result = self.schema_url
         if self.type:
-            _result["type"] = self.type
+            _result = self.type
         if self.id_keys:
-            _result["idKeys"] = self.id_keys
+            _result = self.id_keys
         if self.description_keys:
-            _result["descriptionKeys"] = self.description_keys
+            _result = self.description_keys
         return _result
 
     @builtins.classmethod
-    def from_dict(cls, data: builtins.dict[builtins.str, typing.Any]) -> "EntityRef":
+    def from_dict(cls, data):
         """
         Create from a dictionary with lowerCamelCase keys.
 
@@ -336,15 +349,19 @@ class EntityRef(opentelemetry.proto_json._json_codec.JsonMessage):
         opentelemetry.proto_json._json_codec.validate_type(data, builtins.dict, "data")
         _args = {}
 
-        if (_value := data.get("schemaUrl")) is not None:
+        _value = data.get("schemaUrl")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "schema_url")
-            _args["schema_url"] = _value
-        if (_value := data.get("type")) is not None:
+            _args = _value
+        _value = data.get("type")
+        if _value is not None:
             opentelemetry.proto_json._json_codec.validate_type(_value, builtins.str, "type")
-            _args["type"] = _value
-        if (_value := data.get("idKeys")) is not None:
-            _args["id_keys"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: _v, "id_keys")
-        if (_value := data.get("descriptionKeys")) is not None:
-            _args["description_keys"] = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: _v, "description_keys")
+            _args = _value
+        _value = data.get("idKeys")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: _v, "id_keys")
+        _value = data.get("descriptionKeys")
+        if _value is not None:
+            _args = opentelemetry.proto_json._json_codec.decode_repeated(_value, lambda _v: _v, "description_keys")
 
         return cls(**_args)

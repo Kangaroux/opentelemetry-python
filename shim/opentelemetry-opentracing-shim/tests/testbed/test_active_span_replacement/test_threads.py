@@ -18,17 +18,17 @@ from __future__ import unicode_literals
 
 from future import standard_library
 standard_library.install_aliases()
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 
 
 class TestThreads(OpenTelemetryTestCase):
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
         # use max_workers=3 as a general example even if only one would suffice
         self.executor = ThreadPoolExecutor(max_workers=3)
@@ -47,13 +47,13 @@ class TestThreads(OpenTelemetryTestCase):
 
         # task/subtask are part of the same trace,
         # and subtask is a child of task
-        self.assertSameTrace(spans[1], spans[2])
-        self.assertIsChildOf(spans[1], spans[2])
+        self.assertSameTrace(spans, spans)
+        self.assertIsChildOf(spans, spans)
 
         # initial task is not related in any way to those two tasks
-        self.assertNotSameTrace(spans[0], spans[1])
-        self.assertEqual(spans[0].parent, None)
-        self.assertEqual(spans[2].parent, None)
+        self.assertNotSameTrace(spans, spans)
+        self.assertEqual(spans.parent, None)
+        self.assertEqual(spans.parent, None)
 
     def task(self, span):
         # Create a new Span for this task

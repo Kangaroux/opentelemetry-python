@@ -25,7 +25,7 @@ from opentelemetry.sdk.error_handler import ErrorHandler
 logger = getLogger(__name__)
 
 
-# pylint: disable=too-many-ancestors
+# pylint =too-many-ancestors
 class ErrorHandler1(ErrorHandler, IndexError, KeyError):
     def _handle(self, error, *args, **kwargs):
         if isinstance(error, IndexError):

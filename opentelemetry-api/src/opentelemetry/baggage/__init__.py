@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
 # Copyright The OpenTelemetry Authors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +12,6 @@ from __future__ import unicode_literals
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from builtins import str
-from future import standard_library
-standard_library.install_aliases()
 from logging import getLogger
 from re import compile
 from types import MappingProxyType
@@ -85,7 +78,7 @@ def set_baggage(
         A Context with the value updated
     """
     baggage = _get_baggage_value(context=context).copy()
-    baggage = value
+    baggage[name] = value
     return set_value(_BAGGAGE_KEY, baggage, context=context)
 
 
@@ -130,9 +123,9 @@ def _is_valid_key(name):
 
 def _is_valid_value(value):
     parts = str(value).split(";")
-    is_valid_value = _VALUE_PATTERN.fullmatch(parts) is not None
+    is_valid_value = _VALUE_PATTERN.fullmatch(parts[0]) is not None
     if len(parts) > 1:  # one or more properties metadata
-        for property in parts:
+        for property in parts[1:]:
             if _PROPERT_PATTERN.fullmatch(property) is None:
                 is_valid_value = False
                 break

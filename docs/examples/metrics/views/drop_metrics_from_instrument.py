@@ -33,7 +33,7 @@ drop_aggregation_view = View(
 
 exporter = ConsoleMetricExporter()
 
-reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1_000)
+reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1000)
 provider = MeterProvider(
     metric_readers=[
         reader,

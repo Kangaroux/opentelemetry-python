@@ -262,10 +262,10 @@ class Meter(ABC):
             # we are not using get because None is a valid value
             already_registered = instrument_id in self._instrument_ids
             if already_registered:
-                current_advisory = self._instrument_ids
+                current_advisory = self._instrument_ids[instrument_id]
                 conflict = current_advisory != advisory
             else:
-                self._instrument_ids = advisory
+                self._instrument_ids[instrument_id] = advisory
 
         return _InstrumentRegistrationStatus(
             instrument_id=instrument_id,
@@ -349,9 +349,9 @@ class Meter(ABC):
                     for line in procstat:
                         if not line.startswith("cpu"): break
                         cpu, *states = line.split()
-                        observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "user"}))
-                        observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "nice"}))
-                        observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "system"}))
+                        observations.append(Observation(int(states[0]) // 100, {"cpu": cpu, "state": "user"}))
+                        observations.append(Observation(int(states[1]) // 100, {"cpu": cpu, "state": "nice"}))
+                        observations.append(Observation(int(states[2]) // 100, {"cpu": cpu, "state": "system"}))
                         # ... other states
                 return observations
 
@@ -371,8 +371,8 @@ class Meter(ABC):
                     for line in procstat:
                         if not line.startswith("cpu"): break
                         cpu, *states = line.split()
-                        yield Observation(int(states) // 100, {"cpu": cpu, "state": "user"})
-                        yield Observation(int(states) // 100, {"cpu": cpu, "state": "nice"})
+                        yield Observation(int(states[0]) // 100, {"cpu": cpu, "state": "user"})
+                        yield Observation(int(states[1]) // 100, {"cpu": cpu, "state": "nice"})
                         # ... other states
 
         Alternatively, you can pass a sequence of generators directly instead of a sequence of
@@ -389,9 +389,9 @@ class Meter(ABC):
                             if not line.startswith("cpu"): break
                             cpu, *states = line.split()
                             if "user" in states_to_include:
-                                observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "user"}))
+                                observations.append(Observation(int(states[0]) // 100, {"cpu": cpu, "state": "user"}))
                             if "nice" in states_to_include:
-                                observations.append(Observation(int(states) // 100, {"cpu": cpu, "state": "nice"}))
+                                observations.append(Observation(int(states[1]) // 100, {"cpu": cpu, "state": "nice"}))
                             # ... other states
                     # yield the observations and receive the options for next iteration
                     options = yield observations

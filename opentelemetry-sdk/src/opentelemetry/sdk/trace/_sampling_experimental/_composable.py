@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import dataclass, field
 from typing import Callable, Sequence
 
 try:
@@ -25,22 +24,32 @@ from opentelemetry.trace import Link, SpanKind, TraceState
 from opentelemetry.util.types import Attributes
 
 
-class SamplingIntent:
+class SamplingIntent(object):
     """Information to make a consistent sampling decision."""
 
-    threshold
-    """The sampling threshold value. A lower threshold increases the likelihood of sampling."""
+    def __init__(self, threshold=None, threshold_reliable=True, attributes=None, update_trace_state=None):
+        self.threshold = threshold
+        """The sampling threshold value. A lower threshold increases the likelihood of sampling."""
 
-    threshold_reliable = field(default=True)
-    """Indicates whether the threshold is reliable for Span-to-Metrics estimation."""
+        self.threshold_reliable = threshold_reliable
+        """Indicates whether the threshold is reliable for Span-to-Metrics estimation."""
 
-    attributes = field(default=None)
-    """Any attributes to be added to a sampled span."""
+        self.attributes = attributes
+        """Any attributes to be added to a sampled span."""
 
-    update_trace_state = field(
-        default=lambda ts: ts
-    )
-    """Any updates to be made to trace state."""
+        self.update_trace_state = update_trace_state if update_trace_state is not None else lambda ts: ts
+        """Any updates to be made to trace state."""
+
+    def __eq__(self, other):
+        if not isinstance(other, SamplingIntent):
+            return NotImplemented
+        return (self.threshold == other.threshold
+                and self.threshold_reliable == other.threshold_reliable
+                and self.attributes == other.attributes)
+
+    def __repr__(self):
+        return "SamplingIntent(threshold={}, threshold_reliable={}, attributes={})".format(
+            self.threshold, self.threshold_reliable, self.attributes)
 
 
 class ComposableSampler(Protocol):

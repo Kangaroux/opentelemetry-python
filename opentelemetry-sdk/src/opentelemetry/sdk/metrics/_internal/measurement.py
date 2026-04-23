@@ -12,15 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import dataclass
-from typing import Union
-
 from opentelemetry.context import Context
 from opentelemetry.metrics import Instrument
 from opentelemetry.util.types import Attributes
 
 
-class Measurement:
+class Measurement(object):
     """
     Represents a data point reported via the metrics API to the SDK.
 
@@ -32,8 +29,18 @@ class Measurement:
         attributes: Measurement attributes
     """
 
-    value
-    time_unix_nano
-    instrument
-    context
-    attributes = None
+    def __init__(self, value=None, time_unix_nano=None, instrument=None, context=None, attributes=None):
+        self.value = value
+        self.time_unix_nano = time_unix_nano
+        self.instrument = instrument
+        self.context = context
+        self.attributes = attributes
+
+    def __eq__(self, other):
+        if not isinstance(other, Measurement):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "Measurement(value={}, time_unix_nano={}, instrument={}, context={}, attributes={})".format(
+            self.value, self.time_unix_nano, self.instrument, self.context, self.attributes)

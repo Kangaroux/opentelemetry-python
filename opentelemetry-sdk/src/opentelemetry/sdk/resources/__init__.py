@@ -164,9 +164,6 @@ _OPENTELEMETRY_SDK_VERSION = version("opentelemetry-sdk")
 class Resource:
     """A Resource is an immutable representation of the entity producing telemetry as Attributes."""
 
-    _attributes
-    _schema_url
-
     def __init__(self, attributes, schema_url=None):
         self._attributes = BoundedAttributes(attributes=attributes)
         if schema_url is None:
@@ -353,11 +350,11 @@ class OTELResourceDetector(ResourceDetector):
                     )
                     continue
                 value_url_decoded = parse.unquote(value.strip())
-                env_resource_map = value_url_decoded
+                env_resource_map[key.strip()] = value_url_decoded
 
         service_name = environ.get(OTEL_SERVICE_NAME)
         if service_name:
-            env_resource_map = service_name
+            env_resource_map[SERVICE_NAME] = service_name
         return Resource(env_resource_map)
 
 
@@ -368,7 +365,7 @@ class ProcessResourceDetector(ResourceDetector):
             map(
                 str,
                 (
-                    sys.version_info
+                    sys.version_info[:3]
                     if sys.version_info.releaselevel == "final"
                     and not sys.version_info.serial
                     else sys.version_info
@@ -378,7 +375,7 @@ class ProcessResourceDetector(ResourceDetector):
         _process_pid = os.getpid()
         _process_executable_name = sys.executable
         _process_executable_path = os.path.dirname(_process_executable_name)
-        _process_command = sys.argv
+        _process_command = sys.argv[0]
         _process_command_line = " ".join(sys.argv)
         _process_command_args = sys.argv
         resource_info = {
@@ -394,12 +391,12 @@ class ProcessResourceDetector(ResourceDetector):
         }
         if hasattr(os, "getppid"):
             # pypy3 does not have getppid()
-            resource_info = os.getppid()
+            resource_info[PROCESS_PARENT_PID] = os.getppid()
 
         if psutil is not None:
             process = psutil.Process()
             username = process.username()
-            resource_info = username
+            resource_info[PROCESS_OWNER] = username
 
         return Resource(resource_info)  # type: ignore
 
@@ -515,7 +512,7 @@ def get_aggregated_resources(detectors, initial_resource=None, timeout=5):
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
         futures = [executor.submit(detector.detect) for detector in detectors]
         for detector_ind, future in enumerate(futures):
-            detector = detectors
+            detector = detectors[detector_ind]
             detected_resource = _EMPTY_RESOURCE
             try:
                 detected_resource = future.result(timeout=timeout)

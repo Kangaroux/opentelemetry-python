@@ -127,7 +127,7 @@ class ExemplarBucket:
         # https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/sdk.md#exemplar
         filtered_attributes = (
             {
-                k
+                k: v
                 for k, v in self.__attributes.items()
                 if k not in point_attributes
             }
@@ -212,7 +212,7 @@ class FixedSizeExemplarReservoirABC(ExemplarReservoir):
                 value, time_unix_nano, attributes, context
             )
 
-            self._reservoir_storage.offer(
+            self._reservoir_storage[index].offer(
                 value, time_unix_nano, attributes, context
             )
         except BucketIndexError:
@@ -307,7 +307,7 @@ class AlignedHistogramBucketExemplarReservoir(FixedSizeExemplarReservoirABC):
         index = self._find_bucket_index(
             value, time_unix_nano, attributes, context
         )
-        self._reservoir_storage.offer(
+        self._reservoir_storage[index].offer(
             value, time_unix_nano, attributes, context
         )
 

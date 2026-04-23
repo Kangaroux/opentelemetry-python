@@ -14,7 +14,6 @@
 
 # pylint =unused-import
 
-from dataclasses import asdict, dataclass, field
 from json import dumps, loads
 from typing import Optional, Sequence, Union
 
@@ -26,77 +25,143 @@ from opentelemetry.sdk.util.instrumentation import InstrumentationScope
 from opentelemetry.util.types import Attributes
 
 
-class NumberDataPoint:
+def _asdict(obj):
+    """Recursively convert an object to a dict, similar to dataclasses.asdict."""
+    if hasattr(obj, '__dict__') and not isinstance(obj, type):
+        result = {}
+        for k, v in obj.__dict__.items():
+            result[k] = _asdict(v)
+        return result
+    elif isinstance(obj, dict):
+        return {k: _asdict(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return type(obj)(_asdict(item) for item in obj)
+    elif isinstance(obj, (set, frozenset)):
+        return [_asdict(item) for item in obj]
+    return obj
+
+
+class NumberDataPoint(object):
     """Single data point in a timeseries that describes the time-varying scalar
     value of a metric.
     """
 
-    attributes
-    start_time_unix_nano
-    time_unix_nano
-    value
-    exemplars = field(default_factory=list)
+    def __init__(self, attributes=None, start_time_unix_nano=None, time_unix_nano=None, value=None, exemplars=None):
+        self.attributes = attributes
+        self.start_time_unix_nano = start_time_unix_nano
+        self.time_unix_nano = time_unix_nano
+        self.value = value
+        self.exemplars = exemplars if exemplars is not None else []
+
+    def __eq__(self, other):
+        if not isinstance(other, NumberDataPoint):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "NumberDataPoint(attributes={}, start_time_unix_nano={}, time_unix_nano={}, value={}, exemplars={})".format(
+            self.attributes, self.start_time_unix_nano, self.time_unix_nano, self.value, self.exemplars)
 
     def to_json(self, indent=4):
-        return dumps(asdict(self), indent=indent)
+        return dumps(_asdict(self), indent=indent)
 
 
-class HistogramDataPoint:
+class HistogramDataPoint(object):
     """Single data point in a timeseries that describes the time-varying scalar
     value of a metric.
     """
 
-    attributes
-    start_time_unix_nano
-    time_unix_nano
-    count
-    sum
-    bucket_counts
-    explicit_bounds
-    min
-    max
-    exemplars = field(default_factory=list)
+    def __init__(self, attributes=None, start_time_unix_nano=None, time_unix_nano=None, count=None, sum=None, bucket_counts=None, explicit_bounds=None, min=None, max=None, exemplars=None):
+        self.attributes = attributes
+        self.start_time_unix_nano = start_time_unix_nano
+        self.time_unix_nano = time_unix_nano
+        self.count = count
+        self.sum = sum
+        self.bucket_counts = bucket_counts
+        self.explicit_bounds = explicit_bounds
+        self.min = min
+        self.max = max
+        self.exemplars = exemplars if exemplars is not None else []
+
+    def __eq__(self, other):
+        if not isinstance(other, HistogramDataPoint):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "HistogramDataPoint(attributes={}, start_time_unix_nano={}, time_unix_nano={}, count={}, sum={}, bucket_counts={}, explicit_bounds={}, min={}, max={}, exemplars={})".format(
+            self.attributes, self.start_time_unix_nano, self.time_unix_nano, self.count, self.sum, self.bucket_counts, self.explicit_bounds, self.min, self.max, self.exemplars)
 
     def to_json(self, indent=4):
-        return dumps(asdict(self), indent=indent)
+        return dumps(_asdict(self), indent=indent)
 
 
-class Buckets:
-    offset
-    bucket_counts
+class Buckets(object):
+
+    def __init__(self, offset=None, bucket_counts=None):
+        self.offset = offset
+        self.bucket_counts = bucket_counts
+
+    def __eq__(self, other):
+        if not isinstance(other, Buckets):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "Buckets(offset={}, bucket_counts={})".format(self.offset, self.bucket_counts)
 
 
-class ExponentialHistogramDataPoint:
+class ExponentialHistogramDataPoint(object):
     """Single data point in a timeseries whose boundaries are defined by an
     exponential function. This timeseries describes the time-varying scalar
     value of a metric.
     """
 
-    attributes
-    start_time_unix_nano
-    time_unix_nano
-    count
-    sum
-    scale
-    zero_count
-    positive
-    negative
-    flags
-    min
-    max
-    exemplars = field(default_factory=list)
+    def __init__(self, attributes=None, start_time_unix_nano=None, time_unix_nano=None, count=None, sum=None, scale=None, zero_count=None, positive=None, negative=None, flags=None, min=None, max=None, exemplars=None):
+        self.attributes = attributes
+        self.start_time_unix_nano = start_time_unix_nano
+        self.time_unix_nano = time_unix_nano
+        self.count = count
+        self.sum = sum
+        self.scale = scale
+        self.zero_count = zero_count
+        self.positive = positive
+        self.negative = negative
+        self.flags = flags
+        self.min = min
+        self.max = max
+        self.exemplars = exemplars if exemplars is not None else []
+
+    def __eq__(self, other):
+        if not isinstance(other, ExponentialHistogramDataPoint):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "ExponentialHistogramDataPoint(attributes={}, start_time_unix_nano={}, time_unix_nano={}, count={}, sum={}, scale={}, zero_count={}, positive={}, negative={}, flags={}, min={}, max={}, exemplars={})".format(
+            self.attributes, self.start_time_unix_nano, self.time_unix_nano, self.count, self.sum, self.scale, self.zero_count, self.positive, self.negative, self.flags, self.min, self.max, self.exemplars)
 
     def to_json(self, indent=4):
-        return dumps(asdict(self), indent=indent)
+        return dumps(_asdict(self), indent=indent)
 
 
-class ExponentialHistogram:
+class ExponentialHistogram(object):
     """Represents the type of a metric that is calculated by aggregating as an
     ExponentialHistogram of all reported measurements over a time interval.
     """
 
-    data_points = None
-    aggregation_temporality = None
+    def __init__(self, data_points=None, aggregation_temporality=None):
+        self.data_points = data_points
+        self.aggregation_temporality = aggregation_temporality
+
+    def __eq__(self, other):
+        if not isinstance(other, ExponentialHistogram):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "ExponentialHistogram(data_points={}, aggregation_temporality={})".format(
+            self.data_points, self.aggregation_temporality)
 
     def to_json(self, indent=4):
         return dumps(
@@ -111,13 +176,23 @@ class ExponentialHistogram:
         )
 
 
-class Sum:
+class Sum(object):
     """Represents the type of a scalar metric that is calculated as a sum of
     all reported measurements over a time interval."""
 
-    data_points = None
-    aggregation_temporality = None
-    is_monotonic = None
+    def __init__(self, data_points=None, aggregation_temporality=None, is_monotonic=None):
+        self.data_points = data_points
+        self.aggregation_temporality = aggregation_temporality
+        self.is_monotonic = is_monotonic
+
+    def __eq__(self, other):
+        if not isinstance(other, Sum):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "Sum(data_points={}, aggregation_temporality={}, is_monotonic={})".format(
+            self.data_points, self.aggregation_temporality, self.is_monotonic)
 
     def to_json(self, indent=4):
         return dumps(
@@ -133,12 +208,21 @@ class Sum:
         )
 
 
-class Gauge:
+class Gauge(object):
     """Represents the type of a scalar metric that always exports the current
     value for every data point. It should be used for an unknown
     aggregation."""
 
-    data_points
+    def __init__(self, data_points=None):
+        self.data_points = data_points
+
+    def __eq__(self, other):
+        if not isinstance(other, Gauge):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "Gauge(data_points={})".format(self.data_points)
 
     def to_json(self, indent=4):
         return dumps(
@@ -152,12 +236,22 @@ class Gauge:
         )
 
 
-class Histogram:
+class Histogram(object):
     """Represents the type of a metric that is calculated by aggregating as a
     histogram of all reported measurements over a time interval."""
 
-    data_points = None
-    aggregation_temporality = None
+    def __init__(self, data_points=None, aggregation_temporality=None):
+        self.data_points = data_points
+        self.aggregation_temporality = aggregation_temporality
+
+    def __eq__(self, other):
+        if not isinstance(other, Histogram):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "Histogram(data_points={}, aggregation_temporality={})".format(
+            self.data_points, self.aggregation_temporality)
 
     def to_json(self, indent=4):
         return dumps(
@@ -179,14 +273,24 @@ DataPointT = Union[
 ]
 
 
-class Metric:
+class Metric(object):
     """Represents a metric point in the OpenTelemetry data model to be
     exported."""
 
-    name
-    description
-    unit
-    data
+    def __init__(self, name=None, description=None, unit=None, data=None):
+        self.name = name
+        self.description = description
+        self.unit = unit
+        self.data = data
+
+    def __eq__(self, other):
+        if not isinstance(other, Metric):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "Metric(name={}, description={}, unit={}, data={})".format(
+            self.name, self.description, self.unit, self.data)
 
     def to_json(self, indent=4):
         return dumps(
@@ -200,12 +304,22 @@ class Metric:
         )
 
 
-class ScopeMetrics:
+class ScopeMetrics(object):
     """A collection of Metrics produced by a scope"""
 
-    scope
-    metrics
-    schema_url
+    def __init__(self, scope=None, metrics=None, schema_url=None):
+        self.scope = scope
+        self.metrics = metrics
+        self.schema_url = schema_url
+
+    def __eq__(self, other):
+        if not isinstance(other, ScopeMetrics):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "ScopeMetrics(scope={}, metrics={}, schema_url={})".format(
+            self.scope, self.metrics, self.schema_url)
 
     def to_json(self, indent=4):
         return dumps(
@@ -221,12 +335,22 @@ class ScopeMetrics:
         )
 
 
-class ResourceMetrics:
+class ResourceMetrics(object):
     """A collection of ScopeMetrics from a Resource"""
 
-    resource
-    scope_metrics
-    schema_url
+    def __init__(self, resource=None, scope_metrics=None, schema_url=None):
+        self.resource = resource
+        self.scope_metrics = scope_metrics
+        self.schema_url = schema_url
+
+    def __eq__(self, other):
+        if not isinstance(other, ResourceMetrics):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "ResourceMetrics(resource={}, scope_metrics={}, schema_url={})".format(
+            self.resource, self.scope_metrics, self.schema_url)
 
     def to_json(self, indent=4):
         return dumps(
@@ -242,10 +366,19 @@ class ResourceMetrics:
         )
 
 
-class MetricsData:
+class MetricsData(object):
     """An array of ResourceMetrics"""
 
-    resource_metrics
+    def __init__(self, resource_metrics=None):
+        self.resource_metrics = resource_metrics
+
+    def __eq__(self, other):
+        if not isinstance(other, MetricsData):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "MetricsData(resource_metrics={})".format(self.resource_metrics)
 
     def to_json(self, indent=4):
         return dumps(

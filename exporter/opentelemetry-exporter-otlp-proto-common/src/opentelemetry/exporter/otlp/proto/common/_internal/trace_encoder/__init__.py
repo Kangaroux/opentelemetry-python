@@ -78,7 +78,7 @@ def _encode_resource_spans(
         sdk_instrumentation = sdk_span.instrumentation_scope or None
         pb2_span = _encode_span(sdk_span)
 
-        sdk_resource_spans.append(pb2_span)
+        sdk_resource_spans[sdk_resource][sdk_instrumentation].append(pb2_span)
 
     pb2_resource_spans = []
 
@@ -120,7 +120,7 @@ def _encode_span(sdk_span):
         trace_state=_encode_trace_state(span_context.trace_state),
         parent_span_id=_encode_parent_id(sdk_span.parent),
         name=sdk_span.name,
-        kind=_SPAN_KIND_MAP,
+        kind=_SPAN_KIND_MAP[sdk_span.kind],
         start_time_unix_nano=sdk_span.start_time,
         end_time_unix_nano=sdk_span.end_time,
         attributes=_encode_attributes(sdk_span.attributes),

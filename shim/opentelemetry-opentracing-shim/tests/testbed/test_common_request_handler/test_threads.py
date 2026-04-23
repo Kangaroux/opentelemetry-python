@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 
 from opentracing.ext import tags
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 from ..utils import get_logger, get_one_by_operation_name
@@ -44,7 +44,7 @@ class Client:
         self.executor.submit(before_handler).result()
         self.executor.submit(after_handler).result()
 
-        return f"{message}::response"
+        return "{}::response".format(message)
 
     def send(self, message):
         return self.executor.submit(self.send_task, message)
@@ -62,7 +62,7 @@ class TestThreads(OpenTelemetryTestCase):
     activate span. So one issue here is setting correct parent span.
     """
 
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)
         self.client = Client(RequestHandler(self.tracer), self.executor)
@@ -83,9 +83,9 @@ class TestThreads(OpenTelemetryTestCase):
                 tags.SPAN_KIND_RPC_CLIENT,
             )
 
-        self.assertNotSameTrace(spans[0], spans[1])
-        self.assertIsNone(spans[0].parent)
-        self.assertIsNone(spans[1].parent)
+        self.assertNotSameTrace(spans, spans)
+        self.assertIsNone(spans.parent)
+        self.assertIsNone(spans.parent)
 
     def test_parent_not_picked(self):
         """Active parent should not be picked up by child."""

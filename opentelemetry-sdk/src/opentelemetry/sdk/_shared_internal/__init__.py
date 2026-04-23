@@ -83,7 +83,7 @@ _logger = logging.getLogger(__name__)
 _logger.addFilter(DuplicateFilter())
 
 
-class BatchProcessor(Generic):
+class BatchProcessor(Generic[Telemetry]):
     """This class can be used with exporter's that implement the above
     Exporter interface to buffer and send telemetry in batch through
      the exporter."""

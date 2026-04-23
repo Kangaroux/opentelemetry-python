@@ -82,12 +82,12 @@ class TestOTLPTraceEncoder(unittest.TestCase):
             base_time + 600 * 10**6,
         )
         end_times = (
-            start_times + (50 * 10**6),
-            start_times + (100 * 10**6),
-            start_times + (200 * 10**6),
-            start_times + (300 * 10**6),
-            start_times + (400 * 10**6),
-            start_times + (500 * 10**6),
+            start_times[0] + (50 * 10**6),
+            start_times[1] + (100 * 10**6),
+            start_times[2] + (200 * 10**6),
+            start_times[3] + (300 * 10**6),
+            start_times[4] + (400 * 10**6),
+            start_times[5] + (500 * 10**6),
         )
 
         parent_span_context = SDKSpanContext(
@@ -123,12 +123,12 @@ class TestOTLPTraceEncoder(unittest.TestCase):
             ),
             resource=SDKResource({}, "resource_schema_url"),
         )
-        span1.start(start_time=start_times)
+        span1.start(start_time=start_times[0])
         span1.set_attribute("key_bool", False)
         span1.set_attribute("key_string", "hello_world")
         span1.set_attribute("key_float", 111.22)
         span1.set_status(SDKStatus(SDKStatusCode.ERROR, "Example description"))
-        span1.end(end_time=end_times)
+        span1.end(end_time=end_times[0])
 
         span2 = SDKSpan(
             name="test-span-2",
@@ -136,8 +136,8 @@ class TestOTLPTraceEncoder(unittest.TestCase):
             parent=None,
             resource=SDKResource(attributes={"key_resource": "some_resource"}),
         )
-        span2.start(start_time=start_times)
-        span2.end(end_time=end_times)
+        span2.start(start_time=start_times[1])
+        span2.end(end_time=end_times[1])
 
         span3 = SDKSpan(
             name="test-span-3",
@@ -145,9 +145,9 @@ class TestOTLPTraceEncoder(unittest.TestCase):
             parent=None,
             resource=SDKResource(attributes={"key_resource": "some_resource"}),
         )
-        span3.start(start_time=start_times)
+        span3.start(start_time=start_times[2])
         span3.set_attribute("key_string", "hello_world")
-        span3.end(end_time=end_times)
+        span3.end(end_time=end_times[2])
 
         span4 = SDKSpan(
             name="test-span-4",
@@ -158,8 +158,8 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                 name="name", version="version"
             ),
         )
-        span4.start(start_time=start_times)
-        span4.end(end_time=end_times)
+        span4.start(start_time=start_times[3])
+        span4.end(end_time=end_times[3])
 
         span5 = SDKSpan(
             name="test-span-5",
@@ -175,8 +175,8 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                 schema_url="scope_1_schema_url",
             ),
         )
-        span5.start(start_time=start_times)
-        span5.end(end_time=end_times)
+        span5.start(start_time=start_times[4])
+        span5.end(end_time=end_times[4])
 
         span6 = SDKSpan(
             name="test-span-6",
@@ -193,8 +193,8 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                 attributes={"one": "1", "two": 2},
             ),
         )
-        span6.start(start_time=start_times)
-        span6.end(end_time=end_times)
+        span6.start(start_time=start_times[5])
+        span6.end(end_time=end_times[5])
 
         return [span1, span2, span3, span4, span5, span6]
 
@@ -202,8 +202,8 @@ class TestOTLPTraceEncoder(unittest.TestCase):
         self
     ):
         otel_spans = self.get_exhaustive_otel_span_list()
-        trace_id = _encode_trace_id(otel_spans.context.trace_id)
-        span_kind = _SPAN_KIND_MAP
+        trace_id = _encode_trace_id(otel_spans[0].context.trace_id)
+        span_kind = _SPAN_KIND_MAP[SDKSpanKind.INTERNAL]
 
         pb2_service_request = PB2ExportTraceServiceRequest(
             resource_spans=[
@@ -217,18 +217,18 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                 PB2SPan(
                                     trace_id=trace_id,
                                     span_id=_encode_span_id(
-                                        otel_spans.context.span_id
+                                        otel_spans[0].context.span_id
                                     ),
                                     trace_state=None,
                                     parent_span_id=_encode_span_id(
-                                        otel_spans.parent.span_id
+                                        otel_spans[0].parent.span_id
                                     ),
-                                    name=otel_spans.name,
+                                    name=otel_spans[0].name,
                                     kind=span_kind,
                                     start_time_unix_nano=otel_spans[
                                         0
                                     ].start_time,
-                                    end_time_unix_nano=otel_spans.end_time,
+                                    end_time_unix_nano=otel_spans[0].end_time,
                                     attributes=[
                                         PB2KeyValue(
                                             key="key_bool",
@@ -252,8 +252,8 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                     events=[
                                         PB2SPan.Event(
                                             name="event0",
-                                            time_unix_nano=otel_spans
-                                            .events
+                                            time_unix_nano=otel_spans[0]
+                                            .events[0]
                                             .timestamp,
                                             attributes=[
                                                 PB2KeyValue(
@@ -280,13 +280,13 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                     links=[
                                         PB2SPan.Link(
                                             trace_id=_encode_trace_id(
-                                                otel_spans
-                                                .links
+                                                otel_spans[0]
+                                                .links[0]
                                                 .context.trace_id
                                             ),
                                             span_id=_encode_span_id(
-                                                otel_spans
-                                                .links
+                                                otel_spans[0]
+                                                .links[0]
                                                 .context.span_id
                                             ),
                                             attributes=[
@@ -317,16 +317,16 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                 PB2SPan(
                                     trace_id=trace_id,
                                     span_id=_encode_span_id(
-                                        otel_spans.context.span_id
+                                        otel_spans[3].context.span_id
                                     ),
                                     trace_state=None,
                                     parent_span_id=None,
-                                    name=otel_spans.name,
+                                    name=otel_spans[3].name,
                                     kind=span_kind,
                                     start_time_unix_nano=otel_spans[
                                         3
                                     ].start_time,
-                                    end_time_unix_nano=otel_spans.end_time,
+                                    end_time_unix_nano=otel_spans[3].end_time,
                                     attributes=None,
                                     events=None,
                                     links=None,
@@ -355,16 +355,16 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                 PB2SPan(
                                     trace_id=trace_id,
                                     span_id=_encode_span_id(
-                                        otel_spans.context.span_id
+                                        otel_spans[1].context.span_id
                                     ),
                                     trace_state=None,
                                     parent_span_id=None,
-                                    name=otel_spans.name,
+                                    name=otel_spans[1].name,
                                     kind=span_kind,
                                     start_time_unix_nano=otel_spans[
                                         1
                                     ].start_time,
-                                    end_time_unix_nano=otel_spans.end_time,
+                                    end_time_unix_nano=otel_spans[1].end_time,
                                     attributes=None,
                                     events=None,
                                     links=None,
@@ -374,16 +374,16 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                 PB2SPan(
                                     trace_id=trace_id,
                                     span_id=_encode_span_id(
-                                        otel_spans.context.span_id
+                                        otel_spans[2].context.span_id
                                     ),
                                     trace_state=None,
                                     parent_span_id=None,
-                                    name=otel_spans.name,
+                                    name=otel_spans[2].name,
                                     kind=span_kind,
                                     start_time_unix_nano=otel_spans[
                                         2
                                     ].start_time,
-                                    end_time_unix_nano=otel_spans.end_time,
+                                    end_time_unix_nano=otel_spans[2].end_time,
                                     attributes=[
                                         PB2KeyValue(
                                             key="key_string",
@@ -423,16 +423,16 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                 PB2SPan(
                                     trace_id=trace_id,
                                     span_id=_encode_span_id(
-                                        otel_spans.context.span_id
+                                        otel_spans[4].context.span_id
                                     ),
                                     trace_state=None,
                                     parent_span_id=None,
-                                    name=otel_spans.name,
+                                    name=otel_spans[4].name,
                                     kind=span_kind,
                                     start_time_unix_nano=otel_spans[
                                         4
                                     ].start_time,
-                                    end_time_unix_nano=otel_spans.end_time,
+                                    end_time_unix_nano=otel_spans[4].end_time,
                                     attributes=None,
                                     events=None,
                                     links=None,
@@ -461,16 +461,16 @@ class TestOTLPTraceEncoder(unittest.TestCase):
                                 PB2SPan(
                                     trace_id=trace_id,
                                     span_id=_encode_span_id(
-                                        otel_spans.context.span_id
+                                        otel_spans[5].context.span_id
                                     ),
                                     trace_state=None,
                                     parent_span_id=None,
-                                    name=otel_spans.name,
+                                    name=otel_spans[5].name,
                                     kind=span_kind,
                                     start_time_unix_nano=otel_spans[
                                         5
                                     ].start_time,
-                                    end_time_unix_nano=otel_spans.end_time,
+                                    end_time_unix_nano=otel_spans[5].end_time,
                                     attributes=None,
                                     events=None,
                                     links=None,

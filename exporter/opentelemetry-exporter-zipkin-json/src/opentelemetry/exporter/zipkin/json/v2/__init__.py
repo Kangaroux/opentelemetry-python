@@ -34,10 +34,10 @@ class JsonV2Encoder(JsonEncoder):
 
     SPAN_KIND_MAP = {
         SpanKind.INTERNAL: None,
-        SpanKind.SERVER,
-        SpanKind.CLIENT,
-        SpanKind.PRODUCER,
-        SpanKind.CONSUMER,
+        SpanKind.SERVER: "SERVER",
+        SpanKind.CLIENT: "CLIENT",
+        SpanKind.PRODUCER: "PRODUCER",
+        SpanKind.CONSUMER: "CONSUMER",
     }
 
     def _encode_span(self, span, encoded_local_endpoint):

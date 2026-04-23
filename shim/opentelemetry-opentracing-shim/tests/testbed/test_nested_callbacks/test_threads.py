@@ -12,22 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from concurrent.futures import (  # pylint: disable=no-name-in-module
+from concurrent.futures import (  # pylint =no-name-in-module
     ThreadPoolExecutor,
 )
 
-# pylint: disable=import-error
+# pylint =import-error
 from ..otel_ot_shim_tracer import MockTracer
 from ..testcase import OpenTelemetryTestCase
 from ..utils import await_until
 
 
 class TestThreads(OpenTelemetryTestCase):
-    def setUp(self):  # pylint: disable=invalid-name
+    def setUp(self):  # pylint =invalid-name
         self.tracer = MockTracer()
         self.executor = ThreadPoolExecutor(max_workers=3)
 
-    def tearDown(self):  # pylint: disable=invalid-name
+    def tearDown(self):  # pylint =invalid-name
         self.executor.shutdown(False)
 
     def test_main(self):
@@ -43,11 +43,11 @@ class TestThreads(OpenTelemetryTestCase):
 
         spans = self.tracer.finished_spans()
         self.assertEqual(len(spans), 1)
-        self.assertEqual(spans[0].name, "one")
+        self.assertEqual(spans.name, "one")
 
         for idx in range(1, 4):
             self.assertEqual(
-                spans[0].attributes.get(f"key{idx}", None), str(idx)
+                spans.attributes.get("key{}".format(idx), None), str(idx)
             )
 
     def submit(self):

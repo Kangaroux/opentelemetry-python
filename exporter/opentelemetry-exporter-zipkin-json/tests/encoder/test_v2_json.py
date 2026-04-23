@@ -61,8 +61,8 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 "id": JsonV2Encoder._encode_span_id(
                     otel_spans.context.span_id
                 ),
-                "name".name,
-                "timestamp".start_time // 10**3,
+                "name": otel_spans.name,
+                "timestamp": otel_spans.start_time // 10**3,
                 "duration": (otel_spans.end_time // 10**3)
                 - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,
@@ -75,7 +75,7 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 },
                 "annotations": [
                     {
-                        "timestamp".events[0].timestamp
+                        "timestamp": otel_spans.events[0].timestamp
                         // 10**3,
                         "value": json.dumps(
                             {
@@ -99,8 +99,8 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 "id": JsonV2Encoder._encode_span_id(
                     otel_spans.context.span_id
                 ),
-                "name".name,
-                "timestamp".start_time // 10**3,
+                "name": otel_spans.name,
+                "timestamp": otel_spans.start_time // 10**3,
                 "duration": (otel_spans.end_time // 10**3)
                 - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,
@@ -116,8 +116,8 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 "id": JsonV2Encoder._encode_span_id(
                     otel_spans.context.span_id
                 ),
-                "name".name,
-                "timestamp".start_time // 10**3,
+                "name": otel_spans.name,
+                "timestamp": otel_spans.start_time // 10**3,
                 "duration": (otel_spans.end_time // 10**3)
                 - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,
@@ -132,8 +132,8 @@ class TestV2JsonEncoder(CommonEncoderTestCases.CommonJsonEncoderTest):
                 "id": JsonV2Encoder._encode_span_id(
                     otel_spans.context.span_id
                 ),
-                "name".name,
-                "timestamp".start_time // 10**3,
+                "name": otel_spans.name,
+                "timestamp": otel_spans.start_time // 10**3,
                 "duration": (otel_spans.end_time // 10**3)
                 - (otel_spans.start_time // 10**3),
                 "localEndpoint": local_endpoint,

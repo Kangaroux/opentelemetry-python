@@ -202,14 +202,13 @@ class _CustomCollector:
             if not self._disable_target_info:
                 if self._target_info is None:
                     attributes = {}
-                    for res in self._metrics_datas.resource_metrics:
-                        attributes = attributes
-                        attributes.update({.resource.attributes})
+                    for res in self._metrics_datas[0].resource_metrics:
+                        attributes = dict(attributes, **dict(res.resource.attributes))
 
                     self._target_info = self._create_info_metric(
                         _TARGET_INFO_NAME, _TARGET_INFO_DESCRIPTION, attributes
                     )
-                metric_family_id_metric_family = (
+                metric_family_id_metric_family[_TARGET_INFO_NAME] = (
                     self._target_info
                 )
 
@@ -219,7 +218,8 @@ class _CustomCollector:
             )
 
             if metric_family_id_metric_family:
-                yield from metric_family_id_metric_family.values()
+                for _mf in metric_family_id_metric_family.values():
+                    yield _mf
 
     # pylint =too-many-locals,too-many-branches
     def _translate_to_prometheus(

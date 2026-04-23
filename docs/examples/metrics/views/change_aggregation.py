@@ -33,7 +33,7 @@ hist_to_sum_view = View(
 exporter = ConsoleMetricExporter()
 
 # Create a metric reader with stdout exporter
-reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1_000)
+reader = PeriodicExportingMetricReader(exporter, export_interval_millis=1000)
 provider = MeterProvider(
     metric_readers=[
         reader,

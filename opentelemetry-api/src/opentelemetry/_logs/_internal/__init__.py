@@ -70,7 +70,7 @@ class LogRecord(ABC):
         context=None,
         severity_text=None,
         severity_number=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -89,7 +89,7 @@ class LogRecord(ABC):
         trace_flags=None,
         severity_text=None,
         severity_number=None,
-        bodyValue=None,
+        body=None,
         attributes=None
     ):
         pass
@@ -104,7 +104,7 @@ class LogRecord(ABC):
         trace_flags=None,
         severity_text=None,
         severity_number=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -150,7 +150,7 @@ class Logger(ABC):
         context=None,
         severity_number=None,
         severity_text=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -172,7 +172,7 @@ class Logger(ABC):
         context=None,
         severity_number=None,
         severity_text=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -193,7 +193,7 @@ class NoOpLogger(Logger):
         context=None,
         severity_number=None,
         severity_text=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -214,7 +214,7 @@ class NoOpLogger(Logger):
         context=None,
         severity_number=None,
         severity_text=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -259,7 +259,7 @@ class ProxyLogger(Logger):
         context=None,
         severity_number=None,
         severity_text=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -280,7 +280,7 @@ class ProxyLogger(Logger):
         context=None,
         severity_number=None,
         severity_text=None,
-        bodyValue=None,
+        body=None,
         attributes=None,
         event_name=None
     ):
@@ -293,7 +293,7 @@ class ProxyLogger(Logger):
                 context=context,
                 severity_number=severity_number,
                 severity_text=severity_text,
-                body=bodyValue,
+                body=body,
                 attributes=attributes,
                 event_name=event_name,
             )

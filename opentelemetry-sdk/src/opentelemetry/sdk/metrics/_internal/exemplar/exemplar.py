@@ -12,14 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import dataclasses
-from typing import Optional, Union
-
 from opentelemetry.util.types import Attributes
 
 
-@dataclasses.dataclass(frozen=True)
-class Exemplar:
+class Exemplar(object):
     """A representation of an exemplar, which is a sample input measurement.
 
     Exemplars also hold information about the environment when the measurement
@@ -38,8 +34,18 @@ class Exemplar:
         https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/metrics/sdk.md#exemplar
     """
 
-    filtered_attributes
-    value
-    time_unix_nano
-    span_id = None
-    trace_id = None
+    def __init__(self, filtered_attributes=None, value=None, time_unix_nano=None, span_id=None, trace_id=None):
+        self.filtered_attributes = filtered_attributes
+        self.value = value
+        self.time_unix_nano = time_unix_nano
+        self.span_id = span_id
+        self.trace_id = trace_id
+
+    def __eq__(self, other):
+        if not isinstance(other, Exemplar):
+            return NotImplemented
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return "Exemplar(filtered_attributes={}, value={}, time_unix_nano={}, span_id={}, trace_id={})".format(
+            self.filtered_attributes, self.value, self.time_unix_nano, self.span_id, self.trace_id)

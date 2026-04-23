@@ -32,7 +32,7 @@ subprocess_run = subprocess.run
 
 def extraargs_help(calledcmd):
     return cleandoc(
-        f"""
+        """
         Additional arguments to pass on to  {calledcmd}.
 
         This is collected from any trailing arguments passed to `%(prog)s`.
@@ -295,7 +295,8 @@ def find_targets_unordered(rootpath):
         ):
             yield subdir
         else:
-            yield from find_targets_unordered(subdir)
+            for _item in find_targets_unordered(subdir):
+                yield _item
 
 
 def getlistcfg(strval):
@@ -313,17 +314,17 @@ def find_targets(mode, rootpath):
 
     cfg = ConfigParser()
     cfg.read(str(rootpath / "eachdist.ini"))
-    mcfg = cfg[mode]
+    mcfg = cfg
 
     targets = list(find_targets_unordered(rootpath))
     if "extraroots" in mcfg:
         targets += [
             path
-            for extraglob in getlistcfg(mcfg["extraroots"])
+            for extraglob in getlistcfg(mcfg)
             for path in rootpath.glob(extraglob)
         ]
     if "sortfirst" in mcfg:
-        sortfirst = getlistcfg(mcfg["sortfirst"])
+        sortfirst = getlistcfg(mcfg)
 
         def keyfunc(path):
             path = path.relative_to(rootpath)
@@ -334,7 +335,7 @@ def find_targets(mode, rootpath):
 
         targets.sort(key=keyfunc)
     if "ignore" in mcfg:
-        ignore = getlistcfg(mcfg["ignore"])
+        ignore = getlistcfg(mcfg)
 
         def filter_func(path):
             path = path.relative_to(rootpath)
@@ -374,11 +375,12 @@ def runsubprocess(dry_run, params, *args, **kwargs):
     # Py < 3.6 compat.
     cwd = kwargs.get("cwd")
     if cwd and isinstance(cwd, PurePath):
-        kwargs["cwd"] = str(cwd)
+        kwargs = str(cwd)
 
     check = kwargs.pop("check")  # Enforce specifying check
 
-    print(">>>", cmdstr, file=sys.stderr, flush=True)
+    sys.stderr.write(">>> " + cmdstr + "\n")
+    sys.stderr.flush()
 
     # This is a workaround for subprocess.run(['python']) leaving the virtualenv on Win32.
     # The cause for this is that when running the python.exe in a virtualenv,
@@ -391,15 +393,15 @@ def runsubprocess(dry_run, params, *args, **kwargs):
     # Only this would find the "correct" python.exe.
 
     params = list(params)
-    executable = shutil.which(params[0])
+    executable = shutil.which(params)
     if executable:
-        params[0] = executable
+        params = executable
     try:
         return subprocess_run(params, *args, check=check, **kwargs)
     except OSError as exc:
         raise ValueError(
             "Failed executing " + repr(params) + ": " + str(exc)
-        ) from exc
+        ) 
 
 
 def execute_args(args):
@@ -412,7 +414,7 @@ def execute_args(args):
     rootpath = find_projectroot()
     targets = find_targets(args.mode, rootpath)
     if not targets:
-        sys.exit(f"Error: No targets selected (root: {rootpath})")
+        sys.exit("Error: No targets selected (root: {})".format(rootpath))
 
     def fmt_for_path(fmt, path):
         return fmt.format(
@@ -427,9 +429,8 @@ def execute_args(args):
             args.dry_run, shlex.split(cmd), cwd=rootpath, check=False
         )
         if result is not None and result.returncode not in args.allowexitcode:
-            print(
-                f"'{cmd}' failed with code {result.returncode}",
-                file=sys.stderr,
+            sys.stderr.write(
+                "'{}' failed with code {}\n".format(cmd, result.returncode)
             )
             sys.exit(result.returncode)
 
@@ -446,8 +447,8 @@ def execute_args(args):
 
 
 def clean_remainder_args(remainder_args):
-    if remainder_args and remainder_args[0] == "--":
-        del remainder_args[0]
+    if remainder_args and remainder_args == "--":
+        del remainder_args
 
 
 def join_args(arglist):
@@ -520,14 +521,14 @@ def lint_args(args):
     runsubprocess(
         args.dry_run,
         ("black", "--config", "pyproject.toml", ".")
-        + (("--diff", "--check") if args.check_only else ()),
+        + (("--di", "--check") if args.check_only else ()),
         cwd=rootdir,
         check=True,
     )
     runsubprocess(
         args.dry_run,
         ("isort", "--settings-path", ".isort.cfg", ".")
-        + (("--diff", "--check-only") if args.check_only else ()),
+        + (("--di", "--check-only") if args.check_only else ()),
         cwd=rootdir,
         check=True,
     )
@@ -572,7 +573,7 @@ def update_version_files(targets, version, packages):
     print("updating version/__init__.py files")
 
     search = "__version__ .*"
-    replace = f'__version__ = "{version}"'
+    replace = '__version__ = "{}"'.format(version)
 
     for target in filter_packages(targets, packages):
         version_file_path = target.joinpath(
@@ -585,7 +586,7 @@ def update_version_files(targets, version, packages):
             text = file.read()
 
         if replace in text:
-            print(f"{version_file_path} already contains {replace}")
+            print("{} already contains {}".format(version_file_path, replace))
             continue
 
         with open(version_file_path, "w", encoding="utf-8") as file:
@@ -599,7 +600,7 @@ def update_dependencies(targets, version, packages):
     operators_pattern = "|".join(re.escape(op) for op in operators)
 
     for pkg in packages:
-        search = rf"({basename(pkg)}[^,]*)({operators_pattern})(.*\.dev)"
+        search = r"({}[^,]*)({})(.*\.dev)".format(basename(pkg), operators_pattern)
         replace = r"\1\2 " + version
         update_files(
             targets,
@@ -616,9 +617,9 @@ def update_patch_dependencies(targets, version, prev_version, packages):
     operators_pattern = "|".join(re.escape(op) for op in operators)
 
     for pkg in packages:
-        search = rf"({basename(pkg)}[^,]*?)(\s?({operators_pattern})\s?)(.*{prev_version})"
+        search = r"({}[^,]*?)(\s?({})\s?)(.*{})".format(basename(pkg), operators_pattern, prev_version)
         replace = r"\g<1>\g<2>" + version
-        print(f"{search=}\t{replace=}\t{pkg=}")
+        print("search={}\treplace={}\tpkg={}".format(search, replace, pkg))
         update_files(
             targets,
             "pyproject.toml",
@@ -632,14 +633,14 @@ def update_files(targets, filename, search, replace):
     for target in targets:
         curr_file = find(filename, target)
         if curr_file is None:
-            print(f"file missing: {target}/{filename}")
+            print("file missing: {}/{}".format(target, filename))
             continue
 
         with open(curr_file, encoding="utf-8") as _file:
             text = _file.read()
 
         if replace in text:
-            print(f"{curr_file} already contains {replace}")
+            print("{} already contains {}".format(curr_file, replace))
             continue
 
         with open(curr_file, "w", encoding="utf-8") as _file:
@@ -659,11 +660,11 @@ def release_args(args):
     versions = args.versions
     updated_versions = []
     for group in versions.split(","):
-        mcfg = cfg[group]
-        version = mcfg["version"]
+        mcfg = cfg
+        version = mcfg
         updated_versions.append(version)
-        packages = mcfg["packages"].split()
-        print(f"update {group} packages to {version}")
+        packages = mcfg.split()
+        print("update {} packages to {}".format(group, version))
         update_dependencies(targets, version, packages)
         update_version_files(targets, version, packages)
 
@@ -676,18 +677,18 @@ def patch_release_args(args):
     cfg = ConfigParser()
     cfg.read(str(find_projectroot() / "eachdist.ini"))
     # stable
-    mcfg = cfg["stable"]
-    packages = mcfg["packages"].split()
-    print(f"update stable packages to {args.stable_version}")
+    mcfg = cfg
+    packages = mcfg.split()
+    print("update stable packages to {}".format(args.stable_version))
     update_patch_dependencies(
         targets, args.stable_version, args.stable_version_prev, packages
     )
     update_version_files(targets, args.stable_version, packages)
 
     # prerelease
-    mcfg = cfg["prerelease"]
-    packages = mcfg["packages"].split()
-    print(f"update prerelease packages to {args.unstable_version}")
+    mcfg = cfg
+    packages = mcfg.split()
+    print("update prerelease packages to {}".format(args.unstable_version))
     update_patch_dependencies(
         targets, args.unstable_version, args.unstable_version_prev, packages
     )
@@ -716,7 +717,7 @@ def format_args(args):
 
     runsubprocess(
         args.dry_run,
-        ("black", "--config", f"{root_dir}/pyproject.toml", "."),
+        ("black", "--config", "{}/pyproject.toml".format(root_dir), "."),
         cwd=format_dir,
         check=True,
     )
@@ -725,7 +726,7 @@ def format_args(args):
         (
             "isort",
             "--settings-path",
-            f"{root_dir}/.isort.cfg",
+            "{}/.isort.cfg".format(root_dir),
             "--profile",
             "black",
             ".",
@@ -738,7 +739,7 @@ def format_args(args):
 def version_args(args):
     cfg = ConfigParser()
     cfg.read(str(find_projectroot() / "eachdist.ini"))
-    print(cfg[args.mode]["version"])
+    print(cfg)
 
 
 def main():

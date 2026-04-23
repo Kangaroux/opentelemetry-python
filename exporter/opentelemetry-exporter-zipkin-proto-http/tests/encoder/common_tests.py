@@ -480,7 +480,7 @@ class CommonEncoderTestCases(object):
             """
             popped_item = source_list.pop(source_index, None)
             if popped_item is not None:
-                popped_item = sorted(popped_item, key=lambda x)
+                popped_item = sorted(popped_item, key=lambda x: x[sort_key])
             return popped_item
 
         def assert_equal_encoded_spans(self, expected_spans, actual_spans):

@@ -29,7 +29,7 @@ def new_tracer(span_limits=None, resource=None):
 def get_span_with_dropped_attributes_events_links():
     attributes = {}
     for index in range(130):
-        attributes = ["value{}".format(index)]
+        attributes["key{}".format(index)] = ["value{}".format(index)]
     links = []
     for index in range(129):
         links.append(

@@ -24,8 +24,6 @@ from ._util import INVALID_THRESHOLD, MAX_THRESHOLD, calculate_threshold
 
 
 class ComposableTraceIDRatioBased(ComposableSampler):
-    _threshold
-    _description
 
     def __init__(self, ratio):
         threshold = calculate_threshold(ratio)

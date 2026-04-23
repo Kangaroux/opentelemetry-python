@@ -79,7 +79,7 @@ class B3MultiFormat(TextMapPropagator):
             fields = single_header.split("-", 4)
 
             if len(fields) == 1:
-                sampled = fields
+                sampled = fields[0]
             elif len(fields) == 2:
                 trace_id, span_id = fields
             elif len(fields) == 3:
