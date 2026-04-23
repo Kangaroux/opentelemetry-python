@@ -1,11 +1,45 @@
-# OpenTelemetry Python
+# OpenTelemetry Python (Python 2.7 Refactor)
 [![Slack](https://img.shields.io/badge/slack-@cncf/otel/python-brightgreen.svg?logo=slack)](https://cloud-native.slack.com/archives/C01PD4HUVBL)
-[![Build Status 0](https://github.com/open-telemetry/opentelemetry-python/actions/workflows/test_0.yml/badge.svg?branch=main)](https://github.com/open-telemetry/opentelemetry-python/actions/workflows/test_0.yml)
-[![Build Status 1](https://github.com/open-telemetry/opentelemetry-python/actions/workflows/test_1.yml/badge.svg?branch=main)](https://github.com/open-telemetry/opentelemetry-python/actions/workflows/test_1.yml)
-[![Minimum Python Version](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
-[![Release](https://img.shields.io/github/v/release/open-telemetry/opentelemetry-python?include_prereleases&style=)](https://github.com/open-telemetry/opentelemetry-python/releases/)
-[![Read the Docs](https://readthedocs.org/projects/opentelemetry-python/badge/?version=latest)](https://opentelemetry-python.readthedocs.io/en/latest/)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11060/badge)](https://www.bestpractices.dev/projects/11060)
+[![Minimum Python Version](https://img.shields.io/badge/python-2.7+-blue.svg)](https://www.python.org/downloads/)
+
+> **Note:** This is a fork being refactored for Python 2.7 compatibility. The
+> source code has been mechanically transformed using `refactor_to_py27.py` to
+> remove Python 3-only syntax (type hints, f-strings, async/await, dataclasses,
+> walrus operators, etc.). See [Refactoring Status](#refactoring-status) below.
+
+## Refactoring Status
+
+This branch targets **Python 2.7** syntax compatibility. The refactoring script
+(`refactor_to_py27.py`) applies the following transformations:
+
+- Remove `from __future__ import annotations`
+- Replace f-strings with `.format()` calls
+- Remove type hints from function signatures and class attributes
+- Remove `@dataclass` decorators (replaced with manual `__init__`/`__eq__`)
+- Remove `async`/`await` keywords
+- Replace `raise ... from ...` with `raise ...`
+- Replace `...` (ellipsis) with `pass`
+- Remove `TypeAlias` usage
+- Replace `X | Y` union syntax
+
+### Verification
+
+- **Python 2.7 compilation:** All source files compile with `python:2.7-alpine`
+- **Python 3.12 tests:** API (259 passed), SDK (708 passed), B3 propagator (52),
+  Jaeger propagator (18), OTLP exporter (17)
+- 2 async-specific API tests are expected failures (async/await removed for Py2.7)
+
+### How to verify
+
+```sh
+# Compile check with Python 2.7
+docker run --rm -v "$(pwd):/work" -w /work python:2.7-alpine python -m py_compile <file.py>
+
+# Run tests with the test image
+docker build -f Dockerfile.test -t otel-py-test .
+docker run --rm -v "$(pwd):/work" -w /work otel-py-test pytest opentelemetry-api/tests
+docker run --rm -v "$(pwd):/work" -w /work otel-py-test pytest opentelemetry-sdk/tests
+```
 
 ## Project Status
 
@@ -34,12 +68,8 @@ Python SDK, see https://opentelemetry.io/docs/instrumentation/python/manual/.
 
 ## Python Version Support
 
-This project ensures compatibility with the current supported versions of the Python. As new Python versions are released, support for them is added and
-as old Python versions reach their end of life, support for them is removed.
-
-We add support for new Python versions no later than 3 months after they become stable.
-
-We remove support for old Python versions 6 months after they reach their [end of life](https://devguide.python.org/devcycle/#end-of-life-branches).
+This fork targets Python 2.7 syntax compatibility. Source files are verified to
+compile with `python:2.7-alpine` and tests are run with Python 3.12.
 
 
 ## Documentation

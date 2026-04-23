@@ -1,0 +1,55 @@
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /work
+
+# Install test dependencies first (these rarely change)
+RUN pip install --no-cache-dir \
+    pytest \
+    typing_extensions>=4.5.0 \
+    asgiref~=3.0 \
+    flaky \
+    psutil \
+    pyyaml>=6.0 \
+    jsonschema>=4.0 \
+    "protobuf>=5.0,<7.0" \
+    deprecated \
+    "importlib-metadata>=6.0,<8.8.0" \
+    future
+
+# Copy and install packages in dependency order
+# 1. API first (no internal deps)
+COPY opentelemetry-api /work/opentelemetry-api
+RUN pip install --no-cache-dir -e /work/opentelemetry-api
+
+# 2. Semantic conventions (depends on API)
+COPY opentelemetry-semantic-conventions /work/opentelemetry-semantic-conventions
+RUN pip install --no-cache-dir -e /work/opentelemetry-semantic-conventions
+
+# 3. SDK (depends on API + semconv)
+COPY opentelemetry-sdk /work/opentelemetry-sdk
+RUN pip install --no-cache-dir -e /work/opentelemetry-sdk
+
+# 4. Test utils (depends on API + SDK)
+COPY tests/opentelemetry-test-utils /work/tests/opentelemetry-test-utils
+RUN pip install --no-cache-dir -e /work/tests/opentelemetry-test-utils
+
+# 5. Proto (depends on protobuf)
+COPY opentelemetry-proto /work/opentelemetry-proto
+RUN pip install --no-cache-dir -e /work/opentelemetry-proto
+
+# 6. OTLP proto common exporter (depends on proto)
+COPY exporter/opentelemetry-exporter-otlp-proto-common /work/exporter/opentelemetry-exporter-otlp-proto-common
+RUN pip install --no-cache-dir -e /work/exporter/opentelemetry-exporter-otlp-proto-common
+
+# 7. B3 propagator (depends on API)
+COPY propagator/opentelemetry-propagator-b3 /work/propagator/opentelemetry-propagator-b3
+RUN pip install --no-cache-dir -e /work/propagator/opentelemetry-propagator-b3
+
+# 8. Jaeger propagator (depends on API)
+COPY propagator/opentelemetry-propagator-jaeger /work/propagator/opentelemetry-propagator-jaeger
+RUN pip install --no-cache-dir -e /work/propagator/opentelemetry-propagator-jaeger
