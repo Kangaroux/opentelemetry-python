@@ -48,7 +48,7 @@ from opentelemetry.exporter.otlp.proto.http._common import (
     _is_retryable,
     _load_session_from_envvar,
 )
-from opentelemetry.proto.collector.metrics.v1.metrics_service_pb2 import (  # noqa: F401
+from opentelemetry.proto.collector.metrics.v1.metrics_service_pb2 import (
     ExportMetricsServiceRequest,
 )
 from opentelemetry.proto.common.v1.common_pb2 import (  # noqa: F401
@@ -58,7 +58,7 @@ from opentelemetry.proto.common.v1.common_pb2 import (  # noqa: F401
     KeyValue,
     KeyValueList,
 )
-from opentelemetry.proto.metrics.v1 import metrics_pb2 as pb2  # noqa: F401
+from opentelemetry.proto.metrics.v1 import metrics_pb2 as pb2
 from opentelemetry.proto.resource.v1.resource_pb2 import Resource  # noqa: F401
 from opentelemetry.proto.resource.v1.resource_pb2 import (
     Resource as PB2Resource,
@@ -240,18 +240,19 @@ class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
 
     def _export_with_retries(
         self,
-        serialized_data,
+        export_request,
         deadline_sec
     ):
         """Export serialized data with retry logic until success, non-transient error, or exponential backoff maxed out.
 
         Args:
-            serialized_data: serialized metrics data to export
+            export_request: ExportMetricsServiceRequest object containing metrics data to export
             deadline_sec: timestamp deadline for the export
 
         Returns:
             MetricExportResult: SUCCESS if export succeeded, FAILURE otherwise
         """
+        serialized_data = export_request.SerializeToString()
         for retry_num in range(_MAX_RETRYS):
             # multiplying by a random number between .8 and 1.2 introduces a +/20% jitter to each backoff.
             backoff_seconds = 2**retry_num * random.uniform(0.8, 1.2)
@@ -313,17 +314,17 @@ class OTLPMetricExporter(MetricExporter, OTLPMetricExporterMixin):
         # If no batch size configured, export as single batch with retries as configured
         if self._max_export_batch_size is None:
             return self._export_with_retries(
-                serialized_data.SerializeToString(), deadline_sec
+                serialized_data, deadline_sec
             )
 
         # Else, export in batches of configured size
-        split_metrics_batches = list(
-            _split_metrics_data(serialized_data, self._max_export_batch_size)
+        batched_export_requests = _split_metrics_data(
+            serialized_data, self._max_export_batch_size
         )
 
-        for split_metrics_data in split_metrics_batches:
+        for split_metrics_data in batched_export_requests:
             export_result = self._export_with_retries(
-                split_metrics_data.SerializeToString(),
+                split_metrics_data,
                 deadline_sec,
             )
             if export_result != MetricExportResult.SUCCESS:
@@ -353,15 +354,15 @@ def _split_metrics_data(
     metrics_data,
     max_export_batch_size = None
 ):
-    """Splits metrics data into several MetricsData (copies protobuf originals),
+    """Splits metrics data into several ExportMetricsServiceRequest (copies protobuf originals),
     based on configured data point max export batch size.
 
     Args:
         metrics_data: metrics object based on HTTP protocol buffer definition
 
     Returns:
-        Iterable: An iterable of pb2.MetricsData objects containing
-            pb2.ResourceMetrics, pb2.ScopeMetrics, pb2.Metrics, and data points
+        Iterable: An iterable of ExportMetricsServiceRequest objects containing
+            ResourceMetrics, ScopeMetrics, Metrics, and data points
     """
     if not max_export_batch_size:
         yield metrics_data
@@ -428,7 +429,7 @@ def _split_metrics_data(
                     batch_size += 1
 
                     if batch_size >= max_export_batch_size:
-                        yield pb2.MetricsData(
+                        yield ExportMetricsServiceRequest(
                             resource_metrics=_get_split_resource_metrics_pb2(
                                 split_resource_metrics
                             )
@@ -489,7 +490,7 @@ def _split_metrics_data(
             split_resource_metrics.pop()
 
     if batch_size > 0:
-        yield pb2.MetricsData(
+        yield ExportMetricsServiceRequest(
             resource_metrics=_get_split_resource_metrics_pb2(
                 split_resource_metrics
             )
