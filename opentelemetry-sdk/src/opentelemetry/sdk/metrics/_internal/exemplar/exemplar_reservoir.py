@@ -163,7 +163,7 @@ class FixedSizeExemplarReservoirABC(ExemplarReservoir):
     """Abstract class for a reservoir with fixed size."""
 
     def __init__(self, size, **kwargs):
-        super().__init__(**kwargs)
+        super(FixedSizeExemplarReservoirABC, self).__init__(**kwargs)
         self._size = size
         self._reservoir_storage = defaultdict(
             ExemplarBucket
@@ -258,11 +258,11 @@ class SimpleFixedSizeExemplarReservoir(FixedSizeExemplarReservoirABC):
     """
 
     def __init__(self, size = 1, **kwargs):
-        super().__init__(size, **kwargs)
+        super(SimpleFixedSizeExemplarReservoir, self).__init__(size, **kwargs)
         self._measurements_seen = 0
 
     def _reset(self):
-        super()._reset()
+        super(SimpleFixedSizeExemplarReservoir, self)._reset()
         self._measurements_seen = 0
 
     def _find_bucket_index(
@@ -293,7 +293,7 @@ class AlignedHistogramBucketExemplarReservoir(FixedSizeExemplarReservoirABC):
     """
 
     def __init__(self, boundaries, **kwargs):
-        super().__init__(len(boundaries) + 1, **kwargs)
+        super(AlignedHistogramBucketExemplarReservoir, self).__init__(len(boundaries) + 1, **kwargs)
         self._boundaries = boundaries
 
     def offer(

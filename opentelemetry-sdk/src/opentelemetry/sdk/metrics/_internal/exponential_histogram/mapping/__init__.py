@@ -29,7 +29,7 @@ class Mapping(ABC):
             # classes having the same instance of cls._mappings and
             # cls._mappings_lock.
             if scale not in cls._mappings:
-                cls._mappings[scale] = super().__new__(cls)
+                cls._mappings[scale] = super(Mapping, cls).__new__(cls)
                 cls._mappings[scale]._init(scale)
 
         return cls._mappings[scale]

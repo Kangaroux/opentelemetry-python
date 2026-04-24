@@ -136,7 +136,7 @@ class Logger(ABC):
         schema_url=None,
         attributes=None
     ):
-        super().__init__()
+        super(Logger, self).__init__()
         self._name = name
         self._version = version
         self._schema_url = schema_url

@@ -82,7 +82,7 @@ class _Synchronous:
         self.description = description
         self.instrumentation_scope = instrumentation_scope
         self._measurement_consumer = measurement_consumer
-        super().__init__(name, unit=unit, description=description)
+        super(_Synchronous, self).__init__(name, unit=unit, description=description)
 
 
 class _Asynchronous:
@@ -115,7 +115,7 @@ class _Asynchronous:
         self.description = description
         self.instrumentation_scope = instrumentation_scope
         self._measurement_consumer = measurement_consumer
-        super().__init__(name, callbacks, unit=unit, description=description)
+        super(_Asynchronous, self).__init__(name, callbacks, unit=unit, description=description)
 
         self._callbacks = []
 
@@ -161,7 +161,7 @@ class Counter(_Synchronous, APICounter):
     def __new__(cls, *args, **kwargs):
         if cls is Counter:
             raise TypeError("Counter must be instantiated via a meter.")
-        return super().__new__(cls)
+        return super(Counter, cls).__new__(cls)
 
     def add(
         self,
@@ -190,7 +190,7 @@ class UpDownCounter(_Synchronous, APIUpDownCounter):
     def __new__(cls, *args, **kwargs):
         if cls is UpDownCounter:
             raise TypeError("UpDownCounter must be instantiated via a meter.")
-        return super().__new__(cls)
+        return super(UpDownCounter, cls).__new__(cls)
 
     def add(
         self,
@@ -216,7 +216,7 @@ class ObservableCounter(_Asynchronous, APIObservableCounter):
             raise TypeError(
                 "ObservableCounter must be instantiated via a meter."
             )
-        return super().__new__(cls)
+        return super(ObservableCounter, cls).__new__(cls)
 
 
 class ObservableUpDownCounter(_Asynchronous, APIObservableUpDownCounter):
@@ -225,7 +225,7 @@ class ObservableUpDownCounter(_Asynchronous, APIObservableUpDownCounter):
             raise TypeError(
                 "ObservableUpDownCounter must be instantiated via a meter."
             )
-        return super().__new__(cls)
+        return super(ObservableUpDownCounter, cls).__new__(cls)
 
 
 class Histogram(_Synchronous, APIHistogram):
@@ -238,7 +238,7 @@ class Histogram(_Synchronous, APIHistogram):
         description = "",
         explicit_bucket_boundaries_advisory = None
     ):
-        super().__init__(
+        super(Histogram, self).__init__(
             name,
             unit=unit,
             description=description,
@@ -252,7 +252,7 @@ class Histogram(_Synchronous, APIHistogram):
     def __new__(cls, *args, **kwargs):
         if cls is Histogram:
             raise TypeError("Histogram must be instantiated via a meter.")
-        return super().__new__(cls)
+        return super(Histogram, cls).__new__(cls)
 
     def record(
         self,
@@ -282,7 +282,7 @@ class Gauge(_Synchronous, APIGauge):
     def __new__(cls, *args, **kwargs):
         if cls is Gauge:
             raise TypeError("Gauge must be instantiated via a meter.")
-        return super().__new__(cls)
+        return super(Gauge, cls).__new__(cls)
 
     def set(
         self,
@@ -308,7 +308,7 @@ class ObservableGauge(_Asynchronous, APIObservableGauge):
             raise TypeError(
                 "ObservableGauge must be instantiated via a meter."
             )
-        return super().__new__(cls)
+        return super(ObservableGauge, cls).__new__(cls)
 
 
 # Below classes exist to prevent the direct instantiation

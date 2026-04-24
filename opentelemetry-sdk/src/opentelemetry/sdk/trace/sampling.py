@@ -390,27 +390,27 @@ class ParentBasedTraceIdRatio(ParentBased):
 
     def __init__(self, rate):
         root = TraceIdRatioBased(rate=rate)
-        super().__init__(root=root)
+        super(ParentBasedTraceIdRatio, self).__init__(root=root)
 
 
 class _AlwaysOff(StaticSampler):
     def __init__(self, _):
-        super().__init__(Decision.DROP)
+        super(_AlwaysOff, self).__init__(Decision.DROP)
 
 
 class _AlwaysOn(StaticSampler):
     def __init__(self, _):
-        super().__init__(Decision.RECORD_AND_SAMPLE)
+        super(_AlwaysOn, self).__init__(Decision.RECORD_AND_SAMPLE)
 
 
 class _ParentBasedAlwaysOff(ParentBased):
     def __init__(self, _):
-        super().__init__(ALWAYS_OFF)
+        super(_ParentBasedAlwaysOff, self).__init__(ALWAYS_OFF)
 
 
 class _ParentBasedAlwaysOn(ParentBased):
     def __init__(self, _):
-        super().__init__(ALWAYS_ON)
+        super(_ParentBasedAlwaysOn, self).__init__(ALWAYS_ON)
 
 
 _KNOWN_SAMPLERS = {

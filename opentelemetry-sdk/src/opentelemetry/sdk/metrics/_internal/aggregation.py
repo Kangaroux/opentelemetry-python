@@ -171,7 +171,7 @@ class _SumAggregation(_Aggregation):
         start_time_unix_nano,
         reservoir_builder
     ):
-        super().__init__(attributes, reservoir_builder)
+        super(_SumAggregation, self).__init__(attributes, reservoir_builder)
 
         self._start_time_unix_nano = start_time_unix_nano
         self._instrument_aggregation_temporality = (
@@ -403,7 +403,7 @@ class _LastValueAggregation(_Aggregation):
         attributes,
         reservoir_builder
     ):
-        super().__init__(attributes, reservoir_builder)
+        super(_LastValueAggregation, self).__init__(attributes, reservoir_builder)
         self._value = None
 
     def aggregate(
@@ -472,7 +472,7 @@ class _ExplicitBucketHistogramAggregation(_Aggregation):
             boundaries = (
                 _DEFAULT_EXPLICIT_BUCKET_HISTOGRAM_AGGREGATION_BOUNDARIES
             )
-        super().__init__(
+        super(_ExplicitBucketHistogramAggregation, self).__init__(
             attributes,
             reservoir_builder=partial(
                 reservoir_builder, boundaries=boundaries
@@ -666,7 +666,7 @@ class _ExponentialBucketHistogramAggregation(_Aggregation):
         # _ExplicitBucketHistogramAggregation both size and amount of buckets
         # remain constant once it is instantiated).
 
-        super().__init__(
+        super(_ExponentialBucketHistogramAggregation, self).__init__(
             attributes,
             reservoir_builder=partial(
                 reservoir_builder, size=min(20, max_size)

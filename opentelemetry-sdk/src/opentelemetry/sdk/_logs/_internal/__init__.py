@@ -65,7 +65,7 @@ class BytesEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, bytes):
             return base64.b64encode(o).decode()
-        return super().default(o)
+        return super(BytesEncoder, self).default(o)
 
 
 class LogRecordDroppedAttributesWarning(UserWarning):
@@ -516,7 +516,7 @@ class LoggingHandler(logging.Handler):
     """
 
     def __init__(self, level=logging.NOTSET, logger_provider=None):
-        super().__init__(level=level)
+        super(LoggingHandler, self).__init__(level=level)
         self._logger_provider = logger_provider or get_logger_provider()
 
         warnings.warn(
@@ -632,7 +632,7 @@ class Logger(APILogger):
         instrumentation_scope,
         logger_metrics,
     ):
-        super().__init__(
+        super(Logger, self).__init__(
             instrumentation_scope.name,
             instrumentation_scope.version,
             instrumentation_scope.schema_url,

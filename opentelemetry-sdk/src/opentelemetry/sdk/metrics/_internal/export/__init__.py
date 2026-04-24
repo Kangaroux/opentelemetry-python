@@ -135,6 +135,8 @@ class ConsoleMetricExporter(MetricExporter):
     console.
 
     This class can be used for diagnostic purposes. It prints the exported
+
+    This class can be used for diagnostic purposes. It prints the exported
     metrics to the console STDOUT.
     """
 
@@ -145,7 +147,7 @@ class ConsoleMetricExporter(MetricExporter):
         preferred_temporality=None,
         preferred_aggregation=None,
     ):
-        super().__init__(
+        super(ConsoleMetricExporter, self).__init__(
             preferred_temporality=preferred_temporality,
             preferred_aggregation=preferred_aggregation,
         )
@@ -364,7 +366,7 @@ class InMemoryMetricReader(MetricReader):
     """
 
     def __init__(self, preferred_temporality=None, preferred_aggregation=None):
-        super().__init__(
+        super(InMemoryMetricReader, self).__init__(
             preferred_temporality=preferred_temporality,
             preferred_aggregation=preferred_aggregation,
         )
@@ -401,7 +403,7 @@ class PeriodicExportingMetricReader(MetricReader):
         self, exporter, export_interval_millis=None, export_timeout_millis=None
     ):
         # PeriodicExportingMetricReader defers to exporter for configuration
-        super().__init__(
+        super(PeriodicExportingMetricReader, self).__init__(
             preferred_temporality=exporter._preferred_temporality,
             preferred_aggregation=exporter._preferred_aggregation,
             otel_component_type=OtelComponentTypeValues.PERIODIC_METRIC_READER,
@@ -519,6 +521,6 @@ class PeriodicExportingMetricReader(MetricReader):
         self._exporter.shutdown(timeout=(deadline_ns - time_ns()) / 10**6)
 
     def force_flush(self, timeout_millis=10000):
-        super().force_flush(timeout_millis=timeout_millis)
+        super(PeriodicExportingMetricReader, self).force_flush(timeout_millis=timeout_millis)
         self._exporter.force_flush(timeout_millis=timeout_millis)
         return True

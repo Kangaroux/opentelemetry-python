@@ -51,7 +51,7 @@ class Event(LogRecord):
         attributes = attributes or {}
         event_attributes = attributes
         event_attributes.update({"event.name": name,})
-        super().__init__(
+        super(Event, self).__init__(
             timestamp=timestamp,
             trace_id=trace_id,
             span_id=span_id,
@@ -106,7 +106,7 @@ class ProxyEventLogger(EventLogger):
         schema_url = None,
         attributes = None
     ):
-        super().__init__(
+        super(ProxyEventLogger, self).__init__(
             name=name,
             version=version,
             schema_url=schema_url,

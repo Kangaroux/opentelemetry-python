@@ -79,7 +79,7 @@ class Meter(APIMeter):
         instrumentation_scope,
         measurement_consumer
     ):
-        super().__init__(
+        super(Meter, self).__init__(
             name=instrumentation_scope.name,
             version=instrumentation_scope.version,
             schema_url=instrumentation_scope.schema_url,

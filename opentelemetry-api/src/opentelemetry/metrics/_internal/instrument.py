@@ -159,7 +159,7 @@ class _ProxyAsynchronousInstrument(_ProxyInstrument):
         unit = "",
         description = ""
     ):
-        super().__init__(name, unit, description)
+        super(_ProxyAsynchronousInstrument, self).__init__(name, unit, description)
         self._callbacks = callbacks
 
 
@@ -178,7 +178,7 @@ class Asynchronous(Instrument):
         unit = "",
         description = ""
     ):
-        super().__init__(name, unit=unit, description=description)
+        super(Asynchronous, self).__init__(name, unit=unit, description=description)
 
 
 class Counter(Synchronous):
@@ -210,7 +210,7 @@ class NoOpCounter(Counter):
         unit = "",
         description = ""
     ):
-        super().__init__(name, unit=unit, description=description)
+        super(NoOpCounter, self).__init__(name, unit=unit, description=description)
 
     def add(
         self,
@@ -218,7 +218,7 @@ class NoOpCounter(Counter):
         attributes = None,
         context = None
     ):
-        return super().add(amount, attributes=attributes, context=context)
+        return super(NoOpCounter, self).add(amount, attributes=attributes, context=context)
 
 
 class _ProxyCounter(_ProxyInstrument, Counter):
@@ -272,7 +272,7 @@ class NoOpUpDownCounter(UpDownCounter):
         unit = "",
         description = ""
     ):
-        super().__init__(name, unit=unit, description=description)
+        super(NoOpUpDownCounter, self).__init__(name, unit=unit, description=description)
 
     def add(
         self,
@@ -280,7 +280,7 @@ class NoOpUpDownCounter(UpDownCounter):
         attributes = None,
         context = None
     ):
-        return super().add(amount, attributes=attributes, context=context)
+        return super(NoOpUpDownCounter, self).add(amount, attributes=attributes, context=context)
 
 
 class _ProxyUpDownCounter(_ProxyInstrument, UpDownCounter):
@@ -317,7 +317,7 @@ class NoOpObservableCounter(ObservableCounter):
         unit = "",
         description = ""
     ):
-        super().__init__(
+        super(NoOpObservableCounter, self).__init__(
             name,
             callbacks,
             unit=unit,
@@ -356,7 +356,7 @@ class NoOpObservableUpDownCounter(ObservableUpDownCounter):
         unit = "",
         description = ""
     ):
-        super().__init__(
+        super(NoOpObservableUpDownCounter, self).__init__(
             name,
             callbacks,
             unit=unit,
@@ -428,7 +428,7 @@ class NoOpHistogram(Histogram):
         description = "",
         explicit_bucket_boundaries_advisory = None
     ):
-        super().__init__(
+        super(NoOpHistogram, self).__init__(
             name,
             unit=unit,
             description=description,
@@ -441,7 +441,7 @@ class NoOpHistogram(Histogram):
         attributes = None,
         context = None
     ):
-        return super().record(amount, attributes=attributes, context=context)
+        return super(NoOpHistogram, self).record(amount, attributes=attributes, context=context)
 
 
 class _ProxyHistogram(_ProxyInstrument, Histogram):
@@ -452,7 +452,7 @@ class _ProxyHistogram(_ProxyInstrument, Histogram):
         description = "",
         explicit_bucket_boundaries_advisory = None
     ):
-        super().__init__(name, unit=unit, description=description)
+        super(_ProxyHistogram, self).__init__(name, unit=unit, description=description)
         self._explicit_bucket_boundaries_advisory = (
             explicit_bucket_boundaries_advisory
         )
@@ -492,7 +492,7 @@ class NoOpObservableGauge(ObservableGauge):
         unit = "",
         description = ""
     ):
-        super().__init__(
+        super(NoOpObservableGauge, self).__init__(
             name,
             callbacks,
             unit=unit,
@@ -548,7 +548,7 @@ class NoOpGauge(Gauge):
         unit = "",
         description = ""
     ):
-        super().__init__(name, unit=unit, description=description)
+        super(NoOpGauge, self).__init__(name, unit=unit, description=description)
 
     def set(
         self,
@@ -556,7 +556,7 @@ class NoOpGauge(Gauge):
         attributes = None,
         context = None
     ):
-        return super().set(amount, attributes=attributes, context=context)
+        return super(NoOpGauge, self).set(amount, attributes=attributes, context=context)
 
 
 class _ProxyGauge(

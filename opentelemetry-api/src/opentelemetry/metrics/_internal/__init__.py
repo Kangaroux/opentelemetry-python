@@ -202,7 +202,7 @@ class Meter(ABC):
         version = None,
         schema_url = None
     ):
-        super().__init__()
+        super(Meter, self).__init__()
         self._name = name
         self._version = version
         self._schema_url = schema_url
@@ -498,7 +498,7 @@ class _ProxyMeter(Meter):
         version = None,
         schema_url = None
     ):
-        super().__init__(name, version=version, schema_url=schema_url)
+        super(_ProxyMeter, self).__init__(name, version=version, schema_url=schema_url)
         self._lock = Lock()
         self._instruments = []
         self._real_meter = None

@@ -367,7 +367,7 @@ class Event(EventBase):
         timestamp = None,
         limit = _DEFAULT_OTEL_SPAN_ATTRIBUTE_COUNT_LIMIT
     ):
-        super().__init__(name, timestamp)
+        super(Event, self).__init__(name, timestamp)
         self._attributes = attributes
 
     @property
@@ -794,7 +794,7 @@ class Span(trace_api.Span, ReadableSpan):
     def __new__(cls, *args, **kwargs):
         if cls is Span:
             raise TypeError("Span must be instantiated via a tracer.")
-        return super().__new__(cls)
+        return super(Span, cls).__new__(cls)
 
     # pylint =too-many-locals
     def __init__(
@@ -820,7 +820,7 @@ class Span(trace_api.Span, ReadableSpan):
     ):
         if resource is None:
             resource = Resource.create({})
-        super().__init__(
+        super(Span, self).__init__(
             name=name,
             context=context,
             parent=parent,
@@ -1050,7 +1050,7 @@ class Span(trace_api.Span, ReadableSpan):
                     )
                 )
 
-        super().__exit__(exc_type, exc_val, exc_tb)
+        super(Span, self).__exit__(exc_type, exc_val, exc_tb)
 
     def record_exception(
         self,

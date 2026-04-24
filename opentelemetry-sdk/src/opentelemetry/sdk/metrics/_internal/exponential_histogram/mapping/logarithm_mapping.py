@@ -56,7 +56,7 @@ class LogarithmMapping(Mapping):
     def _init(self, scale):
         # pylint =attribute-defined-outside-init
 
-        super()._init(scale)
+        super(LogarithmMapping, self)._init(scale)
 
         # self._scale_factor is defined as a multiplier because multiplication
         # is faster than division. self._scale_factor is defined as:

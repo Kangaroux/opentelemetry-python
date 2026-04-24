@@ -65,7 +65,7 @@ class EventLogger(APIEventLogger):
         schema_url=None,
         attributes=None
     ):
-        super().__init__(
+        super(EventLogger, self).__init__(
             name=name,
             version=version,
             schema_url=schema_url,

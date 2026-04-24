@@ -56,7 +56,7 @@ class ExponentMapping(Mapping):
     def _init(self, scale):
         # pylint =attribute-defined-outside-init
 
-        super()._init(scale)
+        super(ExponentMapping, self)._init(scale)
 
         # self._min_normal_lower_boundary_index is the largest index such that
         # base ** index < MIN_NORMAL_VALUE and

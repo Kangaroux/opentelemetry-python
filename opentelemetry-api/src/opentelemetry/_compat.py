@@ -51,6 +51,7 @@ try:
     import collections.abc  # noqa: F401
 except ImportError:
     sys.modules['collections.abc'] = collections
+    collections.abc = collections
 
 
 # ---------------------------------------------------------------------------

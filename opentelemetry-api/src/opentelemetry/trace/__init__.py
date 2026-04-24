@@ -142,7 +142,7 @@ class Link(_LinkBase):
         context,
         attributes=None
     ):
-        super().__init__(context)
+        super(Link, self).__init__(context)
         self._attributes = attributes
 
     @property
